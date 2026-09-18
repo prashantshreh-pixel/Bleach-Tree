@@ -1,0 +1,542 @@
+[
+    {
+        "source": "isshin",
+        "target": "ichigo",
+        "type": "Parent",
+        "label": "Father of"
+    },
+    {
+        "source": "masaki",
+        "target": "ichigo",
+        "type": "Parent",
+        "label": "Mother of"
+    },
+    {
+        "source": "isshin",
+        "target": "karin",
+        "type": "Parent",
+        "label": "Father of"
+    },
+    {
+        "source": "masaki",
+        "target": "karin",
+        "type": "Parent",
+        "label": "Mother of"
+    },
+    {
+        "source": "isshin",
+        "target": "yuzu",
+        "type": "Parent",
+        "label": "Father of"
+    },
+    {
+        "source": "masaki",
+        "target": "yuzu",
+        "type": "Parent",
+        "label": "Mother of"
+    },
+    {
+        "source": "isshin",
+        "target": "masaki",
+        "type": "Marriage",
+        "label": "Married to"
+    },
+    {
+        "source": "ichigo",
+        "target": "karin",
+        "type": "Sibling",
+        "label": "Siblings"
+    },
+    {
+        "source": "ichigo",
+        "target": "yuzu",
+        "type": "Sibling",
+        "label": "Siblings"
+    },
+    {
+        "source": "karin",
+        "target": "yuzu",
+        "type": "Sibling",
+        "label": "Siblings"
+    },
+    {
+        "source": "kaien",
+        "target": "kukaku",
+        "type": "Sibling",
+        "label": "Siblings"
+    },
+    {
+        "source": "kaien",
+        "target": "ganju",
+        "type": "Sibling",
+        "label": "Siblings"
+    },
+    {
+        "source": "kukaku",
+        "target": "ganju",
+        "type": "Sibling",
+        "label": "Siblings"
+    },
+    {
+        "source": "isshin",
+        "target": "kaien",
+        "type": "Clan",
+        "label": "Same Clan (Shiba)"
+    },
+    {
+        "source": "isshin",
+        "target": "kukaku",
+        "type": "Clan",
+        "label": "Same Clan (Shiba)"
+    },
+    {
+        "source": "isshin",
+        "target": "ganju",
+        "type": "Clan",
+        "label": "Same Clan (Shiba)"
+    },
+    {
+        "source": "byakuya",
+        "target": "hisana",
+        "type": "Marriage",
+        "label": "Married to"
+    },
+    {
+        "source": "byakuya",
+        "target": "rukia",
+        "type": "Adopted",
+        "label": "Adopted"
+    },
+    {
+        "source": "hisana",
+        "target": "rukia",
+        "type": "Sibling",
+        "label": "Biological sisters"
+    },
+    {
+        "source": "kaien",
+        "target": "rukia",
+        "type": "Mentor",
+        "label": "Mentor of"
+    },
+    {
+        "source": "soken",
+        "target": "uryu",
+        "type": "Mentor",
+        "label": "Trained"
+    },
+    {
+        "source": "oetsu",
+        "target": "ichigo",
+        "type": "Mentor",
+        "label": "Reforged Zangetsu"
+    },
+    {
+        "source": "ichigo",
+        "target": "rukia",
+        "type": "Friend",
+        "label": "Close friends"
+    },
+    {
+        "source": "ichigo",
+        "target": "uryu",
+        "type": "Friend",
+        "label": "Rivals & friends"
+    },
+    {
+        "source": "yhwach",
+        "target": "masaki",
+        "type": "Bloodline",
+        "label": "Quincy progenitor"
+    },
+    {
+        "source": "yhwach",
+        "target": "soken",
+        "type": "Bloodline",
+        "label": "Quincy progenitor"
+    },
+    {
+        "source": "yhwach",
+        "target": "ryuken",
+        "type": "Bloodline",
+        "label": "Quincy progenitor"
+    },
+    {
+        "source": "yhwach",
+        "target": "uryu",
+        "type": "Bloodline",
+        "label": "Quincy progenitor"
+    },
+    {
+        "source": "yhwach",
+        "target": "jugram",
+        "type": "Bloodline",
+        "label": "Bestowed power"
+    },
+    {
+        "source": "yhwach",
+        "target": "ichigo",
+        "type": "Bloodline",
+        "label": "Quincy heritage"
+    },
+    {
+        "source": "soken",
+        "target": "ryuken",
+        "type": "Parent",
+        "label": "Father of"
+    },
+    {
+        "source": "ryuken",
+        "target": "uryu",
+        "type": "Parent",
+        "label": "Father of"
+    },
+    {
+        "source": "ichibei",
+        "target": "senjumaru",
+        "type": "Comrade",
+        "label": "Zero Division"
+    },
+    {
+        "source": "ichibei",
+        "target": "kirio",
+        "type": "Comrade",
+        "label": "Zero Division"
+    },
+    {
+        "source": "ichibei",
+        "target": "tenjiro",
+        "type": "Comrade",
+        "label": "Zero Division"
+    },
+    {
+        "source": "ichibei",
+        "target": "oetsu",
+        "type": "Comrade",
+        "label": "Zero Division"
+    },
+    {
+        "source": "senjumaru",
+        "target": "kirio",
+        "type": "Comrade",
+        "label": "Zero Division"
+    },
+    {
+        "source": "senjumaru",
+        "target": "tenjiro",
+        "type": "Comrade",
+        "label": "Zero Division"
+    },
+    {
+        "source": "senjumaru",
+        "target": "oetsu",
+        "type": "Comrade",
+        "label": "Zero Division"
+    },
+    {
+        "source": "kirio",
+        "target": "tenjiro",
+        "type": "Comrade",
+        "label": "Zero Division"
+    },
+    {
+        "source": "kirio",
+        "target": "oetsu",
+        "type": "Comrade",
+        "label": "Zero Division"
+    },
+    {
+        "source": "tenjiro",
+        "target": "oetsu",
+        "type": "Comrade",
+        "label": "Zero Division"
+    },
+    {
+        "source": "byakuya",
+        "target": "ichigo",
+        "type": "Friend",
+        "label": "Mutual respect"
+    },
+    {
+        "source": "rukia",
+        "target": "kaien",
+        "type": "Friend",
+        "label": "Deep bond"
+    },
+    {
+        "source": "yhwach",
+        "target": "ichibei",
+        "type": "Captain",
+        "label": "Opposed in war"
+    },
+    {
+        "source": "ichigo",
+        "target": "orihime",
+        "type": "Marriage",
+        "label": "Married to"
+    },
+    {
+        "source": "ichigo",
+        "target": "kazui",
+        "type": "Parent",
+        "label": "Father of"
+    },
+    {
+        "source": "orihime",
+        "target": "kazui",
+        "type": "Parent",
+        "label": "Mother of"
+    },
+    {
+        "source": "ichigo",
+        "target": "chad",
+        "type": "Friend",
+        "label": "Best friends"
+    },
+    {
+        "source": "orihime",
+        "target": "tatsuki",
+        "type": "Friend",
+        "label": "Best friends"
+    },
+    {
+        "source": "ichigo",
+        "target": "keigo",
+        "type": "Friend",
+        "label": "Friends"
+    },
+    {
+        "source": "ichigo",
+        "target": "mizuiro",
+        "type": "Friend",
+        "label": "Friends"
+    },
+    {
+        "source": "ryuken",
+        "target": "kanae",
+        "type": "Marriage",
+        "label": "Married to"
+    },
+    {
+        "source": "kanae",
+        "target": "uryu",
+        "type": "Parent",
+        "label": "Mother of"
+    },
+    {
+        "source": "soken",
+        "target": "izumi",
+        "type": "Marriage",
+        "label": "Married to"
+    },
+    {
+        "source": "izumi",
+        "target": "ryuken",
+        "type": "Parent",
+        "label": "Mother of"
+    },
+    {
+        "source": "urahara",
+        "target": "yoruichi",
+        "type": "Friend",
+        "label": "Childhood friends"
+    },
+    {
+        "source": "urahara",
+        "target": "tessai",
+        "type": "Friend",
+        "label": "Comrades in exile"
+    },
+    {
+        "source": "urahara",
+        "target": "ichigo",
+        "type": "Mentor",
+        "label": "Mentored"
+    },
+    {
+        "source": "urahara",
+        "target": "jinta",
+        "type": "Boss",
+        "label": "Employer"
+    },
+    {
+        "source": "urahara",
+        "target": "ururu",
+        "type": "Boss",
+        "label": "Employer"
+    },
+    {
+        "source": "urahara",
+        "target": "ririn",
+        "type": "Creator",
+        "label": "Created"
+    },
+    {
+        "source": "urahara",
+        "target": "noba",
+        "type": "Creator",
+        "label": "Created"
+    },
+    {
+        "source": "urahara",
+        "target": "kurodo",
+        "type": "Creator",
+        "label": "Created"
+    },
+    {
+        "source": "ginjo",
+        "target": "ichigo",
+        "type": "Mentor",
+        "label": "Taught Fullbring / Betrayed"
+    },
+    {
+        "source": "ginjo",
+        "target": "tsukishima",
+        "type": "Friend",
+        "label": "Partners in Xcution"
+    },
+    {
+        "source": "tsukishima",
+        "target": "moe",
+        "type": "Mentor",
+        "label": "Followed by"
+    },
+    {
+        "source": "ginjo",
+        "target": "riruka",
+        "type": "Boss",
+        "label": "Leader of Xcution"
+    },
+    {
+        "source": "ginjo",
+        "target": "yukio",
+        "type": "Boss",
+        "label": "Leader of Xcution"
+    },
+    {
+        "source": "ginjo",
+        "target": "jackie",
+        "type": "Boss",
+        "label": "Leader of Xcution"
+    },
+    {
+        "source": "ginjo",
+        "target": "giriko",
+        "type": "Boss",
+        "label": "Leader of Xcution"
+    },
+    {
+        "source": "chad",
+        "target": "ginjo",
+        "type": "Comrade",
+        "label": "Briefly joined Xcution"
+    },
+    {
+        "source": "tatsuki",
+        "target": "chizuru",
+        "type": "Friend",
+        "label": "Classmates"
+    },
+    {
+        "source": "keigo",
+        "target": "mizuho",
+        "type": "Sibling",
+        "label": "Siblings"
+    },
+    {
+        "source": "ikumi",
+        "target": "kaoru",
+        "type": "Parent",
+        "label": "Mother of"
+    },
+    {
+        "source": "ikumi",
+        "target": "ichigo",
+        "type": "Boss",
+        "label": "Employer"
+    },
+    {
+        "source": "don_kanonji",
+        "target": "ichigo",
+        "type": "Friend",
+        "label": "Spiritual ally"
+    },
+    {
+        "source": "shinji",
+        "target": "hiyori",
+        "type": "Friend",
+        "label": "Bickering partners"
+    },
+    {
+        "source": "love",
+        "target": "rose",
+        "type": "Friend",
+        "label": "Close friends"
+    },
+    {
+        "source": "kensei",
+        "target": "mashiro",
+        "type": "Boss",
+        "label": "Captain / Lieutenant"
+    },
+    {
+        "source": "kensei",
+        "target": "hisagi",
+        "type": "Mentor",
+        "label": "Saved him / Captain"
+    },
+    {
+        "source": "shinji",
+        "target": "aizen",
+        "type": "Enemy",
+        "label": "Betrayed by Aizen"
+    },
+    {
+        "source": "shinji",
+        "target": "ichigo",
+        "type": "Mentor",
+        "label": "Recruited / Taught Hollowfication"
+    },
+    {
+        "source": "hiyori",
+        "target": "ichigo",
+        "type": "Mentor",
+        "label": "Trained him"
+    },
+    {
+        "source": "hiyori",
+        "target": "urahara",
+        "type": "Friend",
+        "label": "Former subordinate"
+    },
+    {
+        "source": "hachigen",
+        "target": "tessai",
+        "type": "Friend",
+        "label": "Former subordinate"
+    },
+    {
+        "source": "shinji",
+        "target": "momo",
+        "type": "Boss",
+        "label": "Former Captain"
+    },
+    {
+        "source": "love",
+        "target": "komamura",
+        "type": "Friend",
+        "label": "Fellow Captains"
+    },
+    {
+        "source": "ichigo",
+        "target": "kon",
+        "type": "Comrade",
+        "label": "Takes over body"
+    },
+    {
+        "source": "urahara",
+        "target": "kon",
+        "type": "Creator",
+        "label": "Created (indirect)"
+    }
+]
