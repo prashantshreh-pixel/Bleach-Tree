@@ -538,5 +538,59 @@
         "target": "kon",
         "type": "Creator",
         "label": "Created (indirect)"
+    },
+    {
+        "source": "kenpachi",
+        "target": "ichigo",
+        "type": "Friend",
+        "label": "Rivals & fierce allies"
+    },
+    {
+        "source": "unohana",
+        "target": "kenpachi",
+        "type": "Mentor",
+        "label": "Predecessor & true mentor"
+    },
+    {
+        "source": "kenpachi",
+        "target": "byakuya",
+        "type": "Comrade",
+        "label": "Fellow Captains & rival allies"
+    },
+    {
+        "source": "unohana",
+        "target": "ichigo",
+        "type": "Comrade",
+        "label": "Healed & escorted to battle"
+    },
+    {
+        "source": "unohana",
+        "target": "byakuya",
+        "type": "Comrade",
+        "label": "Senior Gotei 13 Captains"
+    },
+    {
+        "source": "yoruichi",
+        "target": "soi_fon",
+        "type": "Mentor",
+        "label": "Former master & mentor"
+    },
+    {
+        "source": "soi_fon",
+        "target": "urahara",
+        "type": "Friend",
+        "label": "Resentful distrust"
+    },
+    {
+        "source": "soi_fon",
+        "target": "byakuya",
+        "type": "Comrade",
+        "label": "Fellow Noble & Captain"
+    },
+    {
+        "source": "soi_fon",
+        "target": "komamura",
+        "type": "Comrade",
+        "label": "Fellow Captains"
     }
 ]

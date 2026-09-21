@@ -16,35 +16,53 @@ def build_sprites():
         chars = json.load(f)
 
     search_dirs = [
-        os.path.join(asset_dir, 'characters'),
+        asset_dir,
         os.path.join(asset_dir, 'Image'),
-        asset_dir
+        os.path.join(asset_dir, 'characters')
     ]
+
+    import unicodedata
+
+    def strip_accents(text):
+        nfkd = unicodedata.normalize('NFKD', text)
+        return ''.join(c for c in nfkd if not unicodedata.combining(c)).lower()
 
     found_images = {}
     for char_id, data in chars.items():
         name = data.get('name', '')
-        candidates = [
+        cands = set([
             char_id.lower(),
             char_id.lower().replace('_', ' '),
             char_id.lower().replace('_', '-'),
+            strip_accents(char_id),
             name.lower(),
             name.lower().replace(' ', '_'),
             name.lower().replace(' ', '-'),
-            name.lower().replace('ō', 'o').replace('ū', 'u')
-        ]
+            strip_accents(name),
+            strip_accents(name).replace(' ', '_'),
+            strip_accents(name).replace(' ', '-')
+        ])
+        for p in name.split():
+            if len(p) > 2:
+                cands.add(p.lower())
+                cands.add(strip_accents(p))
+
         found_file = None
+        found_mtime = -1
         for sdir in search_dirs:
             if not os.path.exists(sdir):
                 continue
             for fname in os.listdir(sdir):
                 base, ext = os.path.splitext(fname)
                 if ext.lower() in ['.jpg', '.jpeg', '.png', '.webp']:
-                    if base.lower() in candidates:
-                        found_file = os.path.join(sdir, fname)
-                        break
-            if found_file:
-                break
+                    base_clean = base.lower()
+                    base_norm = strip_accents(base)
+                    if base_clean in cands or base_norm in cands:
+                        fpath = os.path.join(sdir, fname)
+                        mtime = os.path.getmtime(fpath)
+                        if found_file is None or mtime > found_mtime:
+                            found_file = fpath
+                            found_mtime = mtime
         if found_file:
             found_images[char_id] = found_file
 

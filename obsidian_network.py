@@ -30,6 +30,7 @@ def generate_obsidian_graph():
 
     # Load characters.webp as data URI fallback for local file:// testing
     sprite_webp_path = os.path.join(asset_dir, "sprites", "characters.webp")
+    sprite_version = int(os.path.getmtime(sprite_webp_path))
     with open(sprite_webp_path, "rb") as f:
         sprite_webp_b64 = base64.b64encode(f.read()).decode("ascii")
 
@@ -921,7 +922,7 @@ def generate_obsidian_graph():
         const SPRITE_MAP = {sprite_map_json};
         const SPRITE_META = {sprite_meta_json};
         const SPRITE_DATA_URI = "data:image/webp;base64,{sprite_webp_b64}";
-        const SPRITE_SRC = 'Asset/sprites/characters.webp';
+        const SPRITE_SRC = 'Asset/sprites/characters.webp?v={sprite_version}';
 
         const spriteSheet = new Image();
         spriteSheet.crossOrigin = "anonymous";

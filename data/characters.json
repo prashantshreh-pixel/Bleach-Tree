@@ -571,5 +571,29 @@
     "faction": "Human World",
     "description": "Modified Soul placed in a stuffed lion.",
     "generation": 2
+  },
+  "kenpachi": {
+    "name": "Kenpachi Zaraki",
+    "race": "Soul Reaper",
+    "family": "Zaraki",
+    "faction": "Gotei 13",
+    "description": "11th Captain of Squad 11. Feared throughout Soul Society for his monstrous spiritual pressure, love of battle, and immense endurance.",
+    "generation": 2
+  },
+  "unohana": {
+    "name": "Retsu Unohana",
+    "race": "Soul Reaper",
+    "family": "Unohana",
+    "faction": "Gotei 13",
+    "description": "Captain of Squad 4, supreme healer of Soul Society, and secretly Yachiru Unohana, the legendary First Kenpachi.",
+    "generation": 1
+  },
+  "soi_fon": {
+    "name": "Soi Fon",
+    "race": "Soul Reaper",
+    "family": "Fon",
+    "faction": "Gotei 13",
+    "description": "Captain of Squad 2 and Commander-in-Chief of the Onmitsukido. Master of Hakuda and Shunpo.",
+    "generation": 2
   }
 }
