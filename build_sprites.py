@@ -68,10 +68,34 @@ def build_sprites():
 
     print(f"[SPRITE BUILDER] Discovered {len(found_images)} character portrait(s): {list(found_images.keys())}")
 
-    TILE_SIZE = 128
+    out_webp = os.path.join(sprites_dir, 'characters.webp')
+    out_json = os.path.join(sprites_dir, 'characters-map.json')
+    cache_file = os.path.join(sprites_dir, '.sprite_cache.json')
+
+    # Quick signature calculation for cache invalidation
+    current_sig = {}
+    for cid, fpath in found_images.items():
+        try:
+            current_sig[cid] = [fpath, os.path.getmtime(fpath), os.path.getsize(fpath)]
+        except OSError:
+            pass
+
+    if os.path.exists(out_webp) and os.path.exists(out_json) and os.path.exists(cache_file):
+        try:
+            with open(cache_file, 'r', encoding='utf-8') as cf:
+                cached_sig = json.load(cf)
+            if cached_sig == current_sig:
+                with open(out_json, 'r', encoding='utf-8') as jf:
+                    sprite_map = json.load(jf)
+                print(f"[SPRITE BUILDER] Cache hit! Images unchanged. Using existing sprite sheet.")
+                return sprite_map
+        except Exception:
+            pass
+
+    TILE_SIZE = 192
     char_list = sorted(found_images.keys())
     total_tiles = max(1, len(char_list))
-    cols = min(8, max(1, math.ceil(math.sqrt(total_tiles))))
+    cols = min(12, max(1, math.ceil(math.sqrt(total_tiles))))
     rows = math.ceil(total_tiles / cols)
 
     sheet_w = cols * TILE_SIZE
@@ -122,6 +146,9 @@ def build_sprites():
     out_json = os.path.join(sprites_dir, 'characters-map.json')
     with open(out_json, 'w', encoding='utf-8') as f:
         json.dump(sprite_map, f, indent=2)
+
+    with open(cache_file, 'w', encoding='utf-8') as cf:
+        json.dump(current_sig, cf)
 
     mirror_dir = os.path.join(base_dir, 'assets', 'sprites')
     os.makedirs(mirror_dir, exist_ok=True)

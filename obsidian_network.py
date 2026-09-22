@@ -43,6 +43,7 @@ def generate_obsidian_graph():
         return "??"
 
     RACE_COLORS = {
+        "Deity":       "#FFD700",
         "Soul Reaper": "#4A9EFF",
         "Quincy":      "#DC2626",
         "Human":       "#9CA3AF",
@@ -107,6 +108,9 @@ def generate_obsidian_graph():
 <head>
     <meta charset="UTF-8">
     <title>BLEACH - TYBW Intelligence</title>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <script src="https://unpkg.com/force-graph"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -154,17 +158,23 @@ def generate_obsidian_graph():
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background-size: cover;
-            background-position: center 15%;
-            z-index: -2;
-            transition: background-image 0.4s ease;
-            opacity: 0.8;
+            background-position: center 20%;
+            background-repeat: no-repeat;
+            z-index: 0;
+            transition: background-image 0.4s ease, opacity 0.4s ease;
+            opacity: 0.35;
+            filter: blur(14px) saturate(1.3) brightness(0.75);
+            transform: scale(1.12);
+            pointer-events: none;
         }}
         #sidebar-overlay {{
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to bottom, rgba(10,10,18,0.4) 0%, rgba(10,10,18,0.95) 45%);
-            backdrop-filter: blur(15px);
-            z-index: -1;
+            background: linear-gradient(to bottom, rgba(10,10,18,0.5) 0%, rgba(10,10,18,0.88) 45%, rgba(10,10,18,0.96) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 0;
+            pointer-events: none;
         }}
         
         #sidebar-content {{
@@ -482,8 +492,101 @@ def generate_obsidian_graph():
 
         #sidebar .legend-grid {{ display: flex; flex-direction: column; gap: 5px; font-size: 11px; color: rgba(255,255,255,0.65); }}
 
-        /* Mini legend (bottom-left) */
-        #mini-legend {{ position: absolute; bottom: 20px; left: 20px; z-index: 5; background: rgba(10,10,15,0.5); padding: 10px 14px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.04); backdrop-filter: blur(5px); font-size: 10px; color: rgba(255,255,255,0.6); display: flex; flex-direction: column; gap: 6px; pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease; }}
+        /* Tactical Cluster Navigation Bar */
+        #cluster-bar {{
+            position: fixed;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 25;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 8px;
+            background: rgba(10, 10, 16, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(14px);
+            user-select: none;
+        }}
+        .cluster-btn {{
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 10.5px;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 0.8px;
+            cursor: pointer;
+            transition: all 0.22s ease;
+            white-space: nowrap;
+        }}
+        .cluster-btn:hover {{
+            background: rgba(255, 255, 255, 0.14);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.22);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }}
+        .cluster-btn.active {{
+            background: rgba(212, 175, 55, 0.22);
+            border-color: #D4AF37;
+            color: #F5E6C8;
+            box-shadow: 0 0 14px rgba(212, 175, 55, 0.4);
+        }}
+
+        /* Tactical Minimap HUD (Bottom-Left) */
+        #minimap-container {{
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 15;
+            width: 172px;
+            background: rgba(10, 10, 16, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            overflow: hidden;
+            user-select: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }}
+        .minimap-header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 8px 4px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+        }}
+        .minimap-title {{
+            font-family: 'Cinzel', serif;
+            font-size: 8.5px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: rgba(255, 255, 255, 0.7);
+        }}
+        .minimap-stats {{
+            font-family: 'Inter', sans-serif;
+            font-size: 8px;
+            color: #D4AF37;
+        }}
+        #minimap-canvas {{
+            display: block;
+            cursor: crosshair;
+            background: #08080C;
+        }}
+        .minimap-hint {{
+            text-align: center;
+            font-size: 7.5px;
+            color: rgba(255, 255, 255, 0.35);
+            padding: 2px 0 3px;
+            letter-spacing: 0.5px;
+        }}
+
+        /* Mini legend (bottom-left, adjacent to radar) */
+        #mini-legend {{ position: absolute; bottom: 20px; left: 202px; z-index: 5; background: rgba(10,10,15,0.5); padding: 10px 14px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.04); backdrop-filter: blur(5px); font-size: 10px; color: rgba(255,255,255,0.6); display: flex; flex-direction: column; gap: 6px; pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease; }}
         #mini-legend.hidden {{ opacity: 0; transform: translateY(20px); pointer-events: none; }}
         #mini-legend .title {{ font-family: 'Cinzel', serif; letter-spacing: 2px; font-weight: 700; color: rgba(255,255,255,0.8); font-size: 9px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 3px; margin-bottom: 3px; }}
 
@@ -659,9 +762,85 @@ def generate_obsidian_graph():
             font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; transition: all 0.2s; font-weight: 600;
         }}
         .bounty-close:hover {{ background: #D4AF37; color: #000; }}
+
+        /* Large High-Quality Floating Hover Card */
+        #node-hover-card {{
+            position: fixed;
+            pointer-events: none;
+            z-index: 60;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 18px 10px 12px;
+            background: rgba(10, 10, 18, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), 0 0 24px rgba(220, 38, 38, 0.15);
+            opacity: 0;
+            transform: translate(-50%, -125%) scale(0.92);
+            transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        }}
+        #node-hover-card.visible {{
+            opacity: 1;
+            transform: translate(-50%, -125%) scale(1);
+        }}
+        #hover-avatar {{
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background-color: #0A0A0F;
+            background-repeat: no-repeat;
+            background-size: cover;
+            border: 2px solid #DC2626;
+            box-shadow: 0 0 18px rgba(220, 38, 38, 0.5);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Cinzel', serif;
+            font-size: 26px;
+            font-weight: 700;
+            overflow: hidden;
+        }}
+        .hover-text {{
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }}
+        #hover-name {{
+            font-family: 'Cinzel', serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }}
+        #hover-meta {{
+            font-size: 11px;
+            color: #9CA3AF;
+            white-space: nowrap;
+        }}
+        #hover-conns {{
+            font-size: 10px;
+            color: #DC2626;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }}
     </style>
 </head>
 <body>
+    <!-- Large High-Quality Floating Hover Card -->
+    <div id="node-hover-card">
+        <div id="hover-avatar"></div>
+        <div class="hover-text">
+            <div id="hover-name"></div>
+            <div id="hover-meta"></div>
+            <div id="hover-conns"></div>
+        </div>
+    </div>
     <!-- Fullscreen Easter Egg Overlays -->
     <div id="bankai-overlay">
         <div>
@@ -710,6 +889,17 @@ def generate_obsidian_graph():
 
     <div id="graph-container"></div>
 
+    <!-- Tactical Cluster Navigation Bar -->
+    <div id="cluster-bar">
+        <button class="cluster-btn active" data-cluster="all">All Galaxy</button>
+        <button class="cluster-btn" data-cluster="gotei">Gotei 13</button>
+        <button class="cluster-btn" data-cluster="wandenreich">Wandenreich</button>
+        <button class="cluster-btn" data-cluster="arrancar">Hueco Mundo</button>
+        <button class="cluster-btn" data-cluster="royal">Royal Realm</button>
+        <button class="cluster-btn" data-cluster="karakura">Karakura Town</button>
+        <button class="cluster-btn" data-cluster="original">Original Gotei</button>
+    </div>
+
     <!-- Floating Path Finding Banner -->
     <div id="path-banner">
         <span class="banner-text" id="path-banner-text">Select a target character to trace path from <strong>Ichigo</strong></span>
@@ -734,41 +924,58 @@ def generate_obsidian_graph():
                 </button>
             </div>
 
-            <div id="char-info">
-                <div id="s-avatar-wrap">
-                    <div id="s-avatar"></div>
-                    <div id="s-avatar-meta">
-                        <div class="char-name" id="s-name">Select an Entity</div>
-                        <div class="char-meta" id="s-meta">TYBW Archive</div>
-                    </div>
+            <!-- Character Profile Header -->
+            <div class="char-header">
+                <div class="avatar-ring">
+                    <div class="char-avatar" id="s-avatar"></div>
                 </div>
-                <div class="char-desc" id="s-desc">Click on any node in the network graph to inspect detailed intelligence records, affiliations, and relationships.</div>
-                
-                <!-- Action bar: Trace Path -->
-                <div class="action-bar" id="s-action-bar" style="display:none;">
-                    <button class="action-chip" id="trace-path-btn">
-                        <span>&#x1F9ED;</span> Trace Path
-                    </button>
+                <div class="char-title-block">
+                    <div class="char-name" id="s-name">Select Node</div>
+                    <div class="char-meta" id="s-meta">Race &bull; Faction</div>
                 </div>
             </div>
 
-            <div id="conn-section" style="display:none;">
+            <!-- Description -->
+            <div class="char-desc" id="s-desc">
+                Click any character node in the spiritual network to inspect classified intelligence, examine family bloodlines, and trace tactical connections.
+            </div>
+
+            <!-- Actions -->
+            <div class="action-bar" id="s-action-bar" style="display:none;">
+                <button class="action-btn" id="trace-path-btn">
+                    <span>&#x1F4CD;</span> Trace Path
+                </button>
+            </div>
+
+            <!-- Connections Section -->
+            <div class="connections-section" id="conn-section" style="display:none;">
                 <div class="section-title">
                     <span>CONNECTIONS</span>
-                    <span id="conn-count">0</span>
+                    <span class="badge" id="conn-count">0</span>
                 </div>
-                <!-- Filter Chips -->
+                <!-- Filter bar -->
                 <div class="conn-filter-bar" id="conn-filter-bar"></div>
-                <div class="conn-list" id="s-connections"></div>
+                <div class="connections-list" id="s-connections"></div>
             </div>
 
-            <div id="sidebar-factions" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.06); padding-top:14px; margin-bottom: 20px;">
+            <!-- Faction Overview -->
+            <div id="sidebar-factions" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.08); padding-top:15px;">
                 <div class="section-title">FACTIONS</div>
                 <div class="legend-grid">
                     {legend_items}
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Tactical Minimap HUD (Bottom-Left) -->
+    <div id="minimap-container">
+        <div class="minimap-header">
+            <span class="minimap-title">TACTICAL RADAR</span>
+            <span class="minimap-stats" id="minimap-scale">1.00x</span>
+        </div>
+        <canvas id="minimap-canvas" width="172" height="110"></canvas>
+        <div class="minimap-hint">Click / Drag to navigate</div>
     </div>
 
     <!-- Mini legend -->
@@ -787,7 +994,20 @@ def generate_obsidian_graph():
     </div>
 
     <script>
-        const gData = {graph_json};
+        const RAW_GRAPH = {graph_json};
+        let gData = {{
+            nodes: RAW_GRAPH.nodes.map(n => Object.assign({{}}, n)),
+            links: RAW_GRAPH.links.map(l => Object.assign({{}}, l))
+        }};
+
+        // Pin Ichigo in the center on initial load
+        const initIchigo = gData.nodes.find(n => n.id === 'ichigo');
+        if (initIchigo) {{
+            initIchigo.x = 0;
+            initIchigo.y = 0;
+            initIchigo.fx = 0;
+            initIchigo.fy = 0;
+        }}
 
         let hoverNode = null;
         let currentNode = null;
@@ -869,19 +1089,33 @@ def generate_obsidian_graph():
 
         // Relationship Categories mapping
         const REL_CATEGORIES = {{
-            'Bloodline': {{ name: 'Family',  color: '#F43F5E' }},
-            'Parent':    {{ name: 'Family',  color: '#F43F5E' }},
-            'Sibling':   {{ name: 'Family',  color: '#F43F5E' }},
-            'Adopted':   {{ name: 'Family',  color: '#F43F5E' }},
-            'Marriage':  {{ name: 'Family',  color: '#F43F5E' }},
-            'Clan':      {{ name: 'Family',  color: '#F43F5E' }},
-            'Enemy':     {{ name: 'Rival',   color: '#EF4444' }},
-            'Friend':    {{ name: 'Social',  color: '#38BDF8' }},
-            'Comrade':   {{ name: 'Social',  color: '#38BDF8' }},
-            'Mentor':    {{ name: 'Mentor',  color: '#34D399' }},
-            'Creator':   {{ name: 'Mentor',  color: '#34D399' }},
-            'Captain':   {{ name: 'Faction', color: '#F59E0B' }},
-            'Boss':      {{ name: 'Faction', color: '#F59E0B' }}
+            'Bloodline':   {{ name: 'Family',  color: '#F43F5E' }},
+            'Parent':      {{ name: 'Family',  color: '#F43F5E' }},
+            'Sibling':     {{ name: 'Family',  color: '#F43F5E' }},
+            'Spouse':      {{ name: 'Family',  color: '#F43F5E' }},
+            'Adopted':     {{ name: 'Family',  color: '#F43F5E' }},
+            'Marriage':    {{ name: 'Family',  color: '#F43F5E' }},
+            'Clan':        {{ name: 'Family',  color: '#F43F5E' }},
+            'Enemy':       {{ name: 'Rival',   color: '#EF4444' }},
+            'Enemies':     {{ name: 'Rival',   color: '#EF4444' }},
+            'Rivals':      {{ name: 'Rival',   color: '#EF4444' }},
+            'Rival':       {{ name: 'Rival',   color: '#EF4444' }},
+            'Absorption':  {{ name: 'Rival',   color: '#A855F7' }},
+            'Betrayal':    {{ name: 'Rival',   color: '#DC2626' }},
+            'Friend':      {{ name: 'Social',  color: '#38BDF8' }},
+            'Comrade':     {{ name: 'Social',  color: '#38BDF8' }},
+            'Allies':      {{ name: 'Social',  color: '#38BDF8' }},
+            'Bond':        {{ name: 'Social',  color: '#38BDF8' }},
+            'Soul Bond':   {{ name: 'Social',  color: '#818CF8' }},
+            'Mentor':      {{ name: 'Mentor',  color: '#34D399' }},
+            'Mentorship':  {{ name: 'Mentor',  color: '#34D399' }},
+            'Creator':     {{ name: 'Mentor',  color: '#34D399' }},
+            'Captain':     {{ name: 'Faction', color: '#F59E0B' }},
+            'Boss':        {{ name: 'Faction', color: '#F59E0B' }},
+            'Command':     {{ name: 'Faction', color: '#F59E0B' }},
+            'Fracci\u00f3n': {{ name: 'Faction', color: '#F59E0B' }},
+            'Subordinate': {{ name: 'Faction', color: '#F59E0B' }},
+            'Territory':   {{ name: 'Faction', color: '#9CA3AF' }}
         }};
 
         function getRelCategory(relType) {{
@@ -898,14 +1132,14 @@ def generate_obsidian_graph():
                 .replace(/'/g, '&#39;');
         }}
 
-        // Precompute adjacency map and connections
+        // Precompute adjacency map and connections from master intelligence database
         const neighbors = {{}};
         const nodeConnections = {{}};
-        gData.nodes.forEach(n => {{
+        RAW_GRAPH.nodes.forEach(n => {{
             neighbors[n.id] = new Set();
             nodeConnections[n.id] = [];
         }});
-        gData.links.forEach(l => {{
+        RAW_GRAPH.links.forEach(l => {{
             const sid = typeof l.source === 'object' ? l.source.id : l.source;
             const tid = typeof l.target === 'object' ? l.target.id : l.target;
             neighbors[sid].add(tid);
@@ -916,7 +1150,7 @@ def generate_obsidian_graph():
 
         // Node name lookup
         const nodeNameMap = {{}};
-        gData.nodes.forEach(n => {{ nodeNameMap[n.id] = n.name; }});
+        RAW_GRAPH.nodes.forEach(n => {{ nodeNameMap[n.id] = n.name; }});
 
         // Character Sprite Sheet Architecture (Single HTTP Request)
         const SPRITE_MAP = {sprite_map_json};
@@ -925,7 +1159,9 @@ def generate_obsidian_graph():
         const SPRITE_SRC = 'Asset/sprites/characters.webp?v={sprite_version}';
 
         const spriteSheet = new Image();
-        spriteSheet.crossOrigin = "anonymous";
+        if (location.protocol !== 'file:') {{
+            spriteSheet.crossOrigin = "anonymous";
+        }}
         // Prefer relative path for GitHub Pages caching, with base64 data-URI fallback
         spriteSheet.src = SPRITE_SRC;
         spriteSheet.onerror = () => {{
@@ -937,18 +1173,28 @@ def generate_obsidian_graph():
             if (typeof Graph !== 'undefined' && Graph.refresh) {{
                 Graph.refresh();
             }}
+            dismissLoader();
         }};
 
-        // Foolproof Loader Dismissal
+        // Instant & Smooth Reactive Loader Dismissal
+        let loaderDismissed = false;
         function dismissLoader() {{
+            if (loaderDismissed) return;
+            loaderDismissed = true;
             const loader = document.getElementById('loader');
             if (loader && loader.style.display !== 'none') {{
                 loader.classList.add('fade-out');
-                setTimeout(() => {{ loader.style.display = 'none'; }}, 500);
+                setTimeout(() => {{ loader.style.display = 'none'; }}, 300);
             }}
         }}
-        setTimeout(dismissLoader, 1600);
-        setTimeout(dismissLoader, 3500);
+        // Dismiss immediately once sprite cache or frame is available, with 350ms safety bound
+        requestAnimationFrame(() => {{
+            if (spriteSheet.complete && spriteSheet.naturalWidth > 0) {{
+                dismissLoader();
+            }} else {{
+                setTimeout(dismissLoader, 350);
+            }}
+        }});
         document.getElementById('loader').addEventListener('click', dismissLoader);
 
         // Sidebar elements
@@ -1034,7 +1280,7 @@ def generate_obsidian_graph():
 
             // Render cards
             sConns.innerHTML = filtered.map(c => {{
-                const targetNode = gData.nodes.find(n => n.id === c.id);
+                const targetNode = RAW_GRAPH.nodes.find(n => n.id === c.id);
                 const targetName = targetNode ? targetNode.name : (nodeNameMap[c.id] || c.id);
                 const cat = getRelCategory(c.type);
                 return '<div class="conn-card" style="border-left-color:' + cat.color + '" data-id="' + c.id + '" title="View ' + escapeHtml(targetName) + '">' +
@@ -1057,12 +1303,38 @@ def generate_obsidian_graph():
             sConns.querySelectorAll('.conn-card').forEach(el => {{
                 el.addEventListener('click', () => {{
                     const targetId = el.dataset.id;
-                    const target = gData.nodes.find(n => n.id === targetId);
+                    let target = gData.nodes.find(n => n.id === targetId);
+                    if (!target) {{
+                        jumpToCluster('all');
+                        target = gData.nodes.find(n => n.id === targetId);
+                    }}
                     if (target) {{
                         selectNode(target, true);
                     }}
                 }});
             }});
+        }}
+
+        // Offscreen avatar generator for high-res frosted backgrounds & previews
+        const charAvatarCache = {{}};
+        function getCharacterAvatarUrl(nodeId, size = 256) {{
+            if (charAvatarCache[nodeId]) return charAvatarCache[nodeId];
+            const s = SPRITE_MAP[nodeId];
+            if (!s || !spriteSheet.complete || spriteSheet.naturalWidth === 0) return null;
+            try {{
+                const offCanvas = document.createElement('canvas');
+                offCanvas.width = size;
+                offCanvas.height = size;
+                const offCtx = offCanvas.getContext('2d');
+                offCtx.imageSmoothingEnabled = true;
+                offCtx.imageSmoothingQuality = 'high';
+                offCtx.drawImage(spriteSheet, s.x, s.y, s.w, s.h, 0, 0, size, size);
+                const dataUrl = offCanvas.toDataURL('image/webp', 0.92);
+                charAvatarCache[nodeId] = dataUrl;
+                return dataUrl;
+            }} catch (e) {{
+                return null;
+            }}
         }}
 
         function openSidebar(node) {{
@@ -1080,8 +1352,15 @@ def generate_obsidian_graph():
                 sAvatar.style.borderColor = node.color;
                 sAvatar.style.boxShadow = '0 0 20px ' + node.color + '55';
 
-                sidebarBg.style.backgroundImage = 'radial-gradient(circle at 85% 15%, ' + node.color + '33, transparent 65%)';
-                sidebarBg.style.opacity = '1';
+                // High-resolution frosted glass background
+                const avatarDataUrl = getCharacterAvatarUrl(node.id, 384);
+                if (avatarDataUrl) {{
+                    sidebarBg.style.backgroundImage = 'url(' + avatarDataUrl + ')';
+                    sidebarBg.style.opacity = '0.38';
+                }} else {{
+                    sidebarBg.style.backgroundImage = 'radial-gradient(circle at 85% 15%, ' + node.color + '33, transparent 65%)';
+                    sidebarBg.style.opacity = '1';
+                }}
             }} else {{
                 sAvatar.style.backgroundImage = 'none';
                 sAvatar.style.backgroundColor = '#0F1318';
@@ -1289,28 +1568,44 @@ def generate_obsidian_graph():
             .nodeRelSize(4)
             .backgroundColor('#0A0A0F')
 
-            // Link styling
+            // Link styling: clearly visible connections by default; highlighted on focus/hover/path
             .linkWidth(link => {{
                 const sid = typeof link.source === 'object' ? link.source.id : link.source;
                 const tid = typeof link.target === 'object' ? link.target.id : link.target;
                 if (highlightedPathLinks.size > 0) {{
-                    return highlightedPathLinks.has(sid + '--' + tid) ? 3.5 : 0.5;
+                    return highlightedPathLinks.has(sid + '--' + tid) ? 3.2 : 0.35;
                 }}
                 if (hoverNode) {{
-                    return (sid === hoverNode.id || tid === hoverNode.id) ? 2 : 0.5;
+                    return (sid === hoverNode.id || tid === hoverNode.id) ? 2.2 : 0.35;
                 }}
-                return 1;
+                if (currentNode) {{
+                    return (sid === currentNode.id || tid === currentNode.id) ? 2.0 : 0.35;
+                }}
+                const zoom = (typeof Graph !== 'undefined' && Graph.zoom) ? Graph.zoom() : 1.0;
+                if (zoom < 0.6) return 0.95;
+                if (zoom < 1.2) return 1.15;
+                return 1.35;
             }})
             .linkColor(link => {{
                 const sid = typeof link.source === 'object' ? link.source.id : link.source;
                 const tid = typeof link.target === 'object' ? link.target.id : link.target;
                 if (highlightedPathLinks.size > 0) {{
-                    return highlightedPathLinks.has(sid + '--' + tid) ? '#F59E0B' : 'rgba(255,255,255,0.02)';
+                    return highlightedPathLinks.has(sid + '--' + tid) ? '#F59E0B' : 'rgba(255,255,255,0.025)';
                 }}
                 if (hoverNode) {{
-                    return (sid === hoverNode.id || tid === hoverNode.id) ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.02)';
+                    return (sid === hoverNode.id || tid === hoverNode.id) ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.025)';
                 }}
-                return 'rgba(255,255,255,0.14)';
+                if (currentNode) {{
+                    return (sid === currentNode.id || tid === currentNode.id) ? 'rgba(245,158,11,0.90)' : 'rgba(255,255,255,0.025)';
+                }}
+                // Crisp, visible connection lines by default when nothing is selected
+                const zoom = (typeof Graph !== 'undefined' && Graph.zoom) ? Graph.zoom() : 1.0;
+                if (zoom < 0.6) {{
+                    return 'rgba(255,255,255,0.18)';
+                }} else if (zoom < 1.2) {{
+                    return 'rgba(255,255,255,0.22)';
+                }}
+                return 'rgba(255,255,255,0.26)';
             }})
             .linkDirectionalParticles(link => {{
                 const sid = typeof link.source === 'object' ? link.source.id : link.source;
@@ -1326,8 +1621,11 @@ def generate_obsidian_graph():
 
             // Custom Canvas node rendering
             .nodeCanvasObject((node, ctx, globalScale) => {{
-                // 1. Frustum / Viewport Culling (avoids off-screen rendering)
-                const transform = ctx.getTransform();
+                // 1. Frustum / Viewport Culling with cached matrix transform
+                if (node === gData.nodes[0] || !window.__cachedTransform) {{
+                    window.__cachedTransform = ctx.getTransform();
+                }}
+                const transform = window.__cachedTransform;
                 const screenX = node.x * transform.a + transform.e;
                 const screenY = node.y * transform.d + transform.f;
                 const margin = 80;
@@ -1366,13 +1664,30 @@ def generate_obsidian_graph():
 
                 const size = node.val * sizeMult * bankaiBoost;
 
-                // 2. Level of Detail (LOD) / Zoom Threshold
-                const SHOW_AVATARS_ZOOM = 0.72;
-                const canRenderAvatar = (globalScale >= SHOW_AVATARS_ZOOM) || isHovered || isSelected || isPathNode;
+                // 2. Semantic Zoom & Level of Detail (LOD) for visual density
+                const isTopPillar = node.is_top || ['ichigo', 'yhwach', 'yamamoto', 'aizen', 'soul_king', 'shunsui', 'kenpachi', 'urahara', 'byakuya', 'rukia', 'gin', 'ulquiorra', 'grimmjow', 'hitsugaya'].includes(node.id);
+
+                let canRenderAvatar = false;
+                if (globalScale >= 1.05) {{
+                    canRenderAvatar = true;
+                }} else if (globalScale >= 0.62) {{
+                    canRenderAvatar = isTopPillar || isHovered || isSelected || isPathNode || isConnectedToHover || isConnectedToSelected;
+                }} else {{
+                    canRenderAvatar = isHovered || isSelected || (isTopPillar && globalScale >= 0.42);
+                }}
 
                 const sSprite = SPRITE_MAP[node.id];
                 const hasAvatar = sSprite && spriteSheet.complete && spriteSheet.naturalWidth > 0;
-                const imgSize = hasAvatar ? Math.max(size * 2.2, 13) : size;
+                const imgSize = hasAvatar ? (isHovered ? Math.max(size * 2.8, 22) : (isSelected ? Math.max(size * 2.4, 16) : Math.max(size * 2.0, 13))) : size;
+
+                // Sync floating hover card with screen position during animation/pan
+                if (isHovered) {{
+                    const hoverCard = document.getElementById('node-hover-card');
+                    if (hoverCard && hoverCard.classList.contains('visible')) {{
+                        hoverCard.style.left = screenX + 'px';
+                        hoverCard.style.top = (screenY - 12) + 'px';
+                    }}
+                }}
 
                 // Glow
                 if (!isDimmed) {{
@@ -1399,19 +1714,18 @@ def generate_obsidian_graph():
                     ctx.arc(node.x, node.y, imgSize, 0, 2 * Math.PI);
                     ctx.clip();
 
-                    // 4. Grayscale-to-color on hover/selection
-                    if (isHovered || isSelected || isPathNode || isConnectedToHover || isConnectedToSelected) {{
-                        ctx.filter = 'none';
-                    }} else {{
-                        ctx.filter = 'saturate(0.55) brightness(0.95)';
-                    }}
-
                     // 5. Draw single sprite slice from sheet
                     ctx.drawImage(
                         spriteSheet,
                         sSprite.x, sSprite.y, sSprite.w, sSprite.h,
                         node.x - imgSize, node.y - imgSize, imgSize * 2, imgSize * 2
                     );
+
+                    // 4. Subtle ambient tint for unhighlighted nodes (hardware accelerated, zero GPU filter stall)
+                    if (!isHovered && !isSelected && !isPathNode && !isConnectedToHover && !isConnectedToSelected) {{
+                        ctx.fillStyle = 'rgba(10, 10, 15, 0.18)';
+                        ctx.fill();
+                    }}
                     ctx.restore();
 
                     // 6. Colored ring border matching race/faction
@@ -1453,13 +1767,27 @@ def generate_obsidian_graph():
                     }}
                 }}
 
-                // Label
-                const label = node.name.split(' ')[0].toUpperCase();
+                // Label with semantic density gating
+                if (!node.__label) {{
+                    node.__label = node.name.split(' ')[0].toUpperCase();
+                }}
+                const label = node.__label;
                 const fontSize = Math.max(10 / globalScale, 2);
                 const currentRadius = (canRenderAvatar && hasAvatar && !isDimmed) ? imgSize : ((canRenderAvatar && !isDimmed && globalScale >= 1.15) ? Math.max(size * 1.5, 11) : size);
                 const labelY = node.y + currentRadius + 3;
 
-                if (!isDimmed && (isHovered || isPathNode || isHollowGlitch || globalScale > 1.3 || node.is_top || (isBankaiActive && isSoulReaper))) {{
+                let shouldShowLabel = false;
+                if (isHovered || isPathNode || isHollowGlitch) {{
+                    shouldShowLabel = true;
+                }} else if (globalScale >= 1.25) {{
+                    shouldShowLabel = true;
+                }} else if (globalScale >= 0.72 && (isTopPillar || isConnectedToHover || isConnectedToSelected)) {{
+                    shouldShowLabel = true;
+                }} else if (globalScale < 0.72 && isTopPillar && globalScale >= 0.42) {{
+                    shouldShowLabel = true;
+                }}
+
+                if (!isDimmed && shouldShowLabel) {{
                     ctx.font = fontSize + 'px Cinzel';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'top';
@@ -1477,6 +1805,45 @@ def generate_obsidian_graph():
             .onNodeHover(node => {{
                 hoverNode = node || null;
                 document.body.style.cursor = node ? 'pointer' : null;
+
+                const hoverCard = document.getElementById('node-hover-card');
+                if (node) {{
+                    const hoverAvatar = document.getElementById('hover-avatar');
+                    const hoverName = document.getElementById('hover-name');
+                    const hoverMeta = document.getElementById('hover-meta');
+                    const hoverConns = document.getElementById('hover-conns');
+                    const sSprite = SPRITE_MAP[node.id];
+
+                    if (sSprite && spriteSheet.complete && spriteSheet.naturalWidth > 0) {{
+                        hoverAvatar.innerText = '';
+                        hoverAvatar.style.backgroundImage = 'url(' + spriteSheet.src + ')';
+                        const avatarSize = 76;
+                        const scale = avatarSize / sSprite.w;
+                        hoverAvatar.style.backgroundSize = (SPRITE_META.sheetWidth * scale) + 'px ' + (SPRITE_META.sheetHeight * scale) + 'px';
+                        hoverAvatar.style.backgroundPosition = '-' + (sSprite.x * scale) + 'px -' + (sSprite.y * scale) + 'px';
+                        hoverAvatar.style.borderColor = node.color;
+                        hoverAvatar.style.boxShadow = '0 0 20px ' + node.color + '77';
+                    }} else {{
+                        hoverAvatar.style.backgroundImage = 'none';
+                        hoverAvatar.style.backgroundColor = '#0F1318';
+                        hoverAvatar.style.borderColor = node.color;
+                        hoverAvatar.style.boxShadow = '0 0 16px ' + node.color + '44';
+                        hoverAvatar.innerText = node.initials || '??';
+                        hoverAvatar.style.color = node.color;
+                    }}
+
+                    hoverName.innerText = node.name;
+                    hoverMeta.innerText = node.race + ' \u2022 ' + node.faction;
+                    const cCount = (nodeConnections[node.id] || []).length;
+                    hoverConns.innerText = cCount + (cCount === 1 ? ' CONNECTION' : ' CONNECTIONS');
+
+                    const coords = Graph.graph2ScreenCoords(node.x, node.y);
+                    hoverCard.style.left = coords.x + 'px';
+                    hoverCard.style.top = (coords.y - 12) + 'px';
+                    hoverCard.classList.add('visible');
+                }} else {{
+                    hoverCard.classList.remove('visible');
+                }}
             }})
             .onLinkHover(() => {{}})
             .onNodeDragEnd(node => {{
@@ -1507,9 +1874,261 @@ def generate_obsidian_graph():
                 }}
             }});
 
-        // Physics
-        Graph.d3Force('charge').strength(-400);
-        Graph.d3Force('link').distance(65);
+        // Physics optimization for 190+ nodes
+        Graph.warmupTicks(35);
+        Graph.cooldownTicks(95);
+        Graph.d3Force('charge')
+            .strength(-220)
+            .distanceMax(650);
+        Graph.d3Force('link')
+            .distance(link => {{
+                if (link.type === 'Fracci\u00f3n' || link.type === 'Soul Bond' || link.type === 'Parent') return 45;
+                return 68;
+            }});
+        Graph.d3VelocityDecay(0.35);
+        Graph.d3AlphaDecay(0.032);
+
+        // ── TACTICAL RADAR MINIMAP & CLUSTER NAVIGATION ──
+        const minimapCanvas = document.getElementById('minimap-canvas');
+        const mCtx = minimapCanvas ? minimapCanvas.getContext('2d') : null;
+        let isMinimapDragging = false;
+
+        function renderMinimap() {{
+            if (!mCtx || !Graph) return;
+            const mw = minimapCanvas.width;
+            const mh = minimapCanvas.height;
+
+            mCtx.clearRect(0, 0, mw, mh);
+
+            // Compute bounding box of all nodes
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            const nodes = gData.nodes;
+            for (let i = 0; i < nodes.length; i++) {{
+                const nx = nodes[i].x || 0;
+                const ny = nodes[i].y || 0;
+                if (nx < minX) minX = nx;
+                if (nx > maxX) maxX = nx;
+                if (ny < minY) minY = ny;
+                if (ny > maxY) maxY = ny;
+            }}
+
+            const pad = 120;
+            minX -= pad; maxX += pad;
+            minY -= pad; maxY += pad;
+            const rangeX = Math.max(maxX - minX, 1);
+            const rangeY = Math.max(maxY - minY, 1);
+
+            // Draw character constellation points
+            for (let i = 0; i < nodes.length; i++) {{
+                const n = nodes[i];
+                const mx = (( (n.x || 0) - minX) / rangeX) * (mw - 14) + 7;
+                const my = (( (n.y || 0) - minY) / rangeY) * (mh - 14) + 7;
+
+                mCtx.beginPath();
+                mCtx.arc(mx, my, n.is_top ? 2.2 : 1.2, 0, 2 * Math.PI);
+                mCtx.fillStyle = n.color || '#4A9EFF';
+                mCtx.fill();
+            }}
+
+            // Draw Viewport Frustum Box
+            if (Graph.screen2GraphCoords) {{
+                const tl = Graph.screen2GraphCoords(0, 0);
+                const br = Graph.screen2GraphCoords(window.innerWidth, window.innerHeight);
+
+                const vLeft = Math.max(0, Math.min(mw, ((tl.x - minX) / rangeX) * (mw - 14) + 7));
+                const vTop = Math.max(0, Math.min(mh, ((tl.y - minY) / rangeY) * (mh - 14) + 7));
+                const vRight = Math.max(0, Math.min(mw, ((br.x - minX) / rangeX) * (mw - 14) + 7));
+                const vBottom = Math.max(0, Math.min(mh, ((br.y - minY) / rangeY) * (mh - 14) + 7));
+
+                mCtx.fillStyle = 'rgba(212, 175, 55, 0.08)';
+                mCtx.fillRect(vLeft, vTop, vRight - vLeft, vBottom - vTop);
+
+                mCtx.strokeStyle = 'rgba(212, 175, 55, 0.7)';
+                mCtx.lineWidth = 1.2;
+                mCtx.strokeRect(vLeft, vTop, vRight - vLeft, vBottom - vTop);
+            }}
+
+            const zoomScale = (Graph.zoom ? Graph.zoom() : 1.0);
+            const scaleEl = document.getElementById('minimap-scale');
+            if (scaleEl) scaleEl.innerText = zoomScale.toFixed(2) + 'x';
+        }}
+
+        function handleMinimapNav(e) {{
+            if (!Graph || !minimapCanvas) return;
+            const rect = minimapCanvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            const nodes = gData.nodes;
+            for (let i = 0; i < nodes.length; i++) {{
+                const nx = nodes[i].x || 0;
+                const ny = nodes[i].y || 0;
+                if (nx < minX) minX = nx;
+                if (nx > maxX) maxX = nx;
+                if (ny < minY) minY = ny;
+                if (ny > maxY) maxY = ny;
+            }}
+            const pad = 120;
+            minX -= pad; maxX += pad;
+            minY -= pad; maxY += pad;
+            const rangeX = Math.max(maxX - minX, 1);
+            const rangeY = Math.max(maxY - minY, 1);
+
+            const targetGX = minX + ((clickX - 7) / (minimapCanvas.width - 14)) * rangeX;
+            const targetGY = minY + ((clickY - 7) / (minimapCanvas.height - 14)) * rangeY;
+
+            Graph.centerAt(targetGX, targetGY, 250);
+        }}
+
+        if (minimapCanvas) {{
+            minimapCanvas.addEventListener('pointerdown', e => {{
+                isMinimapDragging = true;
+                handleMinimapNav(e);
+            }});
+            window.addEventListener('pointermove', e => {{
+                if (isMinimapDragging) handleMinimapNav(e);
+            }});
+            window.addEventListener('pointerup', () => {{
+                isMinimapDragging = false;
+            }});
+        }}
+
+        // Render minimap periodically and upon engine updates
+        setInterval(renderMinimap, 120);
+
+        // Faction Leaders Map
+        const FACTION_LEADERS = {{
+            'all':         'ichigo',
+            'gotei':       'yamamoto',
+            'wandenreich': 'yhwach',
+            'arrancar':    'aizen',
+            'royal':       'soul_king',
+            'karakura':    'ichigo',
+            'original':    'yamamoto'
+        }};
+
+        function getFactionFilter(clusterType) {{
+            if (clusterType === 'all') {{
+                return () => true;
+            }}
+            if (clusterType === 'gotei') {{
+                return n => {{
+                    const isSR = n.race === 'Soul Reaper' || n.race === 'Visored' || n.race === 'Noble';
+                    const fac = n.faction || '';
+                    const isGoteiFac = fac.includes('Gotei') || fac.includes('Division') || fac.includes('Kuchiki') || fac.includes('Shiba') || fac.includes('Tsunayashiro') || fac.includes('Seireitei') || fac.includes('Visored');
+                    return (isSR || isGoteiFac) &&
+                        fac !== 'Original Gotei 13' &&
+                        fac !== 'Soul King Palace' &&
+                        n.race !== 'Royal Guard' &&
+                        fac !== 'Urahara Shop' &&
+                        fac !== 'Human World' &&
+                        !['aizen', 'gin', 'tosen'].includes(n.id);
+                }};
+            }}
+            if (clusterType === 'wandenreich') {{
+                return n => n.faction === 'Wandenreich' || n.faction === 'Quincy' || n.race === 'Quincy';
+            }}
+            if (clusterType === 'arrancar') {{
+                return n => {{
+                    const fac = n.faction || '';
+                    return n.race === 'Arrancar' || n.race === 'Hollow' ||
+                        fac.includes('Espada') || fac.includes('Fracci') || fac.includes('Hueco') || fac.includes('Las Noches') ||
+                        ['aizen', 'gin', 'tosen'].includes(n.id);
+                }};
+            }}
+            if (clusterType === 'royal') {{
+                return n => n.race === 'Royal Guard' || n.race === 'Deity' || n.faction === 'Soul King Palace' ||
+                    ['soul_king', 'ichibei', 'nimaiya', 'tenjiro', 'senjumaru', 'kirio'].includes(n.id);
+            }}
+            if (clusterType === 'karakura') {{
+                return n => {{
+                    const fac = n.faction || '';
+                    return ['Human', 'Fullbringer', 'Mod Soul', 'Hybrid'].includes(n.race) ||
+                        fac.includes('Karakura') || fac.toUpperCase().includes('XCUTION') ||
+                        fac === 'Urahara Shop' || fac === 'Human World' || fac === 'Substitute Soul Reaper' ||
+                        ['ichigo', 'urahara', 'yoruichi', 'tessai'].includes(n.id);
+                }};
+            }}
+            if (clusterType === 'original') {{
+                return n => n.faction === 'Original Gotei 13' || ['yamamoto', 'unohana'].includes(n.id);
+            }}
+            return () => true;
+        }}
+
+        let currentCluster = 'all';
+
+        // Cluster & Faction Filtering with Center-Pinned Leaders
+        function jumpToCluster(clusterType) {{
+            currentCluster = clusterType;
+            document.querySelectorAll('.cluster-btn').forEach(btn => {{
+                btn.classList.toggle('active', btn.dataset.cluster === clusterType);
+            }});
+
+            const filterFn = getFactionFilter(clusterType);
+            const leaderId = FACTION_LEADERS[clusterType] || 'ichigo';
+
+            // Filter nodes from master RAW_GRAPH
+            const filteredNodes = RAW_GRAPH.nodes.filter(filterFn).map(n => {{
+                const existing = gData.nodes.find(en => en.id === n.id);
+                const clone = Object.assign({{}}, n);
+                if (existing) {{
+                    clone.x = existing.x;
+                    clone.y = existing.y;
+                    clone.vx = existing.vx;
+                    clone.vy = existing.vy;
+                }}
+                delete clone.fx;
+                delete clone.fy;
+                return clone;
+            }});
+
+            const validNodeIds = new Set(filteredNodes.map(n => n.id));
+
+            // Filter links to internal relationships only
+            const filteredLinks = RAW_GRAPH.links.filter(l => {{
+                const sid = typeof l.source === 'object' ? l.source.id : l.source;
+                const tid = typeof l.target === 'object' ? l.target.id : l.target;
+                return validNodeIds.has(sid) && validNodeIds.has(tid);
+            }}).map(l => ({{
+                source: typeof l.source === 'object' ? l.source.id : l.source,
+                target: typeof l.target === 'object' ? l.target.id : l.target,
+                type: l.type,
+                label: l.label
+            }}));
+
+            // Pin designated faction leader at center (0, 0)
+            const leader = filteredNodes.find(n => n.id === leaderId);
+            if (leader) {{
+                leader.x = 0;
+                leader.y = 0;
+                leader.fx = 0;
+                leader.fy = 0;
+            }}
+
+            gData.nodes = filteredNodes;
+            gData.links = filteredLinks;
+            Graph.graphData({{ nodes: filteredNodes, links: filteredLinks }});
+
+            Graph.d3ReheatSimulation();
+            Graph.centerAt(0, 0, 500);
+            setTimeout(() => {{
+                Graph.zoomToFit(600, 70);
+            }}, 300);
+
+            if (currentNode && !validNodeIds.has(currentNode.id)) {{
+                sidebar.classList.remove('open');
+                miniLegend.classList.remove('hidden');
+                currentNode = null;
+            }}
+            if (pathFindingFrom && !validNodeIds.has(pathFindingFrom.id)) {{
+                clearPathFinding();
+            }}
+        }}
+
+        document.querySelectorAll('.cluster-btn').forEach(btn => {{
+            btn.addEventListener('click', () => jumpToCluster(btn.dataset.cluster));
+        }});
 
         // ── EASTER EGG TRIGGERS ──
 
@@ -1680,10 +2299,16 @@ def generate_obsidian_graph():
                 Graph.zoom(0.85, 900);
                 return;
             }}
+            // If the target node is outside currently active cluster, switch to 'all'
+            let activeNode = gData.nodes.find(n => n.id === node.id);
+            if (!activeNode) {{
+                jumpToCluster('all');
+                activeNode = gData.nodes.find(n => n.id === node.id) || node;
+            }}
             if (pathFindingFrom) {{
-                executePathFinding(node);
+                executePathFinding(activeNode);
             }} else {{
-                selectNode(node, true);
+                selectNode(activeNode, true);
             }}
         }}
 
@@ -1691,7 +2316,7 @@ def generate_obsidian_graph():
             if (!query) {{ searchResults.innerHTML = ''; activeIdx = -1; return; }}
             const q = query.toLowerCase().trim();
 
-            let matches = gData.nodes.filter(n => n.name.toLowerCase().includes(q)).slice(0, 12);
+            let matches = RAW_GRAPH.nodes.filter(n => n.name.toLowerCase().includes(q)).slice(0, 12);
 
             // Easter egg: Search "Zangetsu"
             if ('zangetsu'.includes(q) || q.includes('zangetsu')) {{
@@ -1752,7 +2377,7 @@ def generate_obsidian_graph():
             }} else if (e.key === 'Enter') {{
                 e.preventDefault();
                 const q = searchInput.value.toLowerCase().trim();
-                let matches = gData.nodes.filter(n => n.name.toLowerCase().includes(q)).slice(0, 12);
+                let matches = RAW_GRAPH.nodes.filter(n => n.name.toLowerCase().includes(q)).slice(0, 12);
                 if ('zangetsu'.includes(q) || q.includes('zangetsu')) {{
                     matches.unshift({{ id: '__zangetsu', name: 'Zangetsu', faction: 'Zanpakuto Spirit', color: '#D4AF37' }});
                 }}
@@ -1774,12 +2399,16 @@ def generate_obsidian_graph():
             setTimeout(() => {{
                 if (window.location.hash) {{
                     const targetId = decodeURIComponent(window.location.hash.substring(1));
-                    const targetNode = gData.nodes.find(n => n.id === targetId);
+                    let targetNode = gData.nodes.find(n => n.id === targetId);
+                    if (!targetNode) {{
+                        jumpToCluster('all');
+                        targetNode = gData.nodes.find(n => n.id === targetId);
+                    }}
                     if (targetNode) {{
                         selectNode(targetNode, false);
                     }}
                 }}
-            }}, 1500);
+            }}, 250);
         }});
     </script>
 </body>

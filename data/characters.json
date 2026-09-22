@@ -5,7 +5,7 @@
     "family": "Kurosaki",
     "faction": "Substitute Soul Reaper",
     "description": "Substitute Soul Reaper with Shinigami, Quincy, Hollow, and Fullbring powers.",
-    "affiliations": "Kurosaki Family \u00b7 Shiba Clan \u00b7 Gotei 13",
+    "affiliations": "Kurosaki Family · Shiba Clan · Gotei 13",
     "generation": 2
   },
   "isshin": {
@@ -14,7 +14,7 @@
     "family": "Kurosaki",
     "faction": "Gotei 13",
     "description": "Former Captain of Squad 10 and former head of the Shiba Clan.",
-    "affiliations": "Kurosaki Family \u00b7 Shiba Clan",
+    "affiliations": "Kurosaki Family · Shiba Clan",
     "generation": 1
   },
   "masaki": {
@@ -23,7 +23,7 @@
     "family": "Kurosaki",
     "faction": "Quincy",
     "description": "Last of the Kurosaki pure-blood Quincy line. Mother of Ichigo, Karin, and Yuzu.",
-    "affiliations": "Kurosaki Family \u00b7 Quincy",
+    "affiliations": "Kurosaki Family · Quincy",
     "generation": 1
   },
   "karin": {
@@ -50,7 +50,7 @@
     "family": "Shiba",
     "faction": "Gotei 13",
     "description": "Former Lieutenant of Squad 13. Mentor to Rukia Kuchiki.",
-    "affiliations": "Shiba Clan \u00b7 Gotei 13",
+    "affiliations": "Shiba Clan · Gotei 13",
     "generation": 2
   },
   "kukaku": {
@@ -67,7 +67,7 @@
     "race": "Soul Reaper",
     "family": "Shiba",
     "faction": "Shiba Clan",
-    "description": "Youngest Shiba sibling. Skilled in earth-based kid\u014d.",
+    "description": "Youngest Shiba sibling. Skilled in earth-based kidō.",
     "affiliations": "Shiba Clan",
     "generation": 2
   },
@@ -77,7 +77,7 @@
     "family": "Kuchiki",
     "faction": "Gotei 13",
     "description": "28th Head of the Kuchiki Clan and Captain of Squad 6.",
-    "affiliations": "Kuchiki Clan \u00b7 Gotei 13",
+    "affiliations": "Kuchiki Clan · Gotei 13",
     "generation": 1
   },
   "rukia": {
@@ -86,7 +86,7 @@
     "family": "Kuchiki",
     "faction": "Gotei 13",
     "description": "Adopted into the Kuchiki Clan. Captain of Squad 13.",
-    "affiliations": "Kuchiki Clan \u00b7 Gotei 13",
+    "affiliations": "Kuchiki Clan · Gotei 13",
     "generation": 2
   },
   "hisana": {
@@ -99,7 +99,7 @@
     "generation": 1
   },
   "ichibei": {
-    "name": "Ichib\u0113 Hy\u014dsube",
+    "name": "Ichibē Hyōsube",
     "race": "Royal Guard",
     "family": "Zero Division",
     "faction": "Royal Guard",
@@ -112,7 +112,7 @@
     "race": "Royal Guard",
     "family": "Zero Division",
     "faction": "Royal Guard",
-    "description": "The Great Weave Guard. Creates the \u014cken garments.",
+    "description": "The Great Weave Guard. Creates the Ōken garments.",
     "affiliations": "Royal Guard",
     "generation": 0
   },
@@ -126,7 +126,7 @@
     "generation": 0
   },
   "tenjiro": {
-    "name": "Tenjir\u014d Kirinji",
+    "name": "Tenjirō Kirinji",
     "race": "Royal Guard",
     "family": "Zero Division",
     "faction": "Royal Guard",
@@ -135,11 +135,11 @@
     "generation": 0
   },
   "oetsu": {
-    "name": "\u014cetsu Nimaiya",
+    "name": "Ōetsu Nimaiya",
     "race": "Royal Guard",
     "family": "Zero Division",
     "faction": "Royal Guard",
-    "description": "The God of the Sword. Creator of the Zanpakut\u014d.",
+    "description": "The God of the Sword. Creator of the Zanpakutō.",
     "affiliations": "Royal Guard",
     "generation": 0
   },
@@ -162,16 +162,16 @@
     "generation": 1
   },
   "uryu": {
-    "name": "Ury\u016b Ishida",
+    "name": "Uryū Ishida",
     "race": "Quincy",
     "family": "Ishida",
     "faction": "Wandenreich",
-    "description": "Last Quincy. Designated successor 'A \u2014 Antithesis'.",
-    "affiliations": "Ishida Family \u00b7 Wandenreich",
+    "description": "Last Quincy. Designated successor 'A — Antithesis'.",
+    "affiliations": "Ishida Family · Wandenreich",
     "generation": 2
   },
   "ryuken": {
-    "name": "Ry\u016bken Ishida",
+    "name": "Ryūken Ishida",
     "race": "Quincy",
     "family": "Ishida",
     "faction": "Human World",
@@ -180,11 +180,11 @@
     "generation": 1
   },
   "soken": {
-    "name": "S\u014dken Ishida",
+    "name": "Sōken Ishida",
     "race": "Quincy",
     "family": "Ishida",
     "faction": "Quincy",
-    "description": "Ury\u016b's grandfather and mentor.",
+    "description": "Uryū's grandfather and mentor.",
     "affiliations": "Ishida Family",
     "generation": 0
   },
@@ -536,9 +536,10 @@
     "name": "Sosuke Aizen",
     "race": "Soul Reaper",
     "family": "Unknown",
-    "faction": "Arrancar",
-    "description": "Former Captain of Squad 5, orchestrator of the Hollowfication incident.",
-    "generation": 1
+    "faction": "Las Noches Supreme Command",
+    "description": "Supreme Lord of Las Noches and former Captain of Squad 5. Masterminded the Arrancar army using the Hōgyoku to transcend Shinigami and Hollow boundaries.",
+    "generation": 1,
+    "affiliations": "Las Noches Ruler · Former Squad 5 Captain"
   },
   "momo": {
     "name": "Momo Hinamori",
@@ -594,6 +595,1059 @@
     "family": "Fon",
     "faction": "Gotei 13",
     "description": "Captain of Squad 2 and Commander-in-Chief of the Onmitsukido. Master of Hakuda and Shunpo.",
+    "generation": 2
+  },
+  "yammy": {
+    "name": "Yammy Llargo",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Espada",
+    "description": "Cero (0) and Decima (10) Espada representing Rage. Releases into a colossal behemoth with Ira.",
+    "affiliations": "Espada · Las Noches · Aizen's Army",
+    "generation": 1
+  },
+  "starrk": {
+    "name": "Coyote Starrk",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Espada",
+    "description": "Primera (1st) Espada representing Solitude. Soul naturally split with Lilynette due to immense loneliness; wields Los Lobos.",
+    "affiliations": "Espada · Las Noches · Aizen's Army",
+    "generation": 1
+  },
+  "lilynette": {
+    "name": "Lilynette Gingerbuck",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Espada",
+    "description": "The other half of Coyote Starrk's split soul and his sole Fracción. Fuses into Starrk's twin pistols upon Resurrección.",
+    "affiliations": "Espada · Las Noches · Aizen's Army",
+    "generation": 1
+  },
+  "baraggan": {
+    "name": "Baraggan Louisenbairn",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Espada",
+    "description": "Segunda (2nd) Espada representing Aging (Senescence). Former King and God of Hueco Mundo before being subjugated by Aizen; wields Arrogante.",
+    "affiliations": "Espada · Las Noches · Hueco Mundo Royalty",
+    "generation": 1
+  },
+  "harribel": {
+    "name": "Tier Harribel",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Espada",
+    "description": "Tercera (3rd) Espada representing Sacrifice. Calm water-manipulator wielding Tiburón; later ascends as Queen and Ruler of Hueco Mundo.",
+    "affiliations": "Espada · Las Noches · Tres Bestias",
+    "generation": 1
+  },
+  "nelliel": {
+    "name": "Nelliel Tu Odelschwanck",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Espada",
+    "description": "Former Tercera (3rd) Espada. Betrayed and wounded by Nnoitra and Szayelaporro; transformed into child Nel before regaining Gamuza form.",
+    "affiliations": "Espada (Former) · Nel's Group · Ichigo's Allies",
+    "generation": 1
+  },
+  "ulquiorra": {
+    "name": "Ulquiorra Cifer",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Espada",
+    "description": "Cuarta (4th) Espada representing Emptiness. Cold, calculating warrior wielding Murciélago with exclusive Segunda Etapa form; Ichigo's fateful rival.",
+    "affiliations": "Espada · Las Noches · Aizen's Vanguard",
+    "generation": 1
+  },
+  "nnoitra": {
+    "name": "Nnoitra Gilga",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Espada",
+    "description": "Quinta (5th) Espada representing Despair. Possesses the hardest Hierro in Las Noches; wields six-scythe Santa Teresa and seeks death in battle.",
+    "affiliations": "Espada · Las Noches · Aizen's Army",
+    "generation": 1
+  },
+  "grimmjow": {
+    "name": "Grimmjow Jaegerjaquez",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Espada",
+    "description": "Sexta (6th) Espada representing Destruction. Fierce predator wielding Pantera; Ichigo's eternal rival who later aids the Soul Society in TYBW.",
+    "affiliations": "Espada · Las Noches · Grimmjow's Fracción",
+    "generation": 1
+  },
+  "luppi": {
+    "name": "Luppi Antenor",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Espada",
+    "description": "Temporary Sexta (6th) Espada while Grimmjow was demoted. Wields eight-tentacled Trepadora before being annihilated upon Grimmjow's restoration.",
+    "affiliations": "Espada · Las Noches · Mayuri's Corpse Unit",
+    "generation": 1
+  },
+  "zommari": {
+    "name": "Zommari Rureaux",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Espada",
+    "description": "Séptima (7th) Espada representing Intoxication. Fastest Sonído master wielding Brujería with Amor body-puppeting sight; defeated by Byakuya.",
+    "affiliations": "Espada · Las Noches · Aizen's Army",
+    "generation": 1
+  },
+  "szayelaporro": {
+    "name": "Szayelaporro Granz",
+    "race": "Arrancar",
+    "family": "Granz",
+    "faction": "Espada",
+    "description": "Octava (8th) Espada representing Madness. Chief scientist of Las Noches wielding Fornicarás with cloning, organ-crushing dolls, and rebirth abilities.",
+    "affiliations": "Espada · Las Noches Research · Hell",
+    "generation": 1
+  },
+  "aaroniero": {
+    "name": "Aaroniero Arruruerie",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Espada",
+    "description": "Novena (9th) Espada representing Greed. Sole surviving Gillian-class Espada of the first generation; absorbed 33,650 Hollows including Kaien Shiba via Glotonería.",
+    "affiliations": "Espada · Las Noches · Shiba Clan Echo",
+    "generation": 1
+  },
+  "dordoni": {
+    "name": "Dordoni Alessandro Del Socaccio",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Privaron Espada",
+    "description": "Privaron Espada #103 (Tres Cifras). Former Espada wielding cyclone-generating Giralda; pushed Ichigo to use Bankai and Hollowfication with chivalry.",
+    "affiliations": "Privaron Espada · Las Noches · Mayuri's Corpse Unit",
+    "generation": 1
+  },
+  "cirucci": {
+    "name": "Cirucci Sanderwicci",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Privaron Espada",
+    "description": "Privaron Espada #105. Former Espada wielding bladed whip Golondrina; fought Uryū Ishida before later being reanimated by Mayuri Kurotsuchi.",
+    "affiliations": "Privaron Espada · Las Noches · Mayuri's Corpse Unit",
+    "generation": 1
+  },
+  "gantenbainne": {
+    "name": "Gantenbainne Mosqueda",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Privaron Espada",
+    "description": "Privaron Espada #107. Afro-styled pugilist wielding gauntlet Dragra; engaged Chad in an honorable fist fight and was healed by Unohana.",
+    "affiliations": "Privaron Espada · Las Noches",
+    "generation": 1
+  },
+  "shawlong": {
+    "name": "Shawlong Qufang",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Arrancar #11 and intellectual leader of Grimmjow's Fracción. Wields clawed Resurrección Tijereta; analyzed Tōshirō Hitsugaya in Karakura Town.",
+    "affiliations": "Grimmjow's Fracción · Las Noches",
+    "generation": 1
+  },
+  "edrad": {
+    "name": "Edrad Liones",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Arrancar #13 in Grimmjow's Fracción. Flame-wielding brawler possessing volcanic Volcánica; pushed Ikkaku Madarame to reveal Bankai.",
+    "affiliations": "Grimmjow's Fracción · Las Noches",
+    "generation": 1
+  },
+  "ylfordt": {
+    "name": "Ilforte Granz",
+    "race": "Arrancar",
+    "family": "Granz",
+    "faction": "Fracción",
+    "description": "Arrancar #15 in Grimmjow's Fracción and elder brother of Szayelaporro Granz. Wields horned bull Resurrección Del Toro against Renji Abarai.",
+    "affiliations": "Grimmjow's Fracción · Granz Family · Las Noches",
+    "generation": 1
+  },
+  "diroy": {
+    "name": "D-Roy Linker",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Arrancar #16 in Grimmjow's Fracción. Incomplete Arrancar defeated in Karakura Town by Rukia Kuchiki with Sode no Shirayuki.",
+    "affiliations": "Grimmjow's Fracción · Las Noches",
+    "generation": 1
+  },
+  "nakim": {
+    "name": "Nakeem Grindina",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Arrancar #14 in Grimmjow's Fracción. Silent, hulking warrior who fought Rangiku Matsumoto in Karakura Town.",
+    "affiliations": "Grimmjow's Fracción · Las Noches",
+    "generation": 1
+  },
+  "apacci": {
+    "name": "Emilou Apacci",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Arrancar #54 and member of Harribel's Tres Bestias. Fierce, hot-headed deer Arrancar wielding Cierva; summons Ayon.",
+    "affiliations": "Tres Bestias · Harribel's Fracción · Las Noches",
+    "generation": 1
+  },
+  "milarose": {
+    "name": "Franceska Mila Rose",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Arrancar #55 and member of Harribel's Tres Bestias. Amazonian warrior wielding lion-themed Leona; fuses her left arm to summon Ayon.",
+    "affiliations": "Tres Bestias · Harribel's Fracción · Las Noches",
+    "generation": 1
+  },
+  "sunsun": {
+    "name": "Cyan Sung-Sun",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Arrancar #56 and member of Harribel's Tres Bestias. Composed serpent Arrancar wielding Anaconda and Muda illusion barriers; summons Ayon.",
+    "affiliations": "Tres Bestias · Harribel's Fracción · Las Noches",
+    "generation": 1
+  },
+  "ayon": {
+    "name": "Ayon",
+    "race": "Hollow",
+    "family": "Unknown",
+    "faction": "Hollow",
+    "description": "Terrifying chimera beast created through Quimera Parca when Apacci, Mila Rose, and Sung-Sun sacrifice their left arms in battle.",
+    "affiliations": "Tres Bestias Summon · Hueco Mundo Creature",
+    "generation": 1
+  },
+  "charlotte": {
+    "name": "Charlotte Chuhlhourne",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Arrancar #20 and Baraggan's Fracción. Flamboyant aesthetician wielding Reina De Rosas; engaged Yumichika in Fake Karakura Town.",
+    "affiliations": "Baraggan's Fracción · Las Noches · Mayuri's Corpse Unit",
+    "generation": 1
+  },
+  "abirama": {
+    "name": "Abirama Redder",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Arrancar #22 and Baraggan's Fracción. Ferocious aerial berserker wielding hawk-themed Águila; fought Izuru Kira.",
+    "affiliations": "Baraggan's Fracción · Las Noches",
+    "generation": 1
+  },
+  "findorr": {
+    "name": "Findorr Calius",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Arrancar #24 and Baraggan's Fracción. Analytical warrior wielding Pinza Aguda who breaks his mask to elevate his power to Captain level; fought Hisagi.",
+    "affiliations": "Baraggan's Fracción · Las Noches",
+    "generation": 1
+  },
+  "poww": {
+    "name": "Choe Neng Poww",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Arrancar #25 and Baraggan's Fracción. Mammoth brute who crushed the Karakura Town pillars and defeated Ikkaku before being slain by Komamura.",
+    "affiliations": "Baraggan's Fracción · Las Noches",
+    "generation": 1
+  },
+  "ggio": {
+    "name": "Ggio Vega",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Arrancar #26 and Baraggan's Fracción. Agile martial artist wielding sabertooth Tigre Estoque; engaged Soi-Fon in deadly close combat.",
+    "affiliations": "Baraggan's Fracción · Las Noches",
+    "generation": 1
+  },
+  "nirgge": {
+    "name": "Nirgge Parduoc",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Arrancar #27 and Baraggan's Fracción. Heavy elephant Arrancar wielding Mamut; fought Marechiyo Ōmaeda.",
+    "affiliations": "Baraggan's Fracción · Las Noches",
+    "generation": 1
+  },
+  "tesla": {
+    "name": "Tesla Lindocruz",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Arrancar #50 and Nnoitra's deeply devoted Fracción. Wields spiked warthog Verruga and shielded his master until the bitter end.",
+    "affiliations": "Nnoitra's Fracción · Las Noches",
+    "generation": 1
+  },
+  "pesche": {
+    "name": "Pesche Guatiche",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Former Fracción of Nelliel. Loyal guardian masked as comic relief, master of slick Infinite Slick fluids and Ultima Cero alongside Dondochakka.",
+    "affiliations": "Nel's Group · Hueco Mundo Wandering Trio",
+    "generation": 1
+  },
+  "dondochakka": {
+    "name": "Dondochakka Birstanne",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Former Fracción of Nelliel. Gentle giant who houses insectoid Hollow allies inside his stomach and wields devastating Sincrónico Cero attacks.",
+    "affiliations": "Nel's Group · Hueco Mundo Wandering Trio",
+    "generation": 1
+  },
+  "bawabawa": {
+    "name": "Bawabawa",
+    "race": "Hollow",
+    "family": "Unknown",
+    "faction": "Hollow",
+    "description": "Giant sand-burrowing eel Hollow companion who acts as loyal pet and desert transport for Nel, Pesche, and Dondochakka.",
+    "affiliations": "Nel's Group · Hueco Mundo Desert Beast",
+    "generation": 1
+  },
+  "lumina": {
+    "name": "Lumina",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Szayelaporro's tiny, devoted Fracción created through genetic modification. Eaten by Szayelaporro to instantly regenerate mortal wounds.",
+    "affiliations": "Szayelaporro's Fracción · Laboratory Creation",
+    "generation": 1
+  },
+  "medazeppi": {
+    "name": "Medazeppi",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Fracción",
+    "description": "Colossal, long-necked Fracción of Szayelaporro Granz, slain by Renji Abarai's Zabimaru in the Las Noches laboratory corridors.",
+    "affiliations": "Szayelaporro's Fracción · Laboratory Guard",
+    "generation": 1
+  },
+  "wonderweiss": {
+    "name": "Wonderweiss Margela",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Arrancar",
+    "description": "Arrancar #77 and sole Modified Arrancar forged directly by the Hōgyoku. Sacrificed higher speech to seal Genryūsai Yamamoto's Ryūjin Jakka flames.",
+    "affiliations": "Aizen's Secret Weapon · Las Noches Special Unit",
+    "generation": 1
+  },
+  "rudbornn": {
+    "name": "Rudbornn Chelute",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Arrancar",
+    "description": "Arrancar #61 and Captain of the Exequias execution squad. Wields skull-blossom Árbol, generating endless skull soldier armies from his branches.",
+    "affiliations": "Exequias Commander · Las Noches Military Police",
+    "generation": 1
+  },
+  "loly": {
+    "name": "Loly Aivirrne",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Arrancar",
+    "description": "Arrancar #33 and attendant of Aizen. Jealous rival of Orihime Inoue wielding venomous centipede Escolopendra.",
+    "affiliations": "Las Noches Attendant · Aizen's Retinue",
+    "generation": 1
+  },
+  "menoly": {
+    "name": "Menoly Mallia",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Arrancar",
+    "description": "Arrancar #34 and companion of Loly Aivirrne. More cautious attendant of Aizen who recognized the terrifying aura of Ichigo and Ulquiorra.",
+    "affiliations": "Las Noches Attendant · Aizen's Retinue",
+    "generation": 1
+  },
+  "aisslinger": {
+    "name": "Aisslinger Wernarr",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Arrancar",
+    "description": "Avian-masked Arrancar gatekeeper of Hueco Mundo. Wields projectile feathers Uña Tiroreador; fought Chad and Ishida in the desert threshold.",
+    "affiliations": "Hueco Mundo Gatekeeper · Números",
+    "generation": 1
+  },
+  "demoura": {
+    "name": "Demoura Zodd",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Arrancar",
+    "description": "Giant brawny Arrancar gatekeeper stationed at the underground gateway of Hueco Mundo with Aisslinger; defeated by Yasutora Sado.",
+    "affiliations": "Hueco Mundo Gatekeeper · Números",
+    "generation": 1
+  },
+  "aldegor": {
+    "name": "Aldegor",
+    "race": "Arrancar",
+    "family": "Unknown",
+    "faction": "Arrancar",
+    "description": "Armored boar Arrancar warrior wielding Jabarí; sent on scouting and reconnaissance missions through the Hueco Mundo borderlands.",
+    "affiliations": "Números · Las Noches Vanguard",
+    "generation": 1
+  },
+  "kukkapuro": {
+    "name": "Kukkapūro",
+    "race": "Hollow",
+    "family": "Unknown",
+    "faction": "Arrancar",
+    "description": "Arrancar #35 and tiny dog-like Hollow. Uniquely spared and cherished by Yammy Llargo as his gentle, bark-happy desert pet companion.",
+    "affiliations": "Yammy's Companion · Las Noches Mascot",
+    "generation": 1
+  },
+  "gin": {
+    "name": "Gin Ichimaru",
+    "race": "Soul Reaper",
+    "family": "Unknown",
+    "faction": "Gotei 13 Defector",
+    "description": "Former Captain of Squad 3 who defected with Aizen to Las Noches. Maintained an enigmatic viper smile while secretly plotting to kill Aizen for Rangiku.",
+    "affiliations": "Las Noches Command · Former Gotei 13 Captain",
+    "generation": 1
+  },
+  "tosen": {
+    "name": "Kaname Tōsen",
+    "race": "Soul Reaper",
+    "family": "Unknown",
+    "faction": "Gotei 13 Defector",
+    "description": "Former Captain of Squad 9 and supreme commander of the Arrancar army. Sought path of least bloodshed; attained Hollowfication and Grillar Grillo Resurrección.",
+    "affiliations": "Las Noches General · Former Gotei 13 Captain",
+    "generation": 1
+  },
+  "renji": {
+    "name": "Renji Abarai",
+    "race": "Soul Reaper",
+    "family": "Abarai",
+    "faction": "Gotei 13",
+    "description": "Lieutenant of Squad 6. Fierce warrior wielding Zabimaru and husband of Rukia Kuchiki.",
+    "affiliations": "Squad 6 · Gotei 13 · Karakura Rescue Team",
+    "generation": 2
+  },
+  "hitsugaya": {
+    "name": "Tōshirō Hitsugaya",
+    "race": "Soul Reaper",
+    "family": "Hitsugaya",
+    "faction": "Gotei 13",
+    "description": "Prodigious Captain of Squad 10 wielding Hyōrinmaru, the strongest ice-element Zanpakutō.",
+    "affiliations": "Squad 10 · Gotei 13",
+    "generation": 2
+  },
+  "shunsui": {
+    "name": "Shunsui Kyōraku",
+    "race": "Soul Reaper",
+    "family": "Kyōraku",
+    "faction": "Gotei 13",
+    "description": "Captain of Squad 8 and later Captain-Commander of the Gotei 13. Wields dual blades Katen Kyōkotsu.",
+    "affiliations": "Squad 8 · Gotei 13 Commander",
+    "generation": 1
+  },
+  "grand_fisher": {
+    "name": "Grand Fisher",
+    "race": "Hollow",
+    "family": "Unknown",
+    "faction": "Hollow",
+    "description": "Infamous Hollow who evaded Soul Reapers for 50 years and killed Masaki Kurosaki using a human girl lure. Later transformed into an imperfect Arrancar by Aizen and bifurcated by Isshin Kurosaki.",
+    "affiliations": "Hollow · Imperfect Arrancar · Masaki's Slayer",
+    "generation": 1
+  },
+  "yamamoto": {
+    "name": "Genryūsai Shigekuni Yamamoto",
+    "race": "Soul Reaper",
+    "family": "Yamamoto",
+    "faction": "Gotei 13",
+    "description": "Legendary founder and supreme Captain-Commander of the Gotei 13 and Captain of Squad 1 for over a thousand years. Wields Ryūjin Jakka and the apocalyptic Zanka no Tachi flames.",
+    "affiliations": "Squad 1 Captain · Gotei 13 Supreme Commander · Shinō Academy Founder",
+    "generation": 0
+  },
+  "mayuri": {
+    "name": "Mayuri Kurotsuchi",
+    "race": "Soul Reaper",
+    "family": "Kurotsuchi",
+    "faction": "Gotei 13",
+    "description": "Macabre scientist and Captain of Squad 12, serving as 2nd President of the S.R.D.I. Wields poison-producing Ashisogi Jizō; views combat as a series of laboratory experiments.",
+    "affiliations": "Squad 12 Captain · S.R.D.I. President · Gotei 13",
+    "generation": 1
+  },
+  "ukitake": {
+    "name": "Jūshirō Ukitake",
+    "race": "Soul Reaper",
+    "family": "Ukitake",
+    "faction": "Gotei 13",
+    "description": "Beloved, honorable Captain of Squad 13 and host to Mimihagi, the right hand of the Soul King. Wields twin blades Sōgyo no Kotowari capable of absorbing and reflecting attacks.",
+    "affiliations": "Squad 13 Captain · Mimihagi Vessel · Gotei 13",
+    "generation": 1
+  },
+  "rangiku": {
+    "name": "Rangiku Matsumoto",
+    "race": "Soul Reaper",
+    "family": "Matsumoto",
+    "faction": "Gotei 13",
+    "description": "Free-spirited Lieutenant of Squad 10 under Tōshirō Hitsugaya. Wields ash-dissolving Haineko; childhood soulmate of Gin Ichimaru whose soul fragment was stolen by Aizen's Hōgyoku.",
+    "affiliations": "Squad 10 Lieutenant · Gotei 13",
+    "generation": 2
+  },
+  "kira": {
+    "name": "Izuru Kira",
+    "race": "Soul Reaper",
+    "family": "Kira",
+    "faction": "Gotei 13",
+    "description": "Somber Lieutenant of Squad 3. Wields hook-shaped Wabisuke, doubling the weight of anything it strikes; burdened by the dark, heavy realities of war and Gin Ichimaru's betrayal.",
+    "affiliations": "Squad 3 Lieutenant · Gotei 13",
+    "generation": 2
+  },
+  "nanao": {
+    "name": "Nanao Ise",
+    "race": "Soul Reaper",
+    "family": "Ise",
+    "faction": "Gotei 13",
+    "description": "Composed and methodical Lieutenant of Squad 8 (later Squad 1) under Shunsui Kyōraku. Sole priestess heir to the Ise Clan capable of wielding the god-cleaving mirror sword Shinken Hakkyōken.",
+    "affiliations": "Squad 8 / Squad 1 Lieutenant · Ise Clan Priestess · Gotei 13",
+    "generation": 2
+  },
+  "ikkaku": {
+    "name": "Ikkaku Madarame",
+    "race": "Soul Reaper",
+    "family": "Madarame",
+    "faction": "Gotei 13",
+    "description": "Fierce warrior and 3rd Seat (later Lieutenant) of Squad 11. Reveres Kenpachi Zaraki; secretly unlocked Bankai Ryūmon Hōzukimaru and serves as martial instructor to Renji Abarai.",
+    "affiliations": "Squad 11 · Gotei 13",
+    "generation": 2
+  },
+  "yumichika": {
+    "name": "Yumichika Ayasegawa",
+    "race": "Soul Reaper",
+    "family": "Ayasegawa",
+    "faction": "Gotei 13",
+    "description": "Aesthetic-driven 5th Seat (later 3rd Seat) of Squad 11 and lifelong brother-in-arms of Ikkaku Madarame. Disguises his energy-absorbing true Shikai Ruri'iro Kujaku to respect squad pride.",
+    "affiliations": "Squad 11 · Gotei 13",
+    "generation": 2
+  },
+  "yachiru": {
+    "name": "Yachiru Kusajishi",
+    "race": "Soul Reaper",
+    "family": "Unknown",
+    "faction": "Gotei 13",
+    "description": "Playful, candy-loving Lieutenant of Squad 11 and President of the Shinigami Women's Association. Revealed as the living embodiment of Kenpachi Zaraki's Zanpakutō spirit, Nozarashi.",
+    "affiliations": "Squad 11 Lieutenant · Nozarashi Spirit · Gotei 13",
+    "generation": 2
+  },
+  "nemu": {
+    "name": "Nemu Kurotsuchi",
+    "race": "Soul Reaper",
+    "family": "Kurotsuchi",
+    "faction": "Gotei 13",
+    "description": "Artificial Soul (Nemuri VII) and dutiful Lieutenant of Squad 12 created by Mayuri Kurotsuchi. Possesses high-density spiritual power, superhuman durability, and adaptive regenerative flesh.",
+    "affiliations": "Squad 12 Lieutenant · Artificial Soul · S.R.D.I.",
+    "generation": 2
+  },
+  "hanataro": {
+    "name": "Hanatarō Yamada",
+    "race": "Soul Reaper",
+    "family": "Yamada",
+    "faction": "Gotei 13",
+    "description": "Timid yet courageous 7th Seat and leader of the 14th Advanced Relief Team in Squad 4. Guided Ichigo and Ganju through the Seireitei underground sewers; wields healing scalpel Hisagomaru.",
+    "affiliations": "Squad 4 · Gotei 13 · Karakura Rescue Ally",
+    "generation": 2
+  },
+  "sasakibe": {
+    "name": "Chōjirō Sasakibe",
+    "race": "Soul Reaper",
+    "family": "Sasakibe",
+    "faction": "Gotei 13",
+    "description": "Loyal Lieutenant of Squad 1 who served as Yamamoto's right hand for over 2,000 years. Mastered the ancient lightning Bankai Kōkō Gonryō Rikyū before falling to the Wandenreich.",
+    "affiliations": "Squad 1 Lieutenant · Gotei 13",
+    "generation": 1
+  },
+  "omaeda": {
+    "name": "Marechiyo Ōmaeda",
+    "race": "Noble",
+    "family": "Ōmaeda",
+    "faction": "Gotei 13",
+    "description": "Loud and affluent Lieutenant of Squad 2 and Corps Commander of the Patrol Unit under Soi-Fon. Wields heavy spiked morning-star Zanpakutō Gegetsuburi.",
+    "affiliations": "Squad 2 Lieutenant · Onmitsukidō Patrol Commander · Noble",
+    "generation": 2
+  },
+  "isane": {
+    "name": "Isane Kotetsu",
+    "race": "Soul Reaper",
+    "family": "Kotetsu",
+    "faction": "Gotei 13",
+    "description": "Devoted Lieutenant (later Captain) of Squad 4 under Retsu Unohana. Master of high-level restorative Kidō and wielder of frozen mist Zanpakutō Itegumo; elder sister of Kiyone.",
+    "affiliations": "Squad 4 Lieutenant / Captain · Gotei 13",
+    "generation": 2
+  },
+  "kiyone": {
+    "name": "Kiyone Kotetsu",
+    "race": "Soul Reaper",
+    "family": "Kotetsu",
+    "faction": "Gotei 13",
+    "description": "Enthusiastic 3rd Seat of Squad 13 under Captain Ukitake and younger sister of Isane Kotetsu. Vied loudly with Sentarō to attend to their captain; later appointed Squad 4 lieutenant.",
+    "affiliations": "Squad 13 3rd Seat · Kotetsu Family · Gotei 13",
+    "generation": 2
+  },
+  "sentaro": {
+    "name": "Sentarō Kotsubaki",
+    "race": "Soul Reaper",
+    "family": "Kotsubaki",
+    "faction": "Gotei 13",
+    "description": "Passionate, loud 3rd Seat of Squad 13 under Jūshirō Ukitake. Continually competed with Kiyone Kotetsu to demonstrate loyalty to his captain.",
+    "affiliations": "Squad 13 3rd Seat · Gotei 13",
+    "generation": 2
+  },
+  "jidanbo": {
+    "name": "Jidanbō Ikkanzaka",
+    "race": "Soul Reaper",
+    "family": "Ikkanzaka",
+    "faction": "Gotei 13",
+    "description": "Colossal, honorable gatekeeper of the Seireitei's West Gate (Hakuryūmon). Befriended Ichigo and the Ryoka after being honorably bested in battle.",
+    "affiliations": "Seireitei Gatekeeper · West Gate Hakuryūmon",
+    "generation": 2
+  },
+  "soul_king": {
+    "name": "Soul King",
+    "race": "Deity",
+    "family": "Primordial",
+    "faction": "Soul King Palace",
+    "description": "The linchpin and primordial deity of the Bleach cosmos whose existence stabilizes the Soul Society, Hueco Mundo, and the Living World. Father of Yhwach.",
+    "affiliations": "Soul King Palace, Royal Realm",
+    "generation": 0
+  },
+  "lille_barro": {
+    "name": "Lille Barro",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Schutzstaffel, Sternritter X",
+    "description": "Leader of the Schutzstaffel and Sternritter 'X' - 'The X-Axis'. The first Quincy bestowed a Vollständig and Schrift by Yhwach.",
+    "generation": 1
+  },
+  "gerard_valkyrie": {
+    "name": "Gerard Valkyrie",
+    "race": "Quincy",
+    "family": "Soul King",
+    "faction": "Wandenreich",
+    "affiliations": "Schutzstaffel, Sternritter M",
+    "description": "Schutzstaffel warrior and Sternritter 'M' - 'The Miracle'. The physical manifestation of the Soul King's heart.",
+    "generation": 0
+  },
+  "pernida_parnkgjas": {
+    "name": "Pernida Parnkgjas",
+    "race": "Quincy",
+    "family": "Soul King",
+    "faction": "Wandenreich",
+    "affiliations": "Schutzstaffel, Sternritter C",
+    "description": "Schutzstaffel member and Sternritter 'C' - 'The Compulsory'. The sentient, governing left hand of the Soul King.",
+    "generation": 0
+  },
+  "askin_nakk_le_vaar": {
+    "name": "Askin Nakk Le Vaar",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Schutzstaffel, Sternritter D",
+    "description": "Eccentric Schutzstaffel elite promoted to the royal guard. Sternritter 'D' - 'The Deathdealing', manipulating lethal doses.",
+    "generation": 1
+  },
+  "bambietta_basterbine": {
+    "name": "Bambietta Basterbine",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter E, The Bambies",
+    "description": "Sternritter 'E' - 'The Explode'. Fierce de facto leader of the female Sternritter squad.",
+    "generation": 1
+  },
+  "as_nodt": {
+    "name": "Äs Nödt",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter F",
+    "description": "Sternritter 'F' - 'The Fear'. Inflicts primal, psychological terror through reishi thorns; stole Byakuya Kuchiki's Bankai.",
+    "generation": 1
+  },
+  "liltotto_lamperd": {
+    "name": "Liltotto Lamperd",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter G, The Bambies",
+    "description": "Sternritter 'G' - 'The Glutton'. Pragmatic, sharp-tongued member of the Bambies capable of consuming anything.",
+    "generation": 1
+  },
+  "bazz_b": {
+    "name": "Bazz-B",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter H",
+    "description": "Sternritter 'H' - 'The Heat'. Hot-headed flame manipulator and childhood companion turned rival of Jugram Haschwalth.",
+    "generation": 1
+  },
+  "cang_du": {
+    "name": "Cang Du",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter I",
+    "description": "Sternritter 'I' - 'The Iron'. Martial artist clad in impenetrable iron skin; stole Tōshirō Hitsugaya's Bankai.",
+    "generation": 1
+  },
+  "quilge_opie": {
+    "name": "Quilge Opie",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter J, Jagdarmee",
+    "description": "Sternritter 'J' - 'The Jail'. Executive commander of the First Jagdarmee tasked with hunting Arrancar in Hueco Mundo.",
+    "generation": 1
+  },
+  "bg9": {
+    "name": "BG9",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter K",
+    "description": "Sternritter 'K'. Armored robotic combatant wielding high-tech artillery; stole Suì-Fēng's Bankai.",
+    "generation": 1
+  },
+  "pepe_waccabrada": {
+    "name": "PePe Waccabrada",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter L",
+    "description": "Sternritter 'L' - 'The Love'. Enforces mind-control through hearts of love onto objects and souls.",
+    "generation": 1
+  },
+  "robert_accutrone": {
+    "name": "Robert Accutrone",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter N",
+    "description": "Sternritter 'N'. Senior veteran gunslinger who blinded Shunsui Kyōraku in one eye during the first invasion.",
+    "generation": 1
+  },
+  "driscoll_berci": {
+    "name": "Driscoll Berci",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter O",
+    "description": "Sternritter 'O' - 'The Overkill'. Ruthless brute who murdered Chōjirō Sasakibe and stole his Bankai.",
+    "generation": 1
+  },
+  "meninas_mcallon": {
+    "name": "Meninas McAllon",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter P, The Bambies",
+    "description": "Sternritter 'P' - 'The Power'. Soft-spoken member of the Bambies possessing immense superhuman physical strength.",
+    "generation": 1
+  },
+  "mask_de_masculine": {
+    "name": "Mask de Masculine",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter S",
+    "description": "Sternritter 'S' - 'The Superstar'. Lucha libre wrestler whose power skyrockets from the cheers of his partner James.",
+    "generation": 1
+  },
+  "james": {
+    "name": "James",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter S Fan",
+    "description": "Mask de Masculine's loyal fan and counterpart whose cheering fuels Mask's superstar regeneration and strength.",
+    "generation": 1
+  },
+  "candice_catnipp": {
+    "name": "Candice Catnipp",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter T, The Bambies",
+    "description": "Sternritter 'T' - 'The Thunderbolt'. Hot-tempered member of the Bambies wielding devastating lightning strikes.",
+    "generation": 1
+  },
+  "giselle_gewelle": {
+    "name": "Giselle Gewelle",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter Z, The Bambies",
+    "description": "Sternritter 'Z' - 'The Zombie'. Enslaves living and deceased beings through her blood, converting them into zombies.",
+    "generation": 1
+  },
+  "nanana_najahkoop": {
+    "name": "NaNaNa Najahkoop",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter U",
+    "description": "Sternritter 'U' - 'The Underbelly'. Analyzes an opponent's reiatsu distribution over time to exploit critical weak points.",
+    "generation": 1
+  },
+  "gremmy_thoumeaux": {
+    "name": "Gremmy Thoumeaux",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter V",
+    "description": "Sternritter 'V' - 'The Visionary'. A disembodied brain whose imagination turns anything into physical reality.",
+    "generation": 1
+  },
+  "nianzol_weizol": {
+    "name": "Nianzol Weizol",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter W",
+    "description": "Sternritter 'W' - 'The Wind'. Two-tongued Quincy whose instinct deflects all attacks away from him and Yhwach.",
+    "generation": 1
+  },
+  "royd_lloyd": {
+    "name": "Royd Lloyd",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter Y",
+    "description": "Sternritter 'Y' - 'The Yourself' (elder twin). Copies an opponent's exact memories and personality; posed as Yhwach to stall Yamamoto.",
+    "generation": 1
+  },
+  "loyd_lloyd": {
+    "name": "Loyd Lloyd",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter Y",
+    "description": "Sternritter 'Y' - 'The Yourself' (younger twin). Copies an opponent's exact powers and physical appearance; fought Kenpachi Zaraki.",
+    "generation": 1
+  },
+  "berenice_gabrielli": {
+    "name": "Berenice Gabrielli",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter Q",
+    "description": "Sternritter 'Q' - 'The Question'. Attempted to instill self-doubt in Kenpachi Zaraki before being swiftly slain.",
+    "generation": 1
+  },
+  "jerome_guizbatt": {
+    "name": "Jerome Guizbatt",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter R",
+    "description": "Sternritter 'R' - 'The Roar'. Ape-like beast Quincy who emitted sonic roars before being cut down by Kenpachi Zaraki.",
+    "generation": 1
+  },
+  "guenael_lee": {
+    "name": "Guenael Lee",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter V Creation",
+    "description": "Sternritter 'V' - 'The Vanishing Point'. Manifestation created by Gremmy capable of disappearing from sight and memory.",
+    "generation": 1
+  },
+  "shaz_domino": {
+    "name": "Shaz Domino",
+    "race": "Quincy",
+    "family": "Quincy",
+    "faction": "Wandenreich",
+    "affiliations": "Sternritter, Wandenreich Research",
+    "description": "Sternritter capable of regeneration from surrounding reishi; confronted Ichigo Kurosaki upon his arrival in Seireitei.",
+    "generation": 1
+  },
+  "asguiaro_ebern": {
+    "name": "Asguiaro Ebern",
+    "race": "Arrancar",
+    "family": "Arrancar",
+    "faction": "Wandenreich",
+    "affiliations": "Wandenreich Vanguard",
+    "description": "Arrancar conscripted into the Wandenreich who attempted to seal Ichigo Kurosaki's Bankai using a Quincy medallion.",
+    "generation": 2
+  },
+  "luders_friegen": {
+    "name": "Luders Friegen",
+    "race": "Arrancar",
+    "family": "Arrancar",
+    "faction": "Wandenreich",
+    "affiliations": "Wandenreich Vanguard",
+    "description": "Arrancar vanguard who declared war to Yamamoto in the First Division barracks on behalf of the Wandenreich.",
+    "generation": 2
+  },
+  "chika_shihoin": {
+    "name": "Chika Shihōin",
+    "race": "Soul Reaper",
+    "family": "Shihōin",
+    "faction": "Original Gotei 13",
+    "affiliations": "Squad 2 (Original)",
+    "description": "Original Captain of Squad 2 and ancestor of Yoruichi Shihōin. Master of Hakuda and covert assassination.",
+    "generation": -1
+  },
+  "kinroku_izuhara": {
+    "name": "Kinroku Izuhara",
+    "race": "Soul Reaper",
+    "family": "Unknown",
+    "faction": "Original Gotei 13",
+    "affiliations": "Squad 3 (Original)",
+    "description": "Original Captain of Squad 3. Historical warrior who founded the 13 Court Guard Squads under Yamamoto.",
+    "generation": -1
+  },
+  "chigiri_shijima": {
+    "name": "Chigiri Shijima",
+    "race": "Soul Reaper",
+    "family": "Unknown",
+    "faction": "Original Gotei 13",
+    "affiliations": "Squad 4 (Original)",
+    "description": "Original Captain of Squad 4. Lethal, gaunt warrior of the ruthless first-generation Gotei 13.",
+    "generation": -1
+  },
+  "danjiro_obana": {
+    "name": "Danjirō Obana",
+    "race": "Soul Reaper",
+    "family": "Unknown",
+    "faction": "Original Gotei 13",
+    "affiliations": "Squad 5 (Original)",
+    "description": "Original Captain of Squad 5. Towering, heavily-armored founding captain of the Gotei 13.",
+    "generation": -1
+  },
+  "furofushi_saito": {
+    "name": "Furōfushi Saitō",
+    "race": "Soul Reaper",
+    "family": "Unknown",
+    "faction": "Original Gotei 13",
+    "affiliations": "Squad 6 (Original)",
+    "description": "Original Captain of Squad 6. Wild, twin-tailed outlaw swordswoman known for vicious combat.",
+    "generation": -1
+  },
+  "nobutsuna_shigyo": {
+    "name": "Nobutsuna Shigyō",
+    "race": "Soul Reaper",
+    "family": "Unknown",
+    "faction": "Original Gotei 13",
+    "affiliations": "Squad 7 (Original)",
+    "description": "Original Captain of Squad 7. Fierce founding warrior of the original Gotei 13.",
+    "generation": -1
+  },
+  "batsuunsai_katori": {
+    "name": "Batsu'unsai Katori",
+    "race": "Soul Reaper",
+    "family": "Unknown",
+    "faction": "Original Gotei 13",
+    "affiliations": "Squad 8 (Original)",
+    "description": "Original Captain of Squad 8. Bespectacled naginata wielder among the founding generation.",
+    "generation": -1
+  },
+  "entetsu_kumoi": {
+    "name": "Entetsu Kumoi",
+    "race": "Soul Reaper",
+    "family": "Unknown",
+    "faction": "Original Gotei 13",
+    "affiliations": "Squad 9 (Original)",
+    "description": "Original Captain of Squad 9. Brutal, spiked-club wielder of the first generation.",
+    "generation": -1
+  },
+  "furuoki_otogawa": {
+    "name": "Furuoki Ōtogawa",
+    "race": "Soul Reaper",
+    "family": "Unknown",
+    "faction": "Original Gotei 13",
+    "affiliations": "Squad 10 (Original)",
+    "description": "Original Captain of Squad 10. Founding Gotei 13 captain who stood alongside Yamamoto 1,000 years ago.",
+    "generation": -1
+  },
+  "uhin_zenjoji": {
+    "name": "Uhin Zenjōji",
+    "race": "Soul Reaper",
+    "family": "Unknown",
+    "faction": "Original Gotei 13",
+    "affiliations": "Squad 12 (Original)",
+    "description": "Original Captain of Squad 12. Monkish brawler of the original generation of defenders.",
+    "generation": -1
+  },
+  "saizo_sakahone": {
+    "name": "Saizō Sakahone",
+    "race": "Soul Reaper",
+    "family": "Unknown",
+    "faction": "Original Gotei 13",
+    "affiliations": "Squad 13 (Original)",
+    "description": "Original Captain of Squad 13. Elder swordsman who served in the founding Gotei 13.",
+    "generation": -1
+  },
+  "tokinada_tsunayashiro": {
+    "name": "Tokinada Tsunayashiro",
+    "race": "Noble",
+    "family": "Tsunayashiro",
+    "faction": "Tsunayashiro Clan",
+    "affiliations": "Four Great Noble Clans",
+    "description": "Head of the Tsunayashiro Clan and primary antagonist of CFYOW. Wielded the ancestral Zanpakutō Enrakyōten.",
+    "generation": 2
+  },
+  "hikone_ubuginu": {
+    "name": "Hikone Ubuginu",
+    "race": "Hybrid",
+    "family": "Synthetic",
+    "faction": "Tsunayashiro Clan",
+    "affiliations": "Artificial Soul King Candidate",
+    "description": "Central protagonist of CFYOW. Artificial soul created by Tokinada, combining Shinigami, Quincy, Hollow, and Fullbringer souls.",
+    "generation": 3
+  },
+  "aura_michibane": {
+    "name": "Aura Michibane",
+    "race": "Fullbringer",
+    "family": "Human",
+    "faction": "XCUTION",
+    "affiliations": "Cult Leader / Tsunayashiro Ally",
+    "description": "Master Fullbringer in CFYOW capable of manipulating ambient matter with godlike finesse. Acted as Tokinada's lieutenant.",
+    "generation": 2
+  },
+  "ikomikidomoe": {
+    "name": "Ikomikidomoe",
+    "race": "Hollow",
+    "family": "Adjuchas/Vasto Lorde",
+    "faction": "Ancient Hueco Mundo",
+    "affiliations": "Hikone's Zanpakutō",
+    "description": "Ancient primordial Hollow defeated by Ichibei Hyōsube and sealed into the Zanpakutō wielded by Hikone.",
+    "generation": -1
+  },
+  "soya_azashiro": {
+    "name": "Sōya Azashiro",
+    "race": "Soul Reaper",
+    "family": "Azashiro",
+    "faction": "11th Division",
+    "affiliations": "8th Kenpachi",
+    "description": "The 8th Kenpachi. Main antagonist of SAFWY whose Bankai fused his spirit with all of Seireitei; imprisoned in the Muken.",
+    "generation": 1
+  },
+  "kenpachi_kuruyashiki": {
+    "name": "Kenpachi Kuruyashiki",
+    "race": "Soul Reaper",
+    "family": "Unknown",
+    "faction": "11th Division",
+    "affiliations": "7th Kenpachi",
+    "description": "The legendary 7th Kenpachi. Beloved captain of Squad 11 with a catastrophic Bankai banned in Seireitei; defeated by Azashiro.",
+    "generation": 1
+  },
+  "roka_paramia": {
+    "name": "Roka Paramia",
+    "race": "Arrancar",
+    "family": "Arrancar",
+    "faction": "Szayelaporro's Fracción",
+    "affiliations": "Medic / Thread User",
+    "description": "Arrancar medic from SAFWY. Former Fracción of Szayelaporro who manipulated Negación threads and bonded with Don Kan'onji.",
     "generation": 2
   }
 }

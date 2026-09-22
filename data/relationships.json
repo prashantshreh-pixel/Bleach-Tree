@@ -1,596 +1,2132 @@
 [
-    {
-        "source": "isshin",
-        "target": "ichigo",
-        "type": "Parent",
-        "label": "Father of"
-    },
-    {
-        "source": "masaki",
-        "target": "ichigo",
-        "type": "Parent",
-        "label": "Mother of"
-    },
-    {
-        "source": "isshin",
-        "target": "karin",
-        "type": "Parent",
-        "label": "Father of"
-    },
-    {
-        "source": "masaki",
-        "target": "karin",
-        "type": "Parent",
-        "label": "Mother of"
-    },
-    {
-        "source": "isshin",
-        "target": "yuzu",
-        "type": "Parent",
-        "label": "Father of"
-    },
-    {
-        "source": "masaki",
-        "target": "yuzu",
-        "type": "Parent",
-        "label": "Mother of"
-    },
-    {
-        "source": "isshin",
-        "target": "masaki",
-        "type": "Marriage",
-        "label": "Married to"
-    },
-    {
-        "source": "ichigo",
-        "target": "karin",
-        "type": "Sibling",
-        "label": "Siblings"
-    },
-    {
-        "source": "ichigo",
-        "target": "yuzu",
-        "type": "Sibling",
-        "label": "Siblings"
-    },
-    {
-        "source": "karin",
-        "target": "yuzu",
-        "type": "Sibling",
-        "label": "Siblings"
-    },
-    {
-        "source": "kaien",
-        "target": "kukaku",
-        "type": "Sibling",
-        "label": "Siblings"
-    },
-    {
-        "source": "kaien",
-        "target": "ganju",
-        "type": "Sibling",
-        "label": "Siblings"
-    },
-    {
-        "source": "kukaku",
-        "target": "ganju",
-        "type": "Sibling",
-        "label": "Siblings"
-    },
-    {
-        "source": "isshin",
-        "target": "kaien",
-        "type": "Clan",
-        "label": "Same Clan (Shiba)"
-    },
-    {
-        "source": "isshin",
-        "target": "kukaku",
-        "type": "Clan",
-        "label": "Same Clan (Shiba)"
-    },
-    {
-        "source": "isshin",
-        "target": "ganju",
-        "type": "Clan",
-        "label": "Same Clan (Shiba)"
-    },
-    {
-        "source": "byakuya",
-        "target": "hisana",
-        "type": "Marriage",
-        "label": "Married to"
-    },
-    {
-        "source": "byakuya",
-        "target": "rukia",
-        "type": "Adopted",
-        "label": "Adopted"
-    },
-    {
-        "source": "hisana",
-        "target": "rukia",
-        "type": "Sibling",
-        "label": "Biological sisters"
-    },
-    {
-        "source": "kaien",
-        "target": "rukia",
-        "type": "Mentor",
-        "label": "Mentor of"
-    },
-    {
-        "source": "soken",
-        "target": "uryu",
-        "type": "Mentor",
-        "label": "Trained"
-    },
-    {
-        "source": "oetsu",
-        "target": "ichigo",
-        "type": "Mentor",
-        "label": "Reforged Zangetsu"
-    },
-    {
-        "source": "ichigo",
-        "target": "rukia",
-        "type": "Friend",
-        "label": "Close friends"
-    },
-    {
-        "source": "ichigo",
-        "target": "uryu",
-        "type": "Friend",
-        "label": "Rivals & friends"
-    },
-    {
-        "source": "yhwach",
-        "target": "masaki",
-        "type": "Bloodline",
-        "label": "Quincy progenitor"
-    },
-    {
-        "source": "yhwach",
-        "target": "soken",
-        "type": "Bloodline",
-        "label": "Quincy progenitor"
-    },
-    {
-        "source": "yhwach",
-        "target": "ryuken",
-        "type": "Bloodline",
-        "label": "Quincy progenitor"
-    },
-    {
-        "source": "yhwach",
-        "target": "uryu",
-        "type": "Bloodline",
-        "label": "Quincy progenitor"
-    },
-    {
-        "source": "yhwach",
-        "target": "jugram",
-        "type": "Bloodline",
-        "label": "Bestowed power"
-    },
-    {
-        "source": "yhwach",
-        "target": "ichigo",
-        "type": "Bloodline",
-        "label": "Quincy heritage"
-    },
-    {
-        "source": "soken",
-        "target": "ryuken",
-        "type": "Parent",
-        "label": "Father of"
-    },
-    {
-        "source": "ryuken",
-        "target": "uryu",
-        "type": "Parent",
-        "label": "Father of"
-    },
-    {
-        "source": "ichibei",
-        "target": "senjumaru",
-        "type": "Comrade",
-        "label": "Zero Division"
-    },
-    {
-        "source": "ichibei",
-        "target": "kirio",
-        "type": "Comrade",
-        "label": "Zero Division"
-    },
-    {
-        "source": "ichibei",
-        "target": "tenjiro",
-        "type": "Comrade",
-        "label": "Zero Division"
-    },
-    {
-        "source": "ichibei",
-        "target": "oetsu",
-        "type": "Comrade",
-        "label": "Zero Division"
-    },
-    {
-        "source": "senjumaru",
-        "target": "kirio",
-        "type": "Comrade",
-        "label": "Zero Division"
-    },
-    {
-        "source": "senjumaru",
-        "target": "tenjiro",
-        "type": "Comrade",
-        "label": "Zero Division"
-    },
-    {
-        "source": "senjumaru",
-        "target": "oetsu",
-        "type": "Comrade",
-        "label": "Zero Division"
-    },
-    {
-        "source": "kirio",
-        "target": "tenjiro",
-        "type": "Comrade",
-        "label": "Zero Division"
-    },
-    {
-        "source": "kirio",
-        "target": "oetsu",
-        "type": "Comrade",
-        "label": "Zero Division"
-    },
-    {
-        "source": "tenjiro",
-        "target": "oetsu",
-        "type": "Comrade",
-        "label": "Zero Division"
-    },
-    {
-        "source": "byakuya",
-        "target": "ichigo",
-        "type": "Friend",
-        "label": "Mutual respect"
-    },
-    {
-        "source": "rukia",
-        "target": "kaien",
-        "type": "Friend",
-        "label": "Deep bond"
-    },
-    {
-        "source": "yhwach",
-        "target": "ichibei",
-        "type": "Captain",
-        "label": "Opposed in war"
-    },
-    {
-        "source": "ichigo",
-        "target": "orihime",
-        "type": "Marriage",
-        "label": "Married to"
-    },
-    {
-        "source": "ichigo",
-        "target": "kazui",
-        "type": "Parent",
-        "label": "Father of"
-    },
-    {
-        "source": "orihime",
-        "target": "kazui",
-        "type": "Parent",
-        "label": "Mother of"
-    },
-    {
-        "source": "ichigo",
-        "target": "chad",
-        "type": "Friend",
-        "label": "Best friends"
-    },
-    {
-        "source": "orihime",
-        "target": "tatsuki",
-        "type": "Friend",
-        "label": "Best friends"
-    },
-    {
-        "source": "ichigo",
-        "target": "keigo",
-        "type": "Friend",
-        "label": "Friends"
-    },
-    {
-        "source": "ichigo",
-        "target": "mizuiro",
-        "type": "Friend",
-        "label": "Friends"
-    },
-    {
-        "source": "ryuken",
-        "target": "kanae",
-        "type": "Marriage",
-        "label": "Married to"
-    },
-    {
-        "source": "kanae",
-        "target": "uryu",
-        "type": "Parent",
-        "label": "Mother of"
-    },
-    {
-        "source": "soken",
-        "target": "izumi",
-        "type": "Marriage",
-        "label": "Married to"
-    },
-    {
-        "source": "izumi",
-        "target": "ryuken",
-        "type": "Parent",
-        "label": "Mother of"
-    },
-    {
-        "source": "urahara",
-        "target": "yoruichi",
-        "type": "Friend",
-        "label": "Childhood friends"
-    },
-    {
-        "source": "urahara",
-        "target": "tessai",
-        "type": "Friend",
-        "label": "Comrades in exile"
-    },
-    {
-        "source": "urahara",
-        "target": "ichigo",
-        "type": "Mentor",
-        "label": "Mentored"
-    },
-    {
-        "source": "urahara",
-        "target": "jinta",
-        "type": "Boss",
-        "label": "Employer"
-    },
-    {
-        "source": "urahara",
-        "target": "ururu",
-        "type": "Boss",
-        "label": "Employer"
-    },
-    {
-        "source": "urahara",
-        "target": "ririn",
-        "type": "Creator",
-        "label": "Created"
-    },
-    {
-        "source": "urahara",
-        "target": "noba",
-        "type": "Creator",
-        "label": "Created"
-    },
-    {
-        "source": "urahara",
-        "target": "kurodo",
-        "type": "Creator",
-        "label": "Created"
-    },
-    {
-        "source": "ginjo",
-        "target": "ichigo",
-        "type": "Mentor",
-        "label": "Taught Fullbring / Betrayed"
-    },
-    {
-        "source": "ginjo",
-        "target": "tsukishima",
-        "type": "Friend",
-        "label": "Partners in Xcution"
-    },
-    {
-        "source": "tsukishima",
-        "target": "moe",
-        "type": "Mentor",
-        "label": "Followed by"
-    },
-    {
-        "source": "ginjo",
-        "target": "riruka",
-        "type": "Boss",
-        "label": "Leader of Xcution"
-    },
-    {
-        "source": "ginjo",
-        "target": "yukio",
-        "type": "Boss",
-        "label": "Leader of Xcution"
-    },
-    {
-        "source": "ginjo",
-        "target": "jackie",
-        "type": "Boss",
-        "label": "Leader of Xcution"
-    },
-    {
-        "source": "ginjo",
-        "target": "giriko",
-        "type": "Boss",
-        "label": "Leader of Xcution"
-    },
-    {
-        "source": "chad",
-        "target": "ginjo",
-        "type": "Comrade",
-        "label": "Briefly joined Xcution"
-    },
-    {
-        "source": "tatsuki",
-        "target": "chizuru",
-        "type": "Friend",
-        "label": "Classmates"
-    },
-    {
-        "source": "keigo",
-        "target": "mizuho",
-        "type": "Sibling",
-        "label": "Siblings"
-    },
-    {
-        "source": "ikumi",
-        "target": "kaoru",
-        "type": "Parent",
-        "label": "Mother of"
-    },
-    {
-        "source": "ikumi",
-        "target": "ichigo",
-        "type": "Boss",
-        "label": "Employer"
-    },
-    {
-        "source": "don_kanonji",
-        "target": "ichigo",
-        "type": "Friend",
-        "label": "Spiritual ally"
-    },
-    {
-        "source": "shinji",
-        "target": "hiyori",
-        "type": "Friend",
-        "label": "Bickering partners"
-    },
-    {
-        "source": "love",
-        "target": "rose",
-        "type": "Friend",
-        "label": "Close friends"
-    },
-    {
-        "source": "kensei",
-        "target": "mashiro",
-        "type": "Boss",
-        "label": "Captain / Lieutenant"
-    },
-    {
-        "source": "kensei",
-        "target": "hisagi",
-        "type": "Mentor",
-        "label": "Saved him / Captain"
-    },
-    {
-        "source": "shinji",
-        "target": "aizen",
-        "type": "Enemy",
-        "label": "Betrayed by Aizen"
-    },
-    {
-        "source": "shinji",
-        "target": "ichigo",
-        "type": "Mentor",
-        "label": "Recruited / Taught Hollowfication"
-    },
-    {
-        "source": "hiyori",
-        "target": "ichigo",
-        "type": "Mentor",
-        "label": "Trained him"
-    },
-    {
-        "source": "hiyori",
-        "target": "urahara",
-        "type": "Friend",
-        "label": "Former subordinate"
-    },
-    {
-        "source": "hachigen",
-        "target": "tessai",
-        "type": "Friend",
-        "label": "Former subordinate"
-    },
-    {
-        "source": "shinji",
-        "target": "momo",
-        "type": "Boss",
-        "label": "Former Captain"
-    },
-    {
-        "source": "love",
-        "target": "komamura",
-        "type": "Friend",
-        "label": "Fellow Captains"
-    },
-    {
-        "source": "ichigo",
-        "target": "kon",
-        "type": "Comrade",
-        "label": "Takes over body"
-    },
-    {
-        "source": "urahara",
-        "target": "kon",
-        "type": "Creator",
-        "label": "Created (indirect)"
-    },
-    {
-        "source": "kenpachi",
-        "target": "ichigo",
-        "type": "Friend",
-        "label": "Rivals & fierce allies"
-    },
-    {
-        "source": "unohana",
-        "target": "kenpachi",
-        "type": "Mentor",
-        "label": "Predecessor & true mentor"
-    },
-    {
-        "source": "kenpachi",
-        "target": "byakuya",
-        "type": "Comrade",
-        "label": "Fellow Captains & rival allies"
-    },
-    {
-        "source": "unohana",
-        "target": "ichigo",
-        "type": "Comrade",
-        "label": "Healed & escorted to battle"
-    },
-    {
-        "source": "unohana",
-        "target": "byakuya",
-        "type": "Comrade",
-        "label": "Senior Gotei 13 Captains"
-    },
-    {
-        "source": "yoruichi",
-        "target": "soi_fon",
-        "type": "Mentor",
-        "label": "Former master & mentor"
-    },
-    {
-        "source": "soi_fon",
-        "target": "urahara",
-        "type": "Friend",
-        "label": "Resentful distrust"
-    },
-    {
-        "source": "soi_fon",
-        "target": "byakuya",
-        "type": "Comrade",
-        "label": "Fellow Noble & Captain"
-    },
-    {
-        "source": "soi_fon",
-        "target": "komamura",
-        "type": "Comrade",
-        "label": "Fellow Captains"
-    }
+  {
+    "source": "isshin",
+    "target": "ichigo",
+    "type": "Parent",
+    "label": "Father of"
+  },
+  {
+    "source": "masaki",
+    "target": "ichigo",
+    "type": "Parent",
+    "label": "Mother of"
+  },
+  {
+    "source": "isshin",
+    "target": "karin",
+    "type": "Parent",
+    "label": "Father of"
+  },
+  {
+    "source": "masaki",
+    "target": "karin",
+    "type": "Parent",
+    "label": "Mother of"
+  },
+  {
+    "source": "isshin",
+    "target": "yuzu",
+    "type": "Parent",
+    "label": "Father of"
+  },
+  {
+    "source": "masaki",
+    "target": "yuzu",
+    "type": "Parent",
+    "label": "Mother of"
+  },
+  {
+    "source": "isshin",
+    "target": "masaki",
+    "type": "Marriage",
+    "label": "Married to"
+  },
+  {
+    "source": "ichigo",
+    "target": "karin",
+    "type": "Sibling",
+    "label": "Siblings"
+  },
+  {
+    "source": "ichigo",
+    "target": "yuzu",
+    "type": "Sibling",
+    "label": "Siblings"
+  },
+  {
+    "source": "karin",
+    "target": "yuzu",
+    "type": "Sibling",
+    "label": "Siblings"
+  },
+  {
+    "source": "kaien",
+    "target": "kukaku",
+    "type": "Sibling",
+    "label": "Siblings"
+  },
+  {
+    "source": "kaien",
+    "target": "ganju",
+    "type": "Sibling",
+    "label": "Siblings"
+  },
+  {
+    "source": "kukaku",
+    "target": "ganju",
+    "type": "Sibling",
+    "label": "Siblings"
+  },
+  {
+    "source": "isshin",
+    "target": "kaien",
+    "type": "Clan",
+    "label": "Same Clan (Shiba)"
+  },
+  {
+    "source": "isshin",
+    "target": "kukaku",
+    "type": "Clan",
+    "label": "Same Clan (Shiba)"
+  },
+  {
+    "source": "isshin",
+    "target": "ganju",
+    "type": "Clan",
+    "label": "Same Clan (Shiba)"
+  },
+  {
+    "source": "byakuya",
+    "target": "hisana",
+    "type": "Marriage",
+    "label": "Married to"
+  },
+  {
+    "source": "byakuya",
+    "target": "rukia",
+    "type": "Adopted",
+    "label": "Adopted"
+  },
+  {
+    "source": "hisana",
+    "target": "rukia",
+    "type": "Sibling",
+    "label": "Biological sisters"
+  },
+  {
+    "source": "kaien",
+    "target": "rukia",
+    "type": "Mentor",
+    "label": "Mentor of"
+  },
+  {
+    "source": "soken",
+    "target": "uryu",
+    "type": "Mentor",
+    "label": "Trained"
+  },
+  {
+    "source": "oetsu",
+    "target": "ichigo",
+    "type": "Mentor",
+    "label": "Reforged Zangetsu"
+  },
+  {
+    "source": "ichigo",
+    "target": "rukia",
+    "type": "Friend",
+    "label": "Close friends"
+  },
+  {
+    "source": "ichigo",
+    "target": "uryu",
+    "type": "Friend",
+    "label": "Rivals & friends"
+  },
+  {
+    "source": "yhwach",
+    "target": "masaki",
+    "type": "Bloodline",
+    "label": "Quincy progenitor"
+  },
+  {
+    "source": "yhwach",
+    "target": "soken",
+    "type": "Bloodline",
+    "label": "Quincy progenitor"
+  },
+  {
+    "source": "yhwach",
+    "target": "ryuken",
+    "type": "Bloodline",
+    "label": "Quincy progenitor"
+  },
+  {
+    "source": "yhwach",
+    "target": "uryu",
+    "type": "Bloodline",
+    "label": "Quincy progenitor"
+  },
+  {
+    "source": "yhwach",
+    "target": "jugram",
+    "type": "Bloodline",
+    "label": "Bestowed power"
+  },
+  {
+    "source": "yhwach",
+    "target": "ichigo",
+    "type": "Bloodline",
+    "label": "Quincy heritage"
+  },
+  {
+    "source": "soken",
+    "target": "ryuken",
+    "type": "Parent",
+    "label": "Father of"
+  },
+  {
+    "source": "ryuken",
+    "target": "uryu",
+    "type": "Parent",
+    "label": "Father of"
+  },
+  {
+    "source": "ichibei",
+    "target": "senjumaru",
+    "type": "Comrade",
+    "label": "Zero Division"
+  },
+  {
+    "source": "ichibei",
+    "target": "kirio",
+    "type": "Comrade",
+    "label": "Zero Division"
+  },
+  {
+    "source": "ichibei",
+    "target": "tenjiro",
+    "type": "Comrade",
+    "label": "Zero Division"
+  },
+  {
+    "source": "ichibei",
+    "target": "oetsu",
+    "type": "Comrade",
+    "label": "Zero Division"
+  },
+  {
+    "source": "senjumaru",
+    "target": "kirio",
+    "type": "Comrade",
+    "label": "Zero Division"
+  },
+  {
+    "source": "senjumaru",
+    "target": "tenjiro",
+    "type": "Comrade",
+    "label": "Zero Division"
+  },
+  {
+    "source": "senjumaru",
+    "target": "oetsu",
+    "type": "Comrade",
+    "label": "Zero Division"
+  },
+  {
+    "source": "kirio",
+    "target": "tenjiro",
+    "type": "Comrade",
+    "label": "Zero Division"
+  },
+  {
+    "source": "kirio",
+    "target": "oetsu",
+    "type": "Comrade",
+    "label": "Zero Division"
+  },
+  {
+    "source": "tenjiro",
+    "target": "oetsu",
+    "type": "Comrade",
+    "label": "Zero Division"
+  },
+  {
+    "source": "byakuya",
+    "target": "ichigo",
+    "type": "Friend",
+    "label": "Mutual respect"
+  },
+  {
+    "source": "rukia",
+    "target": "kaien",
+    "type": "Friend",
+    "label": "Deep bond"
+  },
+  {
+    "source": "yhwach",
+    "target": "ichibei",
+    "type": "Captain",
+    "label": "Opposed in war"
+  },
+  {
+    "source": "ichigo",
+    "target": "orihime",
+    "type": "Marriage",
+    "label": "Married to"
+  },
+  {
+    "source": "ichigo",
+    "target": "kazui",
+    "type": "Parent",
+    "label": "Father of"
+  },
+  {
+    "source": "orihime",
+    "target": "kazui",
+    "type": "Parent",
+    "label": "Mother of"
+  },
+  {
+    "source": "ichigo",
+    "target": "chad",
+    "type": "Friend",
+    "label": "Best friends"
+  },
+  {
+    "source": "orihime",
+    "target": "tatsuki",
+    "type": "Friend",
+    "label": "Best friends"
+  },
+  {
+    "source": "ichigo",
+    "target": "keigo",
+    "type": "Friend",
+    "label": "Friends"
+  },
+  {
+    "source": "ichigo",
+    "target": "mizuiro",
+    "type": "Friend",
+    "label": "Friends"
+  },
+  {
+    "source": "ryuken",
+    "target": "kanae",
+    "type": "Marriage",
+    "label": "Married to"
+  },
+  {
+    "source": "kanae",
+    "target": "uryu",
+    "type": "Parent",
+    "label": "Mother of"
+  },
+  {
+    "source": "soken",
+    "target": "izumi",
+    "type": "Marriage",
+    "label": "Married to"
+  },
+  {
+    "source": "izumi",
+    "target": "ryuken",
+    "type": "Parent",
+    "label": "Mother of"
+  },
+  {
+    "source": "urahara",
+    "target": "yoruichi",
+    "type": "Friend",
+    "label": "Childhood friends"
+  },
+  {
+    "source": "urahara",
+    "target": "tessai",
+    "type": "Friend",
+    "label": "Comrades in exile"
+  },
+  {
+    "source": "urahara",
+    "target": "ichigo",
+    "type": "Mentor",
+    "label": "Mentored"
+  },
+  {
+    "source": "urahara",
+    "target": "jinta",
+    "type": "Boss",
+    "label": "Employer"
+  },
+  {
+    "source": "urahara",
+    "target": "ururu",
+    "type": "Boss",
+    "label": "Employer"
+  },
+  {
+    "source": "urahara",
+    "target": "ririn",
+    "type": "Creator",
+    "label": "Created"
+  },
+  {
+    "source": "urahara",
+    "target": "noba",
+    "type": "Creator",
+    "label": "Created"
+  },
+  {
+    "source": "urahara",
+    "target": "kurodo",
+    "type": "Creator",
+    "label": "Created"
+  },
+  {
+    "source": "ginjo",
+    "target": "ichigo",
+    "type": "Mentor",
+    "label": "Taught Fullbring / Betrayed"
+  },
+  {
+    "source": "ginjo",
+    "target": "tsukishima",
+    "type": "Friend",
+    "label": "Partners in Xcution"
+  },
+  {
+    "source": "tsukishima",
+    "target": "moe",
+    "type": "Mentor",
+    "label": "Followed by"
+  },
+  {
+    "source": "ginjo",
+    "target": "riruka",
+    "type": "Boss",
+    "label": "Leader of Xcution"
+  },
+  {
+    "source": "ginjo",
+    "target": "yukio",
+    "type": "Boss",
+    "label": "Leader of Xcution"
+  },
+  {
+    "source": "ginjo",
+    "target": "jackie",
+    "type": "Boss",
+    "label": "Leader of Xcution"
+  },
+  {
+    "source": "ginjo",
+    "target": "giriko",
+    "type": "Boss",
+    "label": "Leader of Xcution"
+  },
+  {
+    "source": "chad",
+    "target": "ginjo",
+    "type": "Comrade",
+    "label": "Briefly joined Xcution"
+  },
+  {
+    "source": "tatsuki",
+    "target": "chizuru",
+    "type": "Friend",
+    "label": "Classmates"
+  },
+  {
+    "source": "keigo",
+    "target": "mizuho",
+    "type": "Sibling",
+    "label": "Siblings"
+  },
+  {
+    "source": "ikumi",
+    "target": "kaoru",
+    "type": "Parent",
+    "label": "Mother of"
+  },
+  {
+    "source": "ikumi",
+    "target": "ichigo",
+    "type": "Boss",
+    "label": "Employer"
+  },
+  {
+    "source": "don_kanonji",
+    "target": "ichigo",
+    "type": "Friend",
+    "label": "Spiritual ally"
+  },
+  {
+    "source": "shinji",
+    "target": "hiyori",
+    "type": "Friend",
+    "label": "Bickering partners"
+  },
+  {
+    "source": "love",
+    "target": "rose",
+    "type": "Friend",
+    "label": "Close friends"
+  },
+  {
+    "source": "kensei",
+    "target": "mashiro",
+    "type": "Boss",
+    "label": "Captain / Lieutenant"
+  },
+  {
+    "source": "kensei",
+    "target": "hisagi",
+    "type": "Mentor",
+    "label": "Saved him / Captain"
+  },
+  {
+    "source": "shinji",
+    "target": "aizen",
+    "type": "Enemy",
+    "label": "Betrayed by Aizen"
+  },
+  {
+    "source": "shinji",
+    "target": "ichigo",
+    "type": "Mentor",
+    "label": "Recruited / Taught Hollowfication"
+  },
+  {
+    "source": "hiyori",
+    "target": "ichigo",
+    "type": "Mentor",
+    "label": "Trained him"
+  },
+  {
+    "source": "hiyori",
+    "target": "urahara",
+    "type": "Friend",
+    "label": "Former subordinate"
+  },
+  {
+    "source": "hachigen",
+    "target": "tessai",
+    "type": "Friend",
+    "label": "Former subordinate"
+  },
+  {
+    "source": "shinji",
+    "target": "momo",
+    "type": "Boss",
+    "label": "Former Captain"
+  },
+  {
+    "source": "love",
+    "target": "komamura",
+    "type": "Friend",
+    "label": "Fellow Captains"
+  },
+  {
+    "source": "ichigo",
+    "target": "kon",
+    "type": "Comrade",
+    "label": "Takes over body"
+  },
+  {
+    "source": "urahara",
+    "target": "kon",
+    "type": "Creator",
+    "label": "Created (indirect)"
+  },
+  {
+    "source": "kenpachi",
+    "target": "ichigo",
+    "type": "Friend",
+    "label": "Rivals & fierce allies"
+  },
+  {
+    "source": "unohana",
+    "target": "kenpachi",
+    "type": "Mentor",
+    "label": "Predecessor & true mentor"
+  },
+  {
+    "source": "kenpachi",
+    "target": "byakuya",
+    "type": "Comrade",
+    "label": "Fellow Captains & rival allies"
+  },
+  {
+    "source": "unohana",
+    "target": "ichigo",
+    "type": "Comrade",
+    "label": "Healed & escorted to battle"
+  },
+  {
+    "source": "unohana",
+    "target": "byakuya",
+    "type": "Comrade",
+    "label": "Senior Gotei 13 Captains"
+  },
+  {
+    "source": "yoruichi",
+    "target": "soi_fon",
+    "type": "Mentor",
+    "label": "Former master & mentor"
+  },
+  {
+    "source": "soi_fon",
+    "target": "urahara",
+    "type": "Friend",
+    "label": "Resentful distrust"
+  },
+  {
+    "source": "soi_fon",
+    "target": "byakuya",
+    "type": "Comrade",
+    "label": "Fellow Noble & Captain"
+  },
+  {
+    "source": "soi_fon",
+    "target": "komamura",
+    "type": "Comrade",
+    "label": "Fellow Captains"
+  },
+  {
+    "source": "aizen",
+    "target": "gin",
+    "type": "Allies",
+    "label": "Right-hand co-conspirator of"
+  },
+  {
+    "source": "aizen",
+    "target": "tosen",
+    "type": "Command",
+    "label": "Supreme Arrancar commander under"
+  },
+  {
+    "source": "aizen",
+    "target": "starrk",
+    "type": "Command",
+    "label": "Supreme commander of"
+  },
+  {
+    "source": "aizen",
+    "target": "baraggan",
+    "type": "Enemies",
+    "label": "Overthrew and subjugated throne of"
+  },
+  {
+    "source": "aizen",
+    "target": "harribel",
+    "type": "Betrayal",
+    "label": "Commanded and later struck down"
+  },
+  {
+    "source": "aizen",
+    "target": "ulquiorra",
+    "type": "Command",
+    "label": "Entrusted with Las Noches guardianship"
+  },
+  {
+    "source": "aizen",
+    "target": "nnoitra",
+    "type": "Command",
+    "label": "Commander of"
+  },
+  {
+    "source": "aizen",
+    "target": "grimmjow",
+    "type": "Command",
+    "label": "Disciplined and stripped of rank"
+  },
+  {
+    "source": "aizen",
+    "target": "szayelaporro",
+    "type": "Allies",
+    "label": "Chief scientist and lab director for"
+  },
+  {
+    "source": "aizen",
+    "target": "wonderweiss",
+    "type": "Creator",
+    "label": "Created as specialized counterweapon with Hōgyoku"
+  },
+  {
+    "source": "aizen",
+    "target": "loly",
+    "type": "Command",
+    "label": "Personal attendant to"
+  },
+  {
+    "source": "aizen",
+    "target": "menoly",
+    "type": "Command",
+    "label": "Personal attendant to"
+  },
+  {
+    "source": "aizen",
+    "target": "rudbornn",
+    "type": "Command",
+    "label": "Exequias execution commander under"
+  },
+  {
+    "source": "tosen",
+    "target": "wonderweiss",
+    "type": "Mentorship",
+    "label": "Protective mutual bond with"
+  },
+  {
+    "source": "tosen",
+    "target": "grimmjow",
+    "type": "Enemies",
+    "label": "Severed arm and incinerated for insubordination"
+  },
+  {
+    "source": "gin",
+    "target": "aizen",
+    "type": "Betrayal",
+    "label": "Secretly plotted to assassinate for Rangiku"
+  },
+  {
+    "source": "gin",
+    "target": "ichigo",
+    "type": "Rivals",
+    "label": "Tested resolve and spiritual conviction of"
+  },
+  {
+    "source": "gin",
+    "target": "momo",
+    "type": "Enemies",
+    "label": "Manipulated and psychologically broke"
+  },
+  {
+    "source": "starrk",
+    "target": "lilynette",
+    "type": "Soul Bond",
+    "label": "Split soul partner & sole Fracción of"
+  },
+  {
+    "source": "lilynette",
+    "target": "starrk",
+    "type": "Soul Bond",
+    "label": "Transforms into twin pistols of"
+  },
+  {
+    "source": "starrk",
+    "target": "shunsui",
+    "type": "Rivals",
+    "label": "Fought gentlemanly duel of games against"
+  },
+  {
+    "source": "baraggan",
+    "target": "charlotte",
+    "type": "Fracción",
+    "label": "Fracción of"
+  },
+  {
+    "source": "baraggan",
+    "target": "abirama",
+    "type": "Fracción",
+    "label": "Fracción of"
+  },
+  {
+    "source": "baraggan",
+    "target": "findorr",
+    "type": "Fracción",
+    "label": "Fracción of"
+  },
+  {
+    "source": "baraggan",
+    "target": "poww",
+    "type": "Fracción",
+    "label": "Fracción of"
+  },
+  {
+    "source": "baraggan",
+    "target": "ggio",
+    "type": "Fracción",
+    "label": "Fracción of"
+  },
+  {
+    "source": "baraggan",
+    "target": "nirgge",
+    "type": "Fracción",
+    "label": "Fracción of"
+  },
+  {
+    "source": "baraggan",
+    "target": "soi_fon",
+    "type": "Enemies",
+    "label": "Aged missile blast of Bankai against"
+  },
+  {
+    "source": "baraggan",
+    "target": "hachigen",
+    "type": "Enemies",
+    "label": "Slain when teleported own aging rot inside body by"
+  },
+  {
+    "source": "harribel",
+    "target": "apacci",
+    "type": "Fracción",
+    "label": "Tres Bestias Fracción of"
+  },
+  {
+    "source": "harribel",
+    "target": "milarose",
+    "type": "Fracción",
+    "label": "Tres Bestias Fracción of"
+  },
+  {
+    "source": "harribel",
+    "target": "sunsun",
+    "type": "Fracción",
+    "label": "Tres Bestias Fracción of"
+  },
+  {
+    "source": "apacci",
+    "target": "milarose",
+    "type": "Allies",
+    "label": "Bickering fellow Tres Bestia with"
+  },
+  {
+    "source": "milarose",
+    "target": "sunsun",
+    "type": "Allies",
+    "label": "Fellow Tres Bestia with"
+  },
+  {
+    "source": "apacci",
+    "target": "ayon",
+    "type": "Creator",
+    "label": "Sacrificed arm to summon Ayon with"
+  },
+  {
+    "source": "milarose",
+    "target": "ayon",
+    "type": "Creator",
+    "label": "Sacrificed arm to summon Ayon with"
+  },
+  {
+    "source": "sunsun",
+    "target": "ayon",
+    "type": "Creator",
+    "label": "Sacrificed arm to summon Ayon with"
+  },
+  {
+    "source": "harribel",
+    "target": "hitsugaya",
+    "type": "Rivals",
+    "label": "Fought water vs. ice stalemate against"
+  },
+  {
+    "source": "harribel",
+    "target": "lisa",
+    "type": "Enemies",
+    "label": "Fought in Fake Karakura Town against"
+  },
+  {
+    "source": "harribel",
+    "target": "hiyori",
+    "type": "Enemies",
+    "label": "Fought in Fake Karakura Town against"
+  },
+  {
+    "source": "ulquiorra",
+    "target": "ichigo",
+    "type": "Rivals",
+    "label": "Fateful clash of ideals & Hollow awakening against"
+  },
+  {
+    "source": "ulquiorra",
+    "target": "orihime",
+    "type": "Bond",
+    "label": "Captor who discovered the concept of heart through"
+  },
+  {
+    "source": "ulquiorra",
+    "target": "uryu",
+    "type": "Enemies",
+    "label": "Severed arm and overwhelmed on Las Noches roof"
+  },
+  {
+    "source": "ulquiorra",
+    "target": "yammy",
+    "type": "Allies",
+    "label": "Hueco Mundo reconnaissance vanguard partner of"
+  },
+  {
+    "source": "nnoitra",
+    "target": "tesla",
+    "type": "Fracción",
+    "label": "Devoted Fracción of"
+  },
+  {
+    "source": "nnoitra",
+    "target": "nelliel",
+    "type": "Enemies",
+    "label": "Jealous rival who cracked mask and banished"
+  },
+  {
+    "source": "nnoitra",
+    "target": "kenpachi",
+    "type": "Rivals",
+    "label": "Sought death and was slain in ultimate clash by"
+  },
+  {
+    "source": "nnoitra",
+    "target": "chad",
+    "type": "Enemies",
+    "label": "Overwhelmed Brazo Derecha de Gigante in Las Noches"
+  },
+  {
+    "source": "grimmjow",
+    "target": "ichigo",
+    "type": "Rivals",
+    "label": "Eternal rivals & blood-soaked duelists"
+  },
+  {
+    "source": "grimmjow",
+    "target": "shawlong",
+    "type": "Fracción",
+    "label": "Fracción of"
+  },
+  {
+    "source": "grimmjow",
+    "target": "edrad",
+    "type": "Fracción",
+    "label": "Fracción of"
+  },
+  {
+    "source": "grimmjow",
+    "target": "ylfordt",
+    "type": "Fracción",
+    "label": "Fracción of"
+  },
+  {
+    "source": "grimmjow",
+    "target": "diroy",
+    "type": "Fracción",
+    "label": "Fracción of"
+  },
+  {
+    "source": "grimmjow",
+    "target": "nakim",
+    "type": "Fracción",
+    "label": "Fracción of"
+  },
+  {
+    "source": "grimmjow",
+    "target": "luppi",
+    "type": "Enemies",
+    "label": "Executed to reclaim Sexta Espada rank from"
+  },
+  {
+    "source": "grimmjow",
+    "target": "rukia",
+    "type": "Enemies",
+    "label": "Impaled in Karakura Town before Ichigo intervened"
+  },
+  {
+    "source": "grimmjow",
+    "target": "shinji",
+    "type": "Enemies",
+    "label": "Clashed with and repelled by Cero of"
+  },
+  {
+    "source": "zommari",
+    "target": "byakuya",
+    "type": "Enemies",
+    "label": "Slain for attempting to take Rukia's life by"
+  },
+  {
+    "source": "zommari",
+    "target": "rukia",
+    "type": "Enemies",
+    "label": "Controlled body with Amor to force blade against"
+  },
+  {
+    "source": "szayelaporro",
+    "target": "lumina",
+    "type": "Fracción",
+    "label": "Fracción and consumable medical clone for"
+  },
+  {
+    "source": "szayelaporro",
+    "target": "medazeppi",
+    "type": "Fracción",
+    "label": "Colossal Fracción guard of"
+  },
+  {
+    "source": "szayelaporro",
+    "target": "ylfordt",
+    "type": "Sibling",
+    "label": "Younger brother of"
+  },
+  {
+    "source": "szayelaporro",
+    "target": "renji",
+    "type": "Enemies",
+    "label": "Nullified Zabimaru through telemetry in lab corridors"
+  },
+  {
+    "source": "szayelaporro",
+    "target": "uryu",
+    "type": "Enemies",
+    "label": "Crushed internal organs using voodoo dolls"
+  },
+  {
+    "source": "szayelaporro",
+    "target": "nnoitra",
+    "type": "Allies",
+    "label": "Conspired together to ambush and demote Nelliel"
+  },
+  {
+    "source": "aaroniero",
+    "target": "kaien",
+    "type": "Absorption",
+    "label": "Absorbed spirit, powers, and Nejibana of"
+  },
+  {
+    "source": "aaroniero",
+    "target": "rukia",
+    "type": "Enemies",
+    "label": "Tormented with Kaien's face before being pierced by"
+  },
+  {
+    "source": "yammy",
+    "target": "kukkapuro",
+    "type": "Bond",
+    "label": "Cherished dog Hollow pet of"
+  },
+  {
+    "source": "yammy",
+    "target": "ichigo",
+    "type": "Enemies",
+    "label": "Had arm severed in early Karakura Town raid by"
+  },
+  {
+    "source": "yammy",
+    "target": "kenpachi",
+    "type": "Enemies",
+    "label": "Battered and slain in Hueco Mundo sands by"
+  },
+  {
+    "source": "yammy",
+    "target": "byakuya",
+    "type": "Enemies",
+    "label": "Torn apart by Bankai in Hueco Mundo by"
+  },
+  {
+    "source": "nelliel",
+    "target": "pesche",
+    "type": "Fracción",
+    "label": "Loyal Fracción of"
+  },
+  {
+    "source": "nelliel",
+    "target": "dondochakka",
+    "type": "Fracción",
+    "label": "Loyal Fracción of"
+  },
+  {
+    "source": "nelliel",
+    "target": "bawabawa",
+    "type": "Bond",
+    "label": "Giant sand eel pet and desert steed of"
+  },
+  {
+    "source": "nelliel",
+    "target": "ichigo",
+    "type": "Allies",
+    "label": "Deep friendship & protected each other across arcs"
+  },
+  {
+    "source": "pesche",
+    "target": "dondochakka",
+    "type": "Allies",
+    "label": "Inseparable comic partners & Cero Sincrónico duo"
+  },
+  {
+    "source": "dordoni",
+    "target": "ichigo",
+    "type": "Rivals",
+    "label": "Knocked into chivalrous awakening of Bankai by"
+  },
+  {
+    "source": "cirucci",
+    "target": "uryu",
+    "type": "Enemies",
+    "label": "Stripped of spiritual powers by Seele Schneider of"
+  },
+  {
+    "source": "gantenbainne",
+    "target": "chad",
+    "type": "Rivals",
+    "label": "Fought honorable fist duel of mutual respect with"
+  },
+  {
+    "source": "gantenbainne",
+    "target": "unohana",
+    "type": "Allies",
+    "label": "Healed and granted medical mercy by"
+  },
+  {
+    "source": "wonderweiss",
+    "target": "kensei",
+    "type": "Enemies",
+    "label": "Fought furious close-quarters battle against"
+  },
+  {
+    "source": "wonderweiss",
+    "target": "mashiro",
+    "type": "Enemies",
+    "label": "Cracked Hollow mask of in Fake Karakura Town"
+  },
+  {
+    "source": "rudbornn",
+    "target": "rukia",
+    "type": "Enemies",
+    "label": "Defeated and frozen in ice by"
+  },
+  {
+    "source": "loly",
+    "target": "menoly",
+    "type": "Allies",
+    "label": "Inseparable Las Noches attendants"
+  },
+  {
+    "source": "loly",
+    "target": "orihime",
+    "type": "Enemies",
+    "label": "Abused and attacked out of jealousy toward Aizen"
+  },
+  {
+    "source": "menoly",
+    "target": "orihime",
+    "type": "Allies",
+    "label": "Healed and spared from death by"
+  },
+  {
+    "source": "aisslinger",
+    "target": "demoura",
+    "type": "Allies",
+    "label": "Underground desert gatekeeper partners"
+  },
+  {
+    "source": "aisslinger",
+    "target": "uryu",
+    "type": "Enemies",
+    "label": "Defeated at Hueco Mundo entrance by"
+  },
+  {
+    "source": "demoura",
+    "target": "chad",
+    "type": "Enemies",
+    "label": "Defeated at Hueco Mundo entrance by"
+  },
+  {
+    "source": "renji",
+    "target": "rukia",
+    "type": "Spouse",
+    "label": "Husband & lifelong partner of"
+  },
+  {
+    "source": "renji",
+    "target": "byakuya",
+    "type": "Subordinate",
+    "label": "Lieutenant to Captain of Squad 6"
+  },
+  {
+    "source": "renji",
+    "target": "ichigo",
+    "type": "Rivals",
+    "label": "Fierce rivals & comrades-in-arms"
+  },
+  {
+    "source": "hitsugaya",
+    "target": "momo",
+    "type": "Bond",
+    "label": "Childhood friend & protective companion of"
+  },
+  {
+    "source": "hitsugaya",
+    "target": "isshin",
+    "type": "Subordinate",
+    "label": "Former 3rd Seat under Captain Isshin Shiba"
+  },
+  {
+    "source": "aldegor",
+    "target": "aizen",
+    "type": "Command",
+    "label": "Scout sent on reconnaissance by"
+  },
+  {
+    "source": "aldegor",
+    "target": "ulquiorra",
+    "type": "Subordinate",
+    "label": "Vanguard scout reporting to"
+  },
+  {
+    "source": "grand_fisher",
+    "target": "masaki",
+    "type": "Enemies",
+    "label": "Lured and killed in Karakura Town after Auswählen"
+  },
+  {
+    "source": "grand_fisher",
+    "target": "isshin",
+    "type": "Enemies",
+    "label": "Avenged Masaki by slicing in half with Engetsu"
+  },
+  {
+    "source": "grand_fisher",
+    "target": "ichigo",
+    "type": "Enemies",
+    "label": "Mother's killer fought at Masaki's gravesite"
+  },
+  {
+    "source": "grand_fisher",
+    "target": "aizen",
+    "type": "Creator",
+    "label": "Transformed into an imperfect Arrancar by"
+  },
+  {
+    "source": "yamamoto",
+    "target": "sasakibe",
+    "type": "Allies",
+    "label": "Over 2,000 years of brotherhood and service"
+  },
+  {
+    "source": "yamamoto",
+    "target": "shunsui",
+    "type": "Mentorship",
+    "label": "First graduate of Shinō Academy and surrogate son"
+  },
+  {
+    "source": "yamamoto",
+    "target": "ukitake",
+    "type": "Mentorship",
+    "label": "First graduate of Shinō Academy and surrogate son"
+  },
+  {
+    "source": "yamamoto",
+    "target": "yhwach",
+    "type": "Enemies",
+    "label": "Failed to kill 1,000 years ago; slain during Quincy war by"
+  },
+  {
+    "source": "yamamoto",
+    "target": "aizen",
+    "type": "Enemies",
+    "label": "Entrapped in hellfire Ennetsu Jigoku in Karakura"
+  },
+  {
+    "source": "yamamoto",
+    "target": "wonderweiss",
+    "type": "Enemies",
+    "label": "Shattered into pieces with barehanded Sōkotsu"
+  },
+  {
+    "source": "mayuri",
+    "target": "nemu",
+    "type": "Creator",
+    "label": "Created as artificial soul and daughter (Nemuri VII)"
+  },
+  {
+    "source": "mayuri",
+    "target": "urahara",
+    "type": "Rivals",
+    "label": "Eternal scientific rivals from S.R.D.I. origins"
+  },
+  {
+    "source": "mayuri",
+    "target": "uryu",
+    "type": "Enemies",
+    "label": "Fought in Soul Society; vivisected grandfather Sōken"
+  },
+  {
+    "source": "mayuri",
+    "target": "szayelaporro",
+    "type": "Rivals",
+    "label": "Subjected to superhuman drug and mocked in Las Noches"
+  },
+  {
+    "source": "ukitake",
+    "target": "shunsui",
+    "type": "Allies",
+    "label": "Inseparable best friends since Academy days"
+  },
+  {
+    "source": "ukitake",
+    "target": "kaien",
+    "type": "Mentorship",
+    "label": "Grieved loss of lieutenant and Shiba heir"
+  },
+  {
+    "source": "ukitake",
+    "target": "rukia",
+    "type": "Mentorship",
+    "label": "Protected and nurtured into future Squad 13 Captain"
+  },
+  {
+    "source": "ukitake",
+    "target": "kiyone",
+    "type": "Command",
+    "label": "Loyal 3rd Seat attendant to"
+  },
+  {
+    "source": "ukitake",
+    "target": "sentaro",
+    "type": "Command",
+    "label": "Loyal 3rd Seat attendant to"
+  },
+  {
+    "source": "rangiku",
+    "target": "hitsugaya",
+    "type": "Subordinate",
+    "label": "Lieutenant to Captain of Squad 10"
+  },
+  {
+    "source": "rangiku",
+    "target": "gin",
+    "type": "Bond",
+    "label": "Childhood soulmates whose stolen soul drove Gin's vengeance"
+  },
+  {
+    "source": "rangiku",
+    "target": "momo",
+    "type": "Allies",
+    "label": "Close friends and female lieutenant confidantes"
+  },
+  {
+    "source": "rangiku",
+    "target": "orihime",
+    "type": "Bond",
+    "label": "Older sister figure and Karakura Town houseguest"
+  },
+  {
+    "source": "kira",
+    "target": "gin",
+    "type": "Subordinate",
+    "label": "Devoted lieutenant abandoned by former captain"
+  },
+  {
+    "source": "kira",
+    "target": "renji",
+    "type": "Allies",
+    "label": "Shinō Academy trio comrades"
+  },
+  {
+    "source": "kira",
+    "target": "momo",
+    "type": "Allies",
+    "label": "Shinō Academy trio comrades"
+  },
+  {
+    "source": "kira",
+    "target": "abirama",
+    "type": "Enemies",
+    "label": "Decapitated with Wabisuke in Fake Karakura Town"
+  },
+  {
+    "source": "nanao",
+    "target": "shunsui",
+    "type": "Subordinate",
+    "label": "Strict lieutenant and niece to Captain-Commander"
+  },
+  {
+    "source": "nanao",
+    "target": "lisa",
+    "type": "Mentorship",
+    "label": "Former Squad 8 mentor who read stories to her as a child"
+  },
+  {
+    "source": "ikkaku",
+    "target": "kenpachi",
+    "type": "Subordinate",
+    "label": "Pledged life to after being spared in battle"
+  },
+  {
+    "source": "ikkaku",
+    "target": "yumichika",
+    "type": "Allies",
+    "label": "Inseparable battle brothers of Squad 11"
+  },
+  {
+    "source": "ikkaku",
+    "target": "renji",
+    "type": "Mentorship",
+    "label": "Combat mentor and sparring partner of"
+  },
+  {
+    "source": "ikkaku",
+    "target": "edrad",
+    "type": "Enemies",
+    "label": "Revealed Bankai Ryūmon Hōzukimaru to defeat"
+  },
+  {
+    "source": "yumichika",
+    "target": "kenpachi",
+    "type": "Subordinate",
+    "label": "Revered Captain of Squad 11"
+  },
+  {
+    "source": "yumichika",
+    "target": "charlotte",
+    "type": "Enemies",
+    "label": "Drained Reiatsu with true Shikai Ruri'iro Kujaku"
+  },
+  {
+    "source": "yachiru",
+    "target": "kenpachi",
+    "type": "Soul Bond",
+    "label": "Physical manifestation of Zanpakutō spirit Nozarashi"
+  },
+  {
+    "source": "hanataro",
+    "target": "ichigo",
+    "type": "Allies",
+    "label": "Guided through Seireitei sewers to rescue Rukia"
+  },
+  {
+    "source": "hanataro",
+    "target": "ganju",
+    "type": "Allies",
+    "label": "Comedic companions during Ryoka infiltration"
+  },
+  {
+    "source": "hanataro",
+    "target": "unohana",
+    "type": "Subordinate",
+    "label": "Revered Captain and healer mentor in Squad 4"
+  },
+  {
+    "source": "omaeda",
+    "target": "soi_fon",
+    "type": "Subordinate",
+    "label": "Lieutenant and Onmitsukidō patrol commander under"
+  },
+  {
+    "source": "isane",
+    "target": "unohana",
+    "type": "Subordinate",
+    "label": "Devoted lieutenant and medical successor to"
+  },
+  {
+    "source": "isane",
+    "target": "kiyone",
+    "type": "Sibling",
+    "label": "Loving elder sister to"
+  },
+  {
+    "source": "kiyone",
+    "target": "sentaro",
+    "type": "Rivals",
+    "label": "Comedic rivals competing for Captain Ukitake's praise"
+  },
+  {
+    "source": "jidanbo",
+    "target": "ichigo",
+    "type": "Allies",
+    "label": "Respectful gatekeeper who allowed Ryoka to enter"
+  },
+  {
+    "source": "jidanbo",
+    "target": "gin",
+    "type": "Enemies",
+    "label": "Had arm severed at Hakuryūmon gate by Shinsō"
+  },
+  {
+    "source": "yachiru",
+    "target": "ikkaku",
+    "type": "Division",
+    "label": "Squad 11 Senior"
+  },
+  {
+    "source": "yachiru",
+    "target": "yumichika",
+    "type": "Division",
+    "label": "Squad 11 Officer"
+  },
+  {
+    "source": "yachiru",
+    "target": "nanao",
+    "type": "Allies",
+    "label": "Shinigami Women's Assoc."
+  },
+  {
+    "source": "nemu",
+    "target": "uryu",
+    "type": "Allies",
+    "label": "Gave Antidote / Saved"
+  },
+  {
+    "source": "nemu",
+    "target": "szayelaporro",
+    "type": "Enemies",
+    "label": "Hostage in Hueco Mundo"
+  },
+  {
+    "source": "sasakibe",
+    "target": "ichigo",
+    "type": "Enemies",
+    "label": "Sōkyoku Hill Clash"
+  },
+  {
+    "source": "omaeda",
+    "target": "nirgge",
+    "type": "Enemies",
+    "label": "FKT Duel"
+  },
+  {
+    "source": "omaeda",
+    "target": "baraggan",
+    "type": "Enemies",
+    "label": "FKT Espada Clash"
+  },
+  {
+    "source": "isane",
+    "target": "ichigo",
+    "type": "Enemies",
+    "label": "Sōkyoku Hill Encounter"
+  },
+  {
+    "source": "isane",
+    "target": "aizen",
+    "type": "Enemies",
+    "label": "Discovered Treason Broadcast"
+  },
+  {
+    "source": "ryo",
+    "target": "ichigo",
+    "type": "Allies",
+    "label": "Karakura High Classmate"
+  },
+  {
+    "source": "michiru",
+    "target": "orihime",
+    "type": "Allies",
+    "label": "Karakura High Friend"
+  },
+  {
+    "source": "reiichi",
+    "target": "keigo",
+    "type": "Allies",
+    "label": "Karakura High Classmate"
+  },
+  {
+    "source": "mahana",
+    "target": "tatsuki",
+    "type": "Allies",
+    "label": "Karakura High Friend"
+  },
+  {
+    "source": "misato",
+    "target": "ichigo",
+    "type": "Allies",
+    "label": "Homeroom Teacher"
+  },
+  {
+    "source": "keisuke",
+    "target": "ichigo",
+    "type": "Allies",
+    "label": "Karakura High Classmate"
+  },
+  {
+    "source": "kagine",
+    "target": "ichigo",
+    "type": "Allies",
+    "label": "High School Teacher"
+  },
+  {
+    "source": "soul_king",
+    "target": "yhwach",
+    "type": "Family",
+    "label": "Father / Primordial Progenitor"
+  },
+  {
+    "source": "ichibei",
+    "target": "soul_king",
+    "type": "Royal Guard",
+    "label": "Protector / Vessel Seal"
+  },
+  {
+    "source": "senjumaru",
+    "target": "soul_king",
+    "type": "Royal Guard",
+    "label": "Zero Squad Guardian"
+  },
+  {
+    "source": "kirio",
+    "target": "soul_king",
+    "type": "Royal Guard",
+    "label": "Zero Squad Guardian"
+  },
+  {
+    "source": "tenjiro",
+    "target": "soul_king",
+    "type": "Royal Guard",
+    "label": "Zero Squad Guardian"
+  },
+  {
+    "source": "oetsu",
+    "target": "soul_king",
+    "type": "Royal Guard",
+    "label": "Zero Squad Guardian"
+  },
+  {
+    "source": "aizen",
+    "target": "soul_king",
+    "type": "Enemies",
+    "label": "Ambition to Dethrone"
+  },
+  {
+    "source": "ichigo",
+    "target": "soul_king",
+    "type": "Destiny",
+    "label": "Soul King Candidate"
+  },
+  {
+    "source": "yamamoto",
+    "target": "soul_king",
+    "type": "Division",
+    "label": "Gotei 13 Supreme Sovereign"
+  },
+  {
+    "source": "ukitake",
+    "target": "soul_king",
+    "type": "Destiny",
+    "label": "Host to Mimihagi (Right Hand)"
+  },
+  {
+    "source": "yhwach",
+    "target": "lille_barro",
+    "type": "Division",
+    "label": "Schutzstaffel Leader"
+  },
+  {
+    "source": "yhwach",
+    "target": "gerard_valkyrie",
+    "type": "Division",
+    "label": "Schutzstaffel Elite"
+  },
+  {
+    "source": "yhwach",
+    "target": "pernida_parnkgjas",
+    "type": "Division",
+    "label": "Schutzstaffel Elite"
+  },
+  {
+    "source": "yhwach",
+    "target": "askin_nakk_le_vaar",
+    "type": "Division",
+    "label": "Schutzstaffel Promotion"
+  },
+  {
+    "source": "yhwach",
+    "target": "bazz_b",
+    "type": "Division",
+    "label": "Emperor & Subordinate"
+  },
+  {
+    "source": "yhwach",
+    "target": "gremmy_thoumeaux",
+    "type": "Division",
+    "label": "Imprisoned Weapon"
+  },
+  {
+    "source": "yhwach",
+    "target": "royd_lloyd",
+    "type": "Division",
+    "label": "Body Double Decoy"
+  },
+  {
+    "source": "yhwach",
+    "target": "nianzol_weizol",
+    "type": "Division",
+    "label": "Personal Bodyguard"
+  },
+  {
+    "source": "yhwach",
+    "target": "luders_friegen",
+    "type": "Division",
+    "label": "Executed Vanguard"
+  },
+  {
+    "source": "yhwach",
+    "target": "asguiaro_ebern",
+    "type": "Division",
+    "label": "Executed Scout"
+  },
+  {
+    "source": "jugram",
+    "target": "bazz_b",
+    "type": "Allies",
+    "label": "Childhood Friend & Rival"
+  },
+  {
+    "source": "jugram",
+    "target": "cang_du",
+    "type": "Division",
+    "label": "Executed Cang Du"
+  },
+  {
+    "source": "jugram",
+    "target": "bg9",
+    "type": "Division",
+    "label": "Executed BG9"
+  },
+  {
+    "source": "jugram",
+    "target": "lille_barro",
+    "type": "Division",
+    "label": "Wandenreich Command"
+  },
+  {
+    "source": "uryu",
+    "target": "jugram",
+    "type": "Enemies",
+    "label": "Successor Duel"
+  },
+  {
+    "source": "gerard_valkyrie",
+    "target": "soul_king",
+    "type": "Family",
+    "label": "Heart of the Soul King"
+  },
+  {
+    "source": "pernida_parnkgjas",
+    "target": "soul_king",
+    "type": "Family",
+    "label": "Left Hand of Soul King"
+  },
+  {
+    "source": "pernida_parnkgjas",
+    "target": "mayuri",
+    "type": "Enemies",
+    "label": "Royal Realm Duel"
+  },
+  {
+    "source": "gerard_valkyrie",
+    "target": "byakuya",
+    "type": "Enemies",
+    "label": "Royal Realm Clash"
+  },
+  {
+    "source": "gerard_valkyrie",
+    "target": "hitsugaya",
+    "type": "Enemies",
+    "label": "Royal Realm Clash"
+  },
+  {
+    "source": "gerard_valkyrie",
+    "target": "kenpachi",
+    "type": "Enemies",
+    "label": "Royal Realm Clash"
+  },
+  {
+    "source": "lille_barro",
+    "target": "shunsui",
+    "type": "Enemies",
+    "label": "Kageoni / Karamatsu Shinjū"
+  },
+  {
+    "source": "lille_barro",
+    "target": "nanao",
+    "type": "Enemies",
+    "label": "Slain by Shinken Hakkyōken"
+  },
+  {
+    "source": "askin_nakk_le_vaar",
+    "target": "urahara",
+    "type": "Enemies",
+    "label": "Gift Ball Deluxe Clash"
+  },
+  {
+    "source": "askin_nakk_le_vaar",
+    "target": "yoruichi",
+    "type": "Enemies",
+    "label": "Shunkō Raiju Duel"
+  },
+  {
+    "source": "askin_nakk_le_vaar",
+    "target": "grimmjow",
+    "type": "Enemies",
+    "label": "Heart Crushed by Sneak Attack"
+  },
+  {
+    "source": "bambietta_basterbine",
+    "target": "giselle_gewelle",
+    "type": "Allies",
+    "label": "Zombie Slave Subjugation"
+  },
+  {
+    "source": "bambietta_basterbine",
+    "target": "candice_catnipp",
+    "type": "Allies",
+    "label": "The Bambies Squad"
+  },
+  {
+    "source": "bambietta_basterbine",
+    "target": "meninas_mcallon",
+    "type": "Allies",
+    "label": "The Bambies Squad"
+  },
+  {
+    "source": "bambietta_basterbine",
+    "target": "liltotto_lamperd",
+    "type": "Allies",
+    "label": "The Bambies Squad"
+  },
+  {
+    "source": "bambietta_basterbine",
+    "target": "komamura",
+    "type": "Enemies",
+    "label": "Dangai Jōe Duel"
+  },
+  {
+    "source": "candice_catnipp",
+    "target": "ichigo",
+    "type": "Enemies",
+    "label": "Electrocution Assault"
+  },
+  {
+    "source": "giselle_gewelle",
+    "target": "mayuri",
+    "type": "Enemies",
+    "label": "Zombie Warfare Clash"
+  },
+  {
+    "source": "liltotto_lamperd",
+    "target": "pepe_waccabrada",
+    "type": "Enemies",
+    "label": "Devoured PePe"
+  },
+  {
+    "source": "as_nodt",
+    "target": "byakuya",
+    "type": "Enemies",
+    "label": "Stole Senbonzakura / Tatarforas"
+  },
+  {
+    "source": "as_nodt",
+    "target": "rukia",
+    "type": "Enemies",
+    "label": "Slain by Hakka no Togame"
+  },
+  {
+    "source": "cang_du",
+    "target": "hitsugaya",
+    "type": "Enemies",
+    "label": "Stole Daiguren Hyōrinmaru"
+  },
+  {
+    "source": "bg9",
+    "target": "soi_fon",
+    "type": "Enemies",
+    "label": "Stole Jakuho Raikōben"
+  },
+  {
+    "source": "driscoll_berci",
+    "target": "sasakibe",
+    "type": "Enemies",
+    "label": "Murdered & Stole Bankai"
+  },
+  {
+    "source": "driscoll_berci",
+    "target": "yamamoto",
+    "type": "Enemies",
+    "label": "Incinerated by Ryūjin Jakka"
+  },
+  {
+    "source": "mask_de_masculine",
+    "target": "james",
+    "type": "Allies",
+    "label": "Cheerleader / Power Engine"
+  },
+  {
+    "source": "mask_de_masculine",
+    "target": "renji",
+    "type": "Enemies",
+    "label": "Defeated by Sōō Zabimaru"
+  },
+  {
+    "source": "mask_de_masculine",
+    "target": "kensei",
+    "type": "Enemies",
+    "label": "Overwhelmed Kensei"
+  },
+  {
+    "source": "mask_de_masculine",
+    "target": "rose",
+    "type": "Enemies",
+    "label": "Ruptured Eardrums"
+  },
+  {
+    "source": "gremmy_thoumeaux",
+    "target": "kenpachi",
+    "type": "Enemies",
+    "label": "Meteor vs Nozarashi"
+  },
+  {
+    "source": "gremmy_thoumeaux",
+    "target": "guenael_lee",
+    "type": "Division",
+    "label": "Imagined Creation"
+  },
+  {
+    "source": "gremmy_thoumeaux",
+    "target": "yachiru",
+    "type": "Enemies",
+    "label": "Infirmary Infiltration"
+  },
+  {
+    "source": "quilge_opie",
+    "target": "ichigo",
+    "type": "Enemies",
+    "label": "Trapped in The Jail"
+  },
+  {
+    "source": "quilge_opie",
+    "target": "urahara",
+    "type": "Enemies",
+    "label": "Blasted in Hueco Mundo"
+  },
+  {
+    "source": "pepe_waccabrada",
+    "target": "hisagi",
+    "type": "Enemies",
+    "label": "Love Mind Control"
+  },
+  {
+    "source": "robert_accutrone",
+    "target": "shunsui",
+    "type": "Enemies",
+    "label": "Blinded Shunsui's Eye"
+  },
+  {
+    "source": "nanana_najahkoop",
+    "target": "aizen",
+    "type": "Enemies",
+    "label": "Paralyzed via Morphine Pattern"
+  },
+  {
+    "source": "nanana_najahkoop",
+    "target": "renji",
+    "type": "Enemies",
+    "label": "Observed Reiatsu Grid"
+  },
+  {
+    "source": "royd_lloyd",
+    "target": "loyd_lloyd",
+    "type": "Family",
+    "label": "Twin Brothers"
+  },
+  {
+    "source": "royd_lloyd",
+    "target": "yamamoto",
+    "type": "Enemies",
+    "label": "Incinerated by Zanka no Tachi"
+  },
+  {
+    "source": "loyd_lloyd",
+    "target": "kenpachi",
+    "type": "Enemies",
+    "label": "Cut Down by Kenpachi"
+  },
+  {
+    "source": "berenice_gabrielli",
+    "target": "kenpachi",
+    "type": "Enemies",
+    "label": "Throat Torn by Kenpachi"
+  },
+  {
+    "source": "jerome_guizbatt",
+    "target": "kenpachi",
+    "type": "Enemies",
+    "label": "Bisected by Kenpachi"
+  },
+  {
+    "source": "shaz_domino",
+    "target": "ichigo",
+    "type": "Enemies",
+    "label": "Flattened by Arrival"
+  },
+  {
+    "source": "asguiaro_ebern",
+    "target": "ichigo",
+    "type": "Enemies",
+    "label": "Attempted Bankai Theft"
+  },
+  {
+    "source": "yamamoto",
+    "target": "chika_shihoin",
+    "type": "Division",
+    "label": "Original Gotei 13 Founders"
+  },
+  {
+    "source": "yamamoto",
+    "target": "kinroku_izuhara",
+    "type": "Division",
+    "label": "Original Gotei 13 Founders"
+  },
+  {
+    "source": "yamamoto",
+    "target": "chigiri_shijima",
+    "type": "Division",
+    "label": "Original Gotei 13 Founders"
+  },
+  {
+    "source": "yamamoto",
+    "target": "danjiro_obana",
+    "type": "Division",
+    "label": "Original Gotei 13 Founders"
+  },
+  {
+    "source": "yamamoto",
+    "target": "furofushi_saito",
+    "type": "Division",
+    "label": "Original Gotei 13 Founders"
+  },
+  {
+    "source": "yamamoto",
+    "target": "nobutsuna_shigyo",
+    "type": "Division",
+    "label": "Original Gotei 13 Founders"
+  },
+  {
+    "source": "yamamoto",
+    "target": "batsuunsai_katori",
+    "type": "Division",
+    "label": "Original Gotei 13 Founders"
+  },
+  {
+    "source": "yamamoto",
+    "target": "entetsu_kumoi",
+    "type": "Division",
+    "label": "Original Gotei 13 Founders"
+  },
+  {
+    "source": "yamamoto",
+    "target": "furuoki_otogawa",
+    "type": "Division",
+    "label": "Original Gotei 13 Founders"
+  },
+  {
+    "source": "yamamoto",
+    "target": "uhin_zenjoji",
+    "type": "Division",
+    "label": "Original Gotei 13 Founders"
+  },
+  {
+    "source": "yamamoto",
+    "target": "saizo_sakahone",
+    "type": "Division",
+    "label": "Original Gotei 13 Founders"
+  },
+  {
+    "source": "unohana",
+    "target": "chika_shihoin",
+    "type": "Division",
+    "label": "First Generation Comrades"
+  },
+  {
+    "source": "unohana",
+    "target": "furofushi_saito",
+    "type": "Division",
+    "label": "First Generation Comrades"
+  },
+  {
+    "source": "chika_shihoin",
+    "target": "yoruichi",
+    "type": "Family",
+    "label": "Shihōin Clan Ancestor"
+  },
+  {
+    "source": "tokinada_tsunayashiro",
+    "target": "shunsui",
+    "type": "Allies",
+    "label": "Academy Peer / Noble Rival"
+  },
+  {
+    "source": "tokinada_tsunayashiro",
+    "target": "hikone_ubuginu",
+    "type": "Division",
+    "label": "Master & Synthetic Vassal"
+  },
+  {
+    "source": "tokinada_tsunayashiro",
+    "target": "aura_michibane",
+    "type": "Allies",
+    "label": "CFYOW Conspirators"
+  },
+  {
+    "source": "tokinada_tsunayashiro",
+    "target": "tosen",
+    "type": "Enemies",
+    "label": "Murdered Kakyō (Tōsen's Friend)"
+  },
+  {
+    "source": "hikone_ubuginu",
+    "target": "ikomikidomoe",
+    "type": "Division",
+    "label": "Wielded as Zanpakutō"
+  },
+  {
+    "source": "hikone_ubuginu",
+    "target": "hisagi",
+    "type": "Enemies",
+    "label": "Philosophical Duel"
+  },
+  {
+    "source": "hikone_ubuginu",
+    "target": "kenpachi",
+    "type": "Enemies",
+    "label": "Fierce Sparring Partners"
+  },
+  {
+    "source": "aura_michibane",
+    "target": "urahara",
+    "type": "Enemies",
+    "label": "Intellectual Fullbring Clash"
+  },
+  {
+    "source": "ikomikidomoe",
+    "target": "ichibei",
+    "type": "Enemies",
+    "label": "Defeated & Named by Ichibei"
+  },
+  {
+    "source": "soya_azashiro",
+    "target": "kenpachi_kuruyashiki",
+    "type": "Enemies",
+    "label": "Slew 7th Kenpachi for Title"
+  },
+  {
+    "source": "soya_azashiro",
+    "target": "kenpachi",
+    "type": "Enemies",
+    "label": "Muken Clash of Kenpachis"
+  },
+  {
+    "source": "kenpachi_kuruyashiki",
+    "target": "shunsui",
+    "type": "Allies",
+    "label": "Respected Captain Peers"
+  },
+  {
+    "source": "roka_paramia",
+    "target": "szayelaporro",
+    "type": "Division",
+    "label": "Creator & Abused Fracción"
+  },
+  {
+    "source": "roka_paramia",
+    "target": "don_kanonji",
+    "type": "Allies",
+    "label": "Protected by Don Kan'onji"
+  }
 ]

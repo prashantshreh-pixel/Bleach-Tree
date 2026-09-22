@@ -1,6 +1,6 @@
 # Bleach Intelligence Database
 
-An interactive, high-performance character relationship intelligence database for the Bleach universe — built to visually explore the intricate web of bloodlines, rivalries, factions, and alliances across the series, from the Kurosaki lineage to the Gotei 13 and the Wandenreich Quincy hierarchy.
+An interactive, high-performance character relationship intelligence database for the Bleach universe — built to visually explore the intricate web of bloodlines, rivalries, factions, and alliances across the series, from the Kurosaki lineage to the Gotei 13, the Espada, the Wandenreich Quincy hierarchy, the Original Gotei 13 founders, and the light novel continuations (*Can't Fear Your Own World* and *Spirits Are Forever With You*).
 
 Inspired by Obsidian's graph architecture and themed around the *Thousand-Year Blood War* aesthetic.
 
@@ -8,7 +8,7 @@ Inspired by Obsidian's graph architecture and themed around the *Thousand-Year B
 
 ## 🌟 Overview
 
-Instead of sifting through wikis to piece together who is related to who, allied with who, or fighting who, this project visualizes the entire Bleach character network as a hardware-accelerated **interactive force-directed graph**. 
+Instead of sifting through wikis to piece together who is related to who, allied with who, or fighting who, this project visualizes the entire Bleach character network as a hardware-accelerated **interactive force-directed graph** containing **189 characters** and **355 canonical relationships**.
 
 Click any character to inspect their classified dossier, examine their direct connections, and watch the viewport automatically pan and zoom to keep their allies, family, and enemies in focus.
 
@@ -16,17 +16,27 @@ Click any character to inspect their classified dossier, examine their direct co
 
 ## ✨ Features
 
-- **Obsidian Force-Directed Graph**: Hardware-accelerated HTML5 Canvas + D3.js v7 physics engine delivering smooth 60 FPS pan, zoom, and node dragging without freezing.
-- **Single WebP Sprite Sheet (`characters.webp`)**: All character portraits are auto-cropped (face-centered), compressed to 128x128px WebP, and packed into a single sprite sheet, converting 100+ separate HTTP requests into 1 single ultra-compact request (~3 KB).
-- **Level of Detail (LOD) & Frustum Culling**: Canvas intelligently skips off-screen nodes and renders clean glowing dots when zoomed out, smoothly transitioning into circular masked portraits only when zoomed in (`zoom >= 0.72`) to eliminate clutter and maximize frame rates.
-- **Grayscale-to-Color Interaction**: Avatars render slightly desaturated at rest for a sleek aesthetic and bloom into full vibrant color upon hover or selection.
-- **Graceful Initials Fallback**: Nodes without portraits dynamically render high-tech circular badges with character initials (e.g. "IK", "BK", "YR") and race/faction colored rings — preventing broken image icons.
-- **Floating Frosted-Glass Dossier**: Detached, modern floating card featuring character avatars, faction badges, status indicators, and categorized relationship pills (Bloodline, Social, Affiliation).
-- **Intelligent Viewport Auto-Fit**: Selecting any character smoothly frames and zooms the camera to guarantee all directly connected nodes fit within your screen with safe margins.
+- **Obsidian Force-Directed Graph**: Hardware-accelerated HTML5 Canvas + D3.js physics engine delivering smooth 60–120 FPS pan, zoom, and node dragging across 189 characters without hitching.
+- **Tactical Radar Minimap (Bottom-Left HUD)**: Real-time bird's-eye radar displaying the entire galaxy of character nodes and a dynamic viewport frustum rectangle. Click or drag anywhere on the minimap to instantly navigate across the universe.
+- **Interactive Faction Filter Navigation Bar**: Dedicated floating navigation bar that filters the graph to display only the selected faction's characters and internal relationships, pinning the faction's supreme leader in the exact center `(0, 0)`:
+  - **All Galaxy**: Displays all 189 characters and 355 relationships with **Ichigo Kurosaki** anchored at the cosmic center.
+  - **Gotei 13**: Filters exclusively to Gotei 13 captains, lieutenants, and seated officers with **Genryūsai Shigekuni Yamamoto** pinned at the center.
+  - **Wandenreich**: Isolates the Quincy empire, Schutzstaffel, and Sternritter with **Yhwach** commanding the center.
+  - **Hueco Mundo**: Shows the Espada, Privaron Espada, and Fracción with **Sōsuke Aizen** anchored at the throne.
+  - **Royal Realm**: Focuses on the Soul King Palace and Zero Squad with the **Soul King (Reiō)** at the core.
+  - **Karakura Town**: Displays the human world defenders, Fullbringers, and allies with **Ichigo Kurosaki** at the heart.
+  - **Original Gotei**: Displays the legendary founding captains of the original Gotei 13 with **Genryūsai Shigekuni Yamamoto** at the center.
+- **Dynamic Connection Line Visibility**:
+  - **Crisp Default Threads**: Relationship links remain clearly visible by default (~1.1px, `0.20` opacity) across the dark canvas even when no node is selected, preserving the spiritual network structure at all zoom levels.
+  - **Interactive Focus & Highlighting**: Selecting or hovering any character intensifies incident connections into high-contrast glowing trails (`0.95` opacity / amber `#F59E0B`), while unobtrusively dimming unrelated lines.
+  - **Tiered Level of Detail (LOD)**: Smoothly transitions between constellation view and full portrait avatars as you zoom into clusters.
+- **Single High-Res 192px Sprite Sheet (`characters.webp`)**: 161 character portraits are auto-cropped (face-centered), lanczos-filtered, and packed into a unified 192×192px WebP sprite sheet (~1.1 MB), replacing 160+ individual HTTP network requests with 1 single cached request.
+- **Floating High-Definition Hover HUD Card**: Hovering any node renders a sleek frosted-glass HUD card with a 76px circular avatar, faction-colored ring, race/faction metadata pills, and real-time live connection counters.
+- **Frosted-Glass Dossier & Character Backdrop**: Inspecting any character reveals a detailed sidebar with their portrait scaled, blurred, and softened as a background behind dark frosted glass.
+- **Shortest Path Tracing**: Select any character, hit "Trace Path", and click another character to calculate and visualize degrees of separation with directional glowing energy particles.
 - **Command Palette & Quick Search (`Ctrl + T`)**: Instant search overlay to query characters, factions, or bloodlines and immediately teleport to any node.
-- **Race & Faction Visual Hierarchy**: Soul Reapers, Quincy, Hybrids, Humans, Nobles, and Royal Guard are color-coded with distinct spiritual pressure (Reiatsu) glows.
-- **Zero-Dependency Procedural Audio**: In-browser sound effects powered by the Web Audio API (no external MP3/WAV assets required).
-- **Custom Loading Experience**: Animated ICHIGOAT sequence with click-to-skip and automatic safety fallbacks.
+- **Zero-Dependency Procedural Audio**: In-browser sound effects powered by the Web Audio API (no external audio assets required).
+- **Sub-Second Load Time**: Precomputed layout warmup (`warmupTicks: 35`), idle simulation cooling (`cooldownTicks: 95`), and instant reactive loader dismissal (< 350ms).
 
 ---
 
@@ -57,8 +67,10 @@ The intelligence database is packed with hidden interactions and secret triggers
 | `Ctrl + T` | Open Command Palette / Quick Search |
 | `Escape` | Close active dossier or search modal |
 | `Click Node` | Open floating character dossier and auto-fit connected network |
+| `Click / Drag Minimap` | Instantly pan the viewport from the bottom-left tactical radar |
+| `Cluster Buttons` | Jump camera directly to Gotei 13, Wandenreich, Hueco Mundo, etc. |
 | `Double Click Background` | Reset camera view and clear active selections |
-| `Scroll Wheel` | Zoom in / out |
+| `Scroll Wheel` | Zoom in / out (activates semantic zoom transitions) |
 | `Click & Drag Node` | Pin and reposition character in physical simulation |
 | `Click & Drag Background` | Pan the camera across the Soul Society canvas |
 
@@ -67,7 +79,8 @@ The intelligence database is packed with hidden interactions and secret triggers
 ## 🛠️ Tech Stack
 
 - **Physics & Layout Engine**: [D3.js](https://d3js.org/) (Force Simulation, Zoom behaviors, Drag gestures).
-- **Graphics Pipeline**: HTML5 Canvas with dual-pass glow shaders and hardware-accelerated transforms.
+- **Graphics Pipeline**: HTML5 Canvas with dual-pass glow shaders, matrix caching, and hardware-accelerated transforms.
+- **Sprite Generation**: Python Pillow (PIL) lanczos face-cropping to unified WebP format.
 - **Audio Engine**: Native HTML5 Web Audio API synthesizer (oscillators, noise buffers, and biquad filters).
 - **Backend / Data Pipeline**: Python generator (`obsidian_network.py`), JSON data sources (`data/characters.json`, `data/relationships.json`).
 - **Typography & Styling**: Google Fonts (*Cinzel*, *Inter*), CSS backdrop filters, and custom scrollbar theming.
@@ -91,7 +104,7 @@ cd Bleach-Tree
 python obsidian_network.py
 ```
 
-This compiles the network and generates **`bleach_intelligence_database.html`**. 
+This compiles the network, discovers all character portraits in `Asset/`, builds `Asset/sprites/characters.webp`, and outputs **`bleach_intelligence_database.html`**. 
 
 Open `bleach_intelligence_database.html` directly in your browser:
 ```bash
@@ -112,16 +125,16 @@ xdg-open bleach_intelligence_database.html
 ```text
 Bleach Tree/
 ├── Asset/
-│   ├── Image/
+│   ├── Image/                       # Synchronized repository of character portraits
 │   │   ├── ICHIGOAT.gif             # Custom loader animation
 │   │   ├── Ichigo Kurosaki.jpg      # High-res source character portrait
-│   │   └── bankai_favicon.svg       # Soul Reaper badge favicon
+│   │   └── ...                      # 160+ character portraits
 │   └── sprites/
-│       ├── characters.webp          # Compiled 128x128 WebP sprite sheet
+│       ├── characters.webp          # Compiled 192x192 WebP sprite sheet (161 portraits)
 │       └── characters-map.json      # Coordinate lookup for CSS & Canvas slices
 ├── data/
-│   ├── characters.json              # Canonical character registry & affiliations
-│   └── relationships.json           # Directed edge database & relationship types
+│   ├── characters.json              # Canonical character registry (189 entities)
+│   └── relationships.json           # Canonical relationship database (355 edges)
 ├── build_sprites.py                 # Automated face-crop & WebP sprite sheet compiler
 ├── obsidian_network.py              # Main compiler generating the standalone HTML
 ├── bleach_intelligence_database.html# Standalone, zero-dependency interactive web application
