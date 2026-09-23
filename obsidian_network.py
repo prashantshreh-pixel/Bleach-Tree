@@ -70,11 +70,11 @@ def generate_obsidian_graph():
             tier = 1
             node_val = 16.0
         # Tier 2: Right-Hands, Top Espada, Supreme Captains, Faction Leaders, Original Gotei 13
-        elif char_id in ('gin', 'tosen', 'starrk', 'baraggan', 'harribel', 'ulquiorra', 'grimmjow', 'nnoitra', 'shunsui', 'kenpachi', 'byakuya', 'urahara', 'shinji', 'ginjo', 'jugram', 'rukia', 'renji', 'hitsugaya', 'unohana', 'chika_shihoin', 'kinroku_izuhara', 'chigiri_shijima', 'danjiro_obana', 'furofushi_saito', 'nobutsuna_shigyo', 'batsuunsai_katori', 'entetsu_kumoi', 'furuoki_otogawa', 'uhin_zenjoji', 'saizo_sakahone', 'soi_fon', 'mayuri', 'komamura', 'ukitake', 'rose', 'kensei'):
+        elif char_id in ('gin', 'tosen', 'starrk', 'baraggan', 'harribel', 'ulquiorra', 'grimmjow', 'nnoitra', 'shunsui', 'kenpachi', 'byakuya', 'urahara', 'shinji', 'ginjo', 'jugram', 'uryu', 'rukia', 'renji', 'hitsugaya', 'unohana', 'chika_shihoin', 'kinroku_izuhara', 'chigiri_shijima', 'danjiro_obana', 'furofushi_saito', 'nobutsuna_shigyo', 'batsuunsai_katori', 'entetsu_kumoi', 'furuoki_otogawa', 'uhin_zenjoji', 'saizo_sakahone', 'soi_fon', 'mayuri', 'komamura', 'ukitake', 'rose', 'kensei', 'lille_barro', 'gerard_valkyrie', 'pernida_parnkgjas', 'askin_nakk_le_vaar', 'gremmy_thoumeaux'):
             tier = 2
             node_val = 11.5
         # Tier 3: Core Espada, Captains, Elite Schutzstaffel, Key Lieutenants
-        elif char_id in ('zommari', 'szayelaporro', 'aaroniero', 'yammy', 'luppi', 'nelliel', 'wonderweiss', 'lille_barro', 'gerard_valkyrie', 'askin_nakk_le_vaar', 'pernida_parnkgjas', 'gremmy_thoumeaux', 'bazz_b', 'bambietta_basterbine', 'love', 'lisa', 'hachigen', 'yoruichi', 'isshin', 'ryuken', 'uryu', 'orihime', 'chad', 'tsukishima', 'tatsuki', 'omaeda', 'kira', 'isane', 'momo', 'nanao', 'hisagi', 'rangiku', 'yachiru', 'nemu', 'sasakibe'):
+        elif char_id in ('zommari', 'szayelaporro', 'aaroniero', 'yammy', 'luppi', 'nelliel', 'wonderweiss', 'bazz_b', 'bambietta_basterbine', 'as_nodt', 'cang_du', 'quilge_opie', 'bg9', 'pepe_waccabrada', 'robert_accutrone', 'driscoll_berci', 'meninas_mcallon', 'mask_de_masculine', 'candice_catnipp', 'giselle_gewelle', 'nanana_najahkoop', 'nianzol_weizol', 'royd_lloyd', 'loyd_lloyd', 'liltotto_lamperd', 'love', 'lisa', 'hachigen', 'yoruichi', 'isshin', 'ryuken', 'orihime', 'chad', 'tsukishima', 'tatsuki', 'omaeda', 'kira', 'isane', 'momo', 'nanao', 'hisagi', 'rangiku', 'yachiru', 'nemu', 'sasakibe'):
             tier = 3
             node_val = 8.5
         # Tier 5: Minor Fracción, Fodder, Servants, Minor Hollows
@@ -2116,7 +2116,8 @@ def generate_obsidian_graph():
                 }};
             }}
             if (clusterType === 'wandenreich') {{
-                return n => n.faction === 'Wandenreich' || n.faction === 'Quincy' || n.race === 'Quincy';
+                const karakuraQuincies = ['masaki', 'ryuken', 'soken', 'kanae', 'izumi'];
+                return n => (n.faction === 'Wandenreich' || n.faction === 'Quincy' || n.race === 'Quincy') && !karakuraQuincies.includes(n.id);
             }}
             if (clusterType === 'arrancar') {{
                 return n => {{
@@ -2456,6 +2457,58 @@ def generate_obsidian_graph():
                     node.x = Math.round(Math.cos(angle) * R_OUTER);
                     node.y = Math.round(Math.sin(angle) * R_OUTER);
                     node.vx = 0; node.vy = 0;
+                }});
+
+            }} else if (clusterType === 'wandenreich') {{
+                // ─────────────────────────────────────────────────────────────────
+                // WANDENREICH: Concentric Tiered Circular Rings
+                // Yhwach at Center. Jugram/Uryu flanking. Elites in inner ring.
+                // Standard Sternritter in middle ring. Fodder in outer ring.
+                // ─────────────────────────────────────────────────────────────────
+                const yhwach = filteredNodes.find(n => n.id === 'yhwach');
+                if (yhwach) {{
+                    yhwach.x = 0; yhwach.y = 0;
+                    yhwach.fx = 0; yhwach.fy = 0;
+                    yhwach.vx = 0; yhwach.vy = 0;
+                }}
+                
+                // Ring 1: Jugram & Uryu (The Successor and Grandmaster)
+                const rightHands = ['jugram', 'uryu'];
+                rightHands.forEach((id, i) => {{
+                    const node = filteredNodes.find(n => n.id === id);
+                    if (node) {{
+                        const angle = i === 0 ? Math.PI : 0; // Left and Right
+                        node.x = Math.round(Math.cos(angle) * 120);
+                        node.y = Math.round(Math.sin(angle) * 120);
+                        node.fx = node.x; node.fy = node.y; node.vx = 0; node.vy = 0;
+                    }}
+                }});
+
+                // Ring 2: Schutzstaffel & Elites (Tier 2, excluding Yhwach and right hands)
+                const elites = filteredNodes.filter(n => n.val === 11.5 && n.id !== 'yhwach' && !rightHands.includes(n.id));
+                elites.forEach((node, i) => {{
+                    const angle = -Math.PI / 2 + (i * (2 * Math.PI / elites.length));
+                    node.x = Math.round(Math.cos(angle) * 260);
+                    node.y = Math.round(Math.sin(angle) * 260);
+                    node.fx = node.x; node.fy = node.y; node.vx = 0; node.vy = 0;
+                }});
+
+                // Ring 3: Standard Sternritter (Tier 3)
+                const standard = filteredNodes.filter(n => n.val === 8.5);
+                standard.forEach((node, i) => {{
+                    const angle = -Math.PI / 2 + (i * (2 * Math.PI / standard.length));
+                    node.x = Math.round(Math.cos(angle) * 440);
+                    node.y = Math.round(Math.sin(angle) * 440);
+                    node.fx = node.x; node.fy = node.y; node.vx = 0; node.vy = 0;
+                }});
+
+                // Ring 4: Fodder & Minor (Tier 5, value < 8.5)
+                const minor = filteredNodes.filter(n => n.val < 8.5);
+                minor.forEach((node, i) => {{
+                    const angle = -Math.PI / 2 + (i * (2 * Math.PI / Math.max(minor.length, 1)));
+                    node.x = Math.round(Math.cos(angle) * 620);
+                    node.y = Math.round(Math.sin(angle) * 620);
+                    node.fx = node.x; node.fy = node.y; node.vx = 0; node.vy = 0;
                 }});
 
             }} else if (clusterType === 'original') {{
