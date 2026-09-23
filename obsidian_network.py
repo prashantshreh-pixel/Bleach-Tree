@@ -2860,8 +2860,8 @@ def generate_obsidian_graph():
 </body>
 </html>"""
 
-    with open("bleach_intelligence_database.html", "w", encoding="utf-8") as f:
+    with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
-    print("Obsidian Canvas Database saved to: bleach_intelligence_database.html")
+    print("Obsidian Canvas Database saved to: index.html")
 
 generate_obsidian_graph()
