@@ -862,6 +862,7 @@ def generate_obsidian_graph():
         }}
         /* Mobile Touch & Drawer Optimization */
         @media (max-width: 768px) {{
+            #mobile-nav {{ display: flex !important; }}
             #sidebar {{
                 top: auto; bottom: -120%; left: 0; right: 0; width: 100%; height: 55vh;
                 border-left: none; border-top: 1px solid rgba(255,255,255,0.15);
@@ -881,9 +882,26 @@ def generate_obsidian_graph():
             #legend {{ display: none; }}
             #node-hover-card {{ transform: translate(-50%, -110%); pointer-events: none; }}
         }}
+        /* Dossier Tabs & Timeline */
+        .dossier-tabs {{ display: flex; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }}
+        .tab-btn {{ flex: 1; background: transparent; border: none; color: rgba(255,255,255,0.4); font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px; padding: 10px 0; cursor: pointer; transition: all 0.2s; border-bottom: 2px solid transparent; }}
+        .tab-btn:hover {{ color: rgba(255,255,255,0.8); }}
+        .tab-btn.active {{ color: #D4AF37; border-bottom-color: #D4AF37; }}
+        .tab-pane {{ display: none; }}
+        .tab-pane.active {{ display: block; animation: fadeIn 0.3s ease; }}
+        
+        .vertical-timeline {{ border-left: 1px dashed rgba(255,255,255,0.2); margin-left: 10px; padding-left: 20px; margin-top: 10px; }}
+        .tl-item {{ position: relative; padding-bottom: 25px; font-size: 11px; letter-spacing: 1.5px; color: rgba(255,255,255,0.5); font-family: 'Cinzel', serif; }}
+        .tl-item::before {{ content: ''; position: absolute; left: -24px; top: 2px; width: 7px; height: 7px; background: #0F1318; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; }}
+        .tl-item.active {{ color: #D4AF37; }}
+        .tl-item.active::before {{ border-color: #D4AF37; background: #D4AF37; box-shadow: 0 0 10px rgba(212,175,55,0.5); }}
+        .tl-item:last-child {{ padding-bottom: 0; }}
     </style>
 </head>
 <body>
+    <div id="mobile-nav" style="position:fixed; top:20px; left:20px; z-index:40; display:none;">
+        <button id="nav-search-btn" style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); color:#fff; padding:10px 15px; border-radius:20px; font-size:13px; cursor:pointer; font-family:'Cinzel'; letter-spacing:1px; backdrop-filter:blur(5px);"><span style="margin-right:6px;">&#x1F50D;</span> SEARCH</button>
+    </div>
     <!-- Large High-Quality Floating Hover Card -->
     <div id="node-hover-card">
         <div id="hover-avatar"></div>
@@ -936,7 +954,7 @@ def generate_obsidian_graph():
     <div id="loader" title="Click to skip">
         <div class="css-spinner"></div>
         <div class="loader-text">Loading Intelligence</div>
-        <div class="loader-hint">Click anywhere to skip</div>
+        <div class="loader-hint">Click anywhere to SKIP INTRO</div>
     </div>
 
     <div id="graph-container"></div>
@@ -965,9 +983,11 @@ def generate_obsidian_graph():
         <div class="scroll-fade"></div>
         <div id="sidebar-content">
             <button id="sidebar-close">&times;</button>
-            <button id="sidebar-search" title="Search characters (Ctrl+T)">&#x1F50D;</button>
-            <div class="brand" id="brand-wordmark" title="Click 5x for architect dossier">BLEACH <span>TYBW</span></div>
-            <div class="sub">Intelligence Database</div>
+            <div id="sidebar-search" title="Search characters (Ctrl+K)" style="display:none;">&#x1F50D;</div>
+            <div style="font-family:'Cinzel'; color:#D4AF37; font-size:10px; letter-spacing:4px; margin-bottom:15px; border-bottom:1px solid rgba(212,175,55,0.3); padding-bottom:6px; display: flex; justify-content: space-between;">
+                <span>CLASSIFIED // INTEL</span>
+                <span id="s-id-code">S-000</span>
+            </div>
 
             <!-- Back Navigation Button -->
             <div class="back-nav" id="s-back-container" style="display:none;">
@@ -977,45 +997,69 @@ def generate_obsidian_graph():
             </div>
 
             <!-- Character Profile Header -->
-            <div class="char-header">
+            <div class="char-header" style="margin-bottom: 15px;">
                 <div class="avatar-ring">
                     <div class="char-avatar" id="s-avatar"></div>
                 </div>
                 <div class="char-title-block">
-                    <div class="char-name" id="s-name">Select Node</div>
-                    <div class="char-meta" id="s-meta">Race &bull; Faction</div>
+                    <div class="char-name" id="s-name" style="text-transform:uppercase; font-size: 18px;">Select Node</div>
+                    <div class="char-meta" id="s-meta" style="color:#D4AF37; font-weight:600;">System Status</div>
                 </div>
             </div>
 
-            <!-- Description -->
-            <div class="char-desc" id="s-desc">
+            <div id="dossier-dynamic" style="display:none;">
+                <!-- Tabs -->
+                <div class="dossier-tabs">
+                    <button class="tab-btn active" data-target="pane-overview">OVERVIEW</button>
+                    <button class="tab-btn" data-target="pane-relations">RELATIONS</button>
+                    <button class="tab-btn" data-target="pane-timeline">TIMELINE</button>
+                </div>
+
+                <!-- OVERVIEW PANE -->
+                <div id="pane-overview" class="tab-pane active">
+                    <div id="s-intel-fields" style="font-size: 12px; margin-bottom: 20px; color: rgba(255,255,255,0.6); line-height: 1.6;">
+                        <div style="margin-bottom: 8px;"><strong style="color:#888; display:inline-block; width:90px;">RACE</strong> <span id="s-field-race" style="color:#fff;"></span></div>
+                        <div style="margin-bottom: 8px;"><strong style="color:#888; display:inline-block; width:90px;">AFFILIATION</strong> <span id="s-field-affil" style="color:#fff;"></span></div>
+                        <div style="margin-bottom: 8px;"><strong style="color:#888; display:inline-block; width:90px;">FAMILY/CLAN</strong> <span id="s-field-family" style="color:#fff;"></span></div>
+                        <div style="margin-bottom: 8px;"><strong style="color:#888; display:inline-block; width:90px;">REIATSU CLASS</strong> <span id="s-field-tier" style="color:#D4AF37; font-family:'Cinzel';"></span></div>
+                    </div>
+                    
+                    <div class="char-desc" id="s-desc" style="font-size: 13px; font-style:italic;"></div>
+                    
+                    <div class="action-bar" id="s-action-bar" style="margin-top: 25px;">
+                        <button class="action-btn" id="trace-path-btn" style="width:100%; justify-content:center;">
+                            <span>&#x1F4CD;</span> TRACE CONNECTION
+                        </button>
+                    </div>
+                </div>
+
+                <!-- RELATIONS PANE -->
+                <div id="pane-relations" class="tab-pane">
+                    <div class="connections-section" id="conn-section" style="margin-top:0;">
+                        <div class="section-title">
+                            <span>KNOWN RELATIONSHIPS</span>
+                            <span class="badge" id="conn-count">0</span>
+                        </div>
+                        <div class="conn-filter-bar" id="conn-filter-bar"></div>
+                        <div class="connections-list" id="s-connections"></div>
+                    </div>
+                </div>
+
+                <!-- TIMELINE PANE -->
+                <div id="pane-timeline" class="tab-pane">
+                    <div class="vertical-timeline">
+                        <div class="tl-item">SUBSTITUTE SHINIGAMI</div>
+                        <div class="tl-item">SOUL SOCIETY</div>
+                        <div class="tl-item">ARRANCAR</div>
+                        <div class="tl-item">LOST AGENT</div>
+                        <div class="tl-item">THOUSAND-YEAR BLOOD WAR</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Initial placeholder description -->
+            <div id="s-placeholder" style="font-size: 13px; font-style:italic; color:#888; margin-top:20px;">
                 Click any character node in the spiritual network to inspect classified intelligence, examine family bloodlines, and trace tactical connections.
-            </div>
-
-            <!-- Actions -->
-            <div class="action-bar" id="s-action-bar" style="display:none;">
-                <button class="action-btn" id="trace-path-btn">
-                    <span>&#x1F4CD;</span> Trace Path
-                </button>
-            </div>
-
-            <!-- Connections Section -->
-            <div class="connections-section" id="conn-section" style="display:none;">
-                <div class="section-title">
-                    <span>CONNECTIONS</span>
-                    <span class="badge" id="conn-count">0</span>
-                </div>
-                <!-- Filter bar -->
-                <div class="conn-filter-bar" id="conn-filter-bar"></div>
-                <div class="connections-list" id="s-connections"></div>
-            </div>
-
-            <!-- Faction Overview -->
-            <div id="sidebar-factions" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.08); padding-top:15px;">
-                <div class="section-title">FACTIONS</div>
-                <div class="legend-grid">
-                    {legend_items}
-                </div>
             </div>
         </div>
     </div>
@@ -1036,16 +1080,37 @@ def generate_obsidian_graph():
         {legend_items}
     </div>
 
-    <!-- Search overlay (Ctrl+T) -->
+    <!-- Search overlay (Ctrl+K) -->
     <div id="search-overlay">
         <div id="search-box">
-            <input type="text" id="search-input" placeholder="Search characters... (Ctrl+T)" autocomplete="off" />
+            <input type="text" id="search-input" placeholder="🔍 Search characters, factions, relationships (Ctrl+K)" autocomplete="off" />
             <div id="search-results"></div>
             <div id="search-hint">ESC to close &middot; &uarr;&darr; to navigate &middot; ENTER to select</div>
         </div>
     </div>
 
     <script>
+        // Intro Skip Logic (Safe)
+        const loader = document.getElementById('loader');
+        try {{
+            const skipIntro = localStorage.getItem('skipIntro');
+            if (skipIntro === 'true') {{
+                if (loader) loader.style.display = 'none';
+            }} else {{
+                setTimeout(() => {{
+                    if (loader) loader.classList.add('fade-out');
+                    try {{ localStorage.setItem('skipIntro', 'true'); }} catch(e) {{}}
+                    setTimeout(() => {{ if (loader) loader.style.display = 'none'; }}, 800);
+                }}, 1500); // 1.5 seconds max
+            }}
+        }} catch(e) {{
+            // localStorage not available
+            setTimeout(() => {{
+                if (loader) loader.classList.add('fade-out');
+                setTimeout(() => {{ if (loader) loader.style.display = 'none'; }}, 800);
+            }}, 1500);
+        }}
+
         const RAW_GRAPH = {graph_json};
         let gData = {{
             nodes: RAW_GRAPH.nodes.map(n => Object.assign({{}}, n)),
@@ -1304,6 +1369,16 @@ def generate_obsidian_graph():
             }}
         }}
 
+        // Dossier Tabs Logic
+        document.querySelectorAll('.tab-btn').forEach(btn => {{
+            btn.addEventListener('click', (e) => {{
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+                e.target.classList.add('active');
+                document.getElementById(e.target.dataset.target).classList.add('active');
+            }});
+        }});
+
         // Connection Filtering & Rendering
         let currentFilter = 'ALL';
 
@@ -1346,13 +1421,17 @@ def generate_obsidian_graph():
                 const targetNode = RAW_GRAPH.nodes.find(n => n.id === c.id);
                 const targetName = targetNode ? targetNode.name : (nodeNameMap[c.id] || c.id);
                 const cat = getRelCategory(c.type);
-                return '<div class="conn-card" style="border-left-color:' + cat.color + '" data-id="' + c.id + '" title="View ' + escapeHtml(targetName) + '">' +
-                    '<div class="conn-card-info">' +
-                        '<span class="conn-card-name">' + escapeHtml(targetName) + '</span>' +
-                        '<span class="conn-card-label">' + escapeHtml(c.label) + '</span>' +
-                    '</div>' +
-                    '<span class="conn-card-badge" style="background:' + cat.color + '22;color:' + cat.color + ';border:1px solid ' + cat.color + '44">' + cat.name + '</span>' +
-                '</div>';
+                const isDashed = (cat.name === 'Military' || cat.name === 'Organization') ? '- - - -' : (cat.name === 'Rival') ? '× × × ×' : (cat.name === 'Allies') ? '· · · ·' : '━━━━━━';
+                return `<div class="conn-card" data-id="${{c.id}}" style="font-family:'Courier New', monospace; font-size:11px; margin-bottom:10px; cursor:pointer; padding:8px; border:1px solid rgba(255,255,255,0.08); background:rgba(0,0,0,0.4); display:flex; flex-direction:column; transition: border 0.2s;" onmouseover="this.style.borderColor='${{cat.color}}'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px; color:${{cat.color}};">
+                        <span>[${{cat.name.toUpperCase()}}]</span>
+                        <span>FILE: ${{escapeHtml(targetName).toUpperCase()}}</span>
+                    </div>
+                    <div style="color:rgba(255,255,255,0.7); display:flex; justify-content:space-between;">
+                        <span>${{escapeHtml(c.label)}}</span>
+                        <span style="letter-spacing:2px; opacity:0.5;">${{isDashed}}</span>
+                    </div>
+                </div>`;
             }}).join('');
 
             // Click chips to filter
@@ -1437,9 +1516,36 @@ def generate_obsidian_graph():
             }}
 
             sName.innerText = node.name;
-            sMeta.innerText = node.race + ' \\u2022 ' + node.faction;
-            sDesc.innerText = node.desc || 'No intelligence data available.';
+            sMeta.innerText = 'STATUS: ACTIVE'; // Or something thematic
+            document.getElementById('s-id-code').innerText = 'S-' + Math.floor(Math.random()*900 + 100);
+            document.getElementById('s-placeholder').style.display = 'none';
+            document.getElementById('dossier-dynamic').style.display = 'block';
+            
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.querySelector('.tab-btn[data-target="pane-overview"]').classList.add('active');
+            document.getElementById('pane-overview').classList.add('active');
 
+            const intelFields = document.getElementById('s-intel-fields');
+            intelFields.style.display = 'block';
+            document.getElementById('s-field-race').innerText = node.race || 'CLASSIFIED';
+            document.getElementById('s-field-affil').innerText = node.faction || 'UNKNOWN';
+            document.getElementById('s-field-family').innerText = node.family || 'NONE';
+            
+            const tiers = {{ 1: 'SPECIAL WAR POTENTIAL', 2: 'CAPTAIN CLASS', 3: 'LIEUTENANT CLASS', 4: 'STANDARD' }};
+            document.getElementById('s-field-tier').innerText = tiers[node.tier || 4] || 'UNMEASURED';
+            sDesc.innerText = node.desc || 'No intelligence data available on this subject.';
+
+            const tlItems = document.querySelectorAll('.tl-item');
+            const descLower = (node.desc || '').toLowerCase();
+            tlItems[0].classList.toggle('active', descLower.includes('substitute'));
+            tlItems[1].classList.toggle('active', descLower.includes('soul society') || descLower.includes('rukia'));
+            tlItems[2].classList.toggle('active', descLower.includes('arrancar') || descLower.includes('hueco') || descLower.includes('aizen') || descLower.includes('espada'));
+            tlItems[3].classList.toggle('active', descLower.includes('lost agent') || descLower.includes('fullbring'));
+            tlItems[4].classList.toggle('active', descLower.includes('thousand-year') || descLower.includes('yhwach') || descLower.includes('sternritter') || descLower.includes('tybw') || descLower.includes('blood war'));
+            if (!Array.from(tlItems).some(item => item.classList.contains('active'))) {{
+                tlItems.forEach(item => item.classList.add('active'));
+            }}
             const conns = nodeConnections[node.id] || [];
             if (conns.length > 0) {{
                 connSection.style.display = 'block';
@@ -1673,6 +1779,14 @@ def generate_obsidian_graph():
 
                 return 'rgba(255,255,255,0.15)';
             }})
+            .linkLineDash(link => {{
+                const cat = getRelCategory(link.type || 'Other').name;
+                if (cat === 'Family') return null;
+                if (cat === 'Rival') return [2, 4];
+                if (cat === 'Military' || cat === 'Organization') return [5, 5];
+                if (cat === 'Allies') return [1, 2];
+                return null;
+            }})
             .linkDirectionalParticles(link => {{
                 const sid = typeof link.source === 'object' ? link.source.id : link.source;
                 const tid = typeof link.target === 'object' ? link.target.id : link.target;
@@ -1775,16 +1889,29 @@ def generate_obsidian_graph():
                     }}
                 }}
 
-                // Glow
+                // Glow & Subtle Reiatsu
                 if (!isDimmed) {{
                     ctx.beginPath();
-                    ctx.arc(node.x, node.y, (hasAvatar && canRenderAvatar ? imgSize : effectiveRadius) * 1.8, 0, 2 * Math.PI);
+                    let pulse = 1.0;
+                    if (isSelected) {{
+                        pulse = 1.0 + Math.sin(Date.now() / 250) * 0.12;
+                    }}
+                    const baseGlow = (hasAvatar && canRenderAvatar ? imgSize : effectiveRadius) * 1.8;
+                    const finalGlow = isSelected ? (baseGlow * pulse * 1.3) : baseGlow;
+                    
+                    ctx.arc(node.x, node.y, finalGlow, 0, 2 * Math.PI);
+                    
                     if (isHollowGlitch) {{
                         ctx.fillStyle = '#6B21A888';
                     }} else if (isBankaiActive && isSoulReaper) {{
                         ctx.fillStyle = '#4A9EFF66';
                     }} else if (node.id === 'yhwach' && sizeMult > 1.2) {{
                         ctx.fillStyle = '#DC262677';
+                    }} else if (isSelected) {{
+                        const grad = ctx.createRadialGradient(node.x, node.y, effectiveRadius, node.x, node.y, finalGlow);
+                        grad.addColorStop(0, 'rgba(212,175,55,0.7)');
+                        grad.addColorStop(1, 'rgba(212,175,55,0)');
+                        ctx.fillStyle = grad;
                     }} else if (isPathNode) {{
                         ctx.fillStyle = 'rgba(245, 158, 11, 0.4)';
                     }} else {{
@@ -2126,8 +2253,29 @@ def generate_obsidian_graph():
             }});
         }}
 
-        // Render minimap periodically and upon engine updates
-        setInterval(renderMinimap, 120);
+        // Performance optimization: Render minimap only when graph moves
+        let minimapDirty = false;
+        Graph.onEngineTick(() => {{ minimapDirty = true; }});
+        Graph.onZoom(() => {{ minimapDirty = true; }});
+        
+        function checkMinimapDirty() {{
+            if (minimapDirty && document.visibilityState === 'visible') {{
+                renderMinimap();
+                minimapDirty = false;
+            }}
+            requestAnimationFrame(checkMinimapDirty);
+        }}
+        requestAnimationFrame(checkMinimapDirty);
+
+        // Global Visibility Pause
+        document.addEventListener('visibilitychange', () => {{
+            if (document.visibilityState === 'hidden') {{
+                Graph.pauseAnimation();
+            }} else {{
+                Graph.resumeAnimation();
+                minimapDirty = true;
+            }}
+        }});
 
         // Faction Leaders Map
         const FACTION_LEADERS = {{
@@ -2740,7 +2888,7 @@ def generate_obsidian_graph():
                 }}
             }}
 
-            if ((e.ctrlKey || e.metaKey) && e.key === 't') {{
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {{
                 e.preventDefault();
                 if (searchOverlay.classList.contains('open')) {{
                     closeSearch();
@@ -2758,7 +2906,9 @@ def generate_obsidian_graph():
             }}
         }});
 
-        // ── Search (Ctrl+T) ──
+        // ── Search (Ctrl+K) ──
+        const mobileSearchBtn = document.getElementById('nav-search-btn');
+        if (mobileSearchBtn) mobileSearchBtn.addEventListener('click', openSearch);
         const searchOverlay = document.getElementById('search-overlay');
         const searchInput = document.getElementById('search-input');
         const searchResults = document.getElementById('search-results');
