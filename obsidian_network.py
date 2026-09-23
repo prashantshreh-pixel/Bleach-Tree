@@ -25,8 +25,7 @@ def generate_obsidian_graph():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     asset_dir = os.path.join(base_dir, "Asset")
     
-    with open(os.path.join(asset_dir, "Image", "ICHIGOAT.gif"), "rb") as f:
-        loader_gif_b64 = base64.b64encode(f.read()).decode("ascii")
+    # Removed base64 GIF to optimize DOM weight and FCP
 
     # Load characters.webp as data URI fallback for local file:// testing
     sprite_webp_path = os.path.join(asset_dir, "sprites", "characters.webp")
@@ -111,7 +110,7 @@ def generate_obsidian_graph():
 
     # Build the legend HTML
     legend_items = "".join(
-        f'<div style="display:flex;align-items:center;">'
+        f'<div class="faction-filter" data-faction="{race}" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1">'
         f'<span style="width:8px;height:8px;border-radius:50%;background:{color};'
         f'display:inline-block;margin-right:8px;box-shadow:0 0 5px {color};"></span>{race}</div>'
         for race, color in RACE_COLORS.items()
@@ -129,33 +128,42 @@ def generate_obsidian_graph():
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BLEACH - TYBW Intelligence</title>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;600&display=swap" as="style">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://unpkg.com/force-graph"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * {{ box-sizing: border-box; }}
-        body {{ margin: 0; padding: 0; background-color: #0A0A0F; color: white; font-family: 'Inter', sans-serif; overflow: hidden; }}
+        body {{ margin: 0; padding: 0; background-color: #0A0A0F; color: white; font-family: 'Inter', sans-serif; overflow: hidden; touch-action: none; }}
         #graph-container {{ width: 100vw; height: 100vh; position: absolute; z-index: 1; }}
 
         /* Loader */
         #loader {{
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: #0A0A0F;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.6s ease;
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.8s ease-out, visibility 0.8s; cursor: pointer;
         }}
         #loader.fade-out {{ opacity: 0; pointer-events: none; }}
-        #loader img {{ max-width: 200px; max-height: 200px; margin-bottom: 20px; }}
-        #loader .loader-text {{ font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 6px; color: rgba(255,255,255,0.5); text-transform: uppercase; }}
+        .css-spinner {{
+            width: 80px; height: 80px; border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #F59E0B; border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 20px;
+        }}
+        @keyframes spin {{ 100% {{ transform: rotate(360deg); }} }}
+        .loader-text {{
+            font-family: 'Cinzel', serif; font-size: 24px; letter-spacing: 4px;
+            color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            animation: pulse-glow 2s ease-in-out infinite; text-transform: uppercase;
+        }}
+        @keyframes pulse-glow {{ 0%, 100% {{ opacity: 0.8; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }} 50% {{ opacity: 1; text-shadow: 0 0 20px rgba(255, 255, 255, 0.9); }} }}
+        .loader-hint {{ margin-top: 15px; font-size: 13px; color: #888; font-weight: 300; letter-spacing: 1px; text-transform: uppercase; }}
 
         /* Sidebar */
         #sidebar {{
@@ -852,6 +860,27 @@ def generate_obsidian_graph():
             letter-spacing: 0.5px;
             margin-top: 2px;
         }}
+        /* Mobile Touch & Drawer Optimization */
+        @media (max-width: 768px) {{
+            #sidebar {{
+                top: auto; bottom: -120%; left: 0; right: 0; width: 100%; height: 55vh;
+                border-left: none; border-top: 1px solid rgba(255,255,255,0.15);
+                border-radius: 20px 20px 0 0;
+                transition: bottom 0.3s cubic-bezier(0.1, 0.82, 0.25, 1);
+            }}
+            #sidebar.open {{ bottom: 0; right: 0; transform: none; }}
+            #sidebar::before {{
+                content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+                width: 40px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px;
+            }}
+            #cluster-bar {{
+                top: auto; bottom: 20px; left: 50%; transform: translateX(-50%); width: 95%;
+                flex-wrap: wrap; justify-content: center; z-index: 10;
+            }}
+            .cluster-btn {{ padding: 6px 12px; font-size: 11px; margin: 3px; }}
+            #legend {{ display: none; }}
+            #node-hover-card {{ transform: translate(-50%, -110%); pointer-events: none; }}
+        }}
     </style>
 </head>
 <body>
@@ -905,7 +934,7 @@ def generate_obsidian_graph():
 
     <!-- Loader Screen -->
     <div id="loader" title="Click to skip">
-        <img src="data:image/gif;base64,{loader_gif_b64}" alt="Loading..." />
+        <div class="css-spinner"></div>
         <div class="loader-text">Loading Intelligence</div>
         <div class="loader-hint">Click anywhere to skip</div>
     </div>
@@ -1034,6 +1063,7 @@ def generate_obsidian_graph():
 
         let hoverNode = null;
         let currentNode = null;
+        let activeFactionFilter = null;
         const navHistory = [];
 
         // Web Audio Synthesizer (Zero dependencies)
@@ -1600,24 +1630,24 @@ def generate_obsidian_graph():
             .nodeId('id')
             .nodeRelSize(4)
             .backgroundColor('#0A0A0F')
-
-            // Link styling: clearly visible connections by default; highlighted on focus/hover/path
+            .linkCurvature(0.2)
             .linkWidth(link => {{
                 const sid = typeof link.source === 'object' ? link.source.id : link.source;
                 const tid = typeof link.target === 'object' ? link.target.id : link.target;
-                if (highlightedPathLinks.size > 0) {{
-                    return highlightedPathLinks.has(sid + '--' + tid) ? 3.2 : 0.35;
+                if (highlightedPathLinks.size > 0) return highlightedPathLinks.has(sid + '--' + tid) ? 3.2 : 0.35;
+                if (hoverNode) return (sid === hoverNode.id || tid === hoverNode.id) ? 2.5 : 0.35;
+                if (currentNode) return (sid === currentNode.id || tid === currentNode.id) ? 2.5 : 0.35;
+                
+                if (activeFactionFilter) {{
+                    const sNode = typeof link.source === 'object' ? link.source : gData.nodes.find(n => n.id === sid);
+                    const tNode = typeof link.target === 'object' ? link.target : gData.nodes.find(n => n.id === tid);
+                    const sMatch = sNode && (sNode.race === activeFactionFilter || sNode.faction === activeFactionFilter);
+                    const tMatch = tNode && (tNode.race === activeFactionFilter || tNode.faction === activeFactionFilter);
+                    if (sMatch && tMatch) return 1.5;
+                    return 0.2;
                 }}
-                if (hoverNode) {{
-                    return (sid === hoverNode.id || tid === hoverNode.id) ? 2.2 : 0.35;
-                }}
-                if (currentNode) {{
-                    return (sid === currentNode.id || tid === currentNode.id) ? 2.0 : 0.35;
-                }}
-                const zoom = (typeof Graph !== 'undefined' && Graph.zoom) ? Graph.zoom() : 1.0;
-                if (zoom < 0.6) return 0.95;
-                if (zoom < 1.2) return 1.15;
-                return 1.35;
+                
+                return 0.8;
             }})
             .linkColor(link => {{
                 const sid = typeof link.source === 'object' ? link.source.id : link.source;
@@ -1626,19 +1656,22 @@ def generate_obsidian_graph():
                     return highlightedPathLinks.has(sid + '--' + tid) ? '#F59E0B' : 'rgba(255,255,255,0.025)';
                 }}
                 if (hoverNode) {{
-                    return (sid === hoverNode.id || tid === hoverNode.id) ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.025)';
+                    return (sid === hoverNode.id || tid === hoverNode.id) ? 'rgba(255,255,255,1.0)' : 'rgba(255,255,255,0.025)';
                 }}
                 if (currentNode) {{
-                    return (sid === currentNode.id || tid === currentNode.id) ? 'rgba(245,158,11,0.90)' : 'rgba(255,255,255,0.025)';
+                    return (sid === currentNode.id || tid === currentNode.id) ? 'rgba(245,158,11,1.0)' : 'rgba(255,255,255,0.025)';
                 }}
-                // Crisp, visible connection lines by default when nothing is selected
-                const zoom = (typeof Graph !== 'undefined' && Graph.zoom) ? Graph.zoom() : 1.0;
-                if (zoom < 0.6) {{
-                    return 'rgba(255,255,255,0.18)';
-                }} else if (zoom < 1.2) {{
-                    return 'rgba(255,255,255,0.22)';
+
+                if (activeFactionFilter) {{
+                    const sNode = typeof link.source === 'object' ? link.source : gData.nodes.find(n => n.id === sid);
+                    const tNode = typeof link.target === 'object' ? link.target : gData.nodes.find(n => n.id === tid);
+                    const sMatch = sNode && (sNode.race === activeFactionFilter || sNode.faction === activeFactionFilter);
+                    const tMatch = tNode && (tNode.race === activeFactionFilter || tNode.faction === activeFactionFilter);
+                    if (sMatch && tMatch) return 'rgba(255,255,255,0.6)';
+                    return 'rgba(255,255,255,0.025)';
                 }}
-                return 'rgba(255,255,255,0.26)';
+
+                return 'rgba(255,255,255,0.15)';
             }})
             .linkDirectionalParticles(link => {{
                 const sid = typeof link.source === 'object' ? link.source.id : link.source;
@@ -1673,7 +1706,9 @@ def generate_obsidian_graph():
                 const isConnectedToSelected = currentNode && neighbors[currentNode.id] && neighbors[currentNode.id].has(node.id);
 
                 let isDimmed = false;
-                if (highlightedPathNodes.size > 0) {{
+                if (activeFactionFilter) {{
+                    isDimmed = (node.race !== activeFactionFilter && node.faction !== activeFactionFilter);
+                }} else if (highlightedPathNodes.size > 0) {{
                     isDimmed = !isPathNode;
                 }} else if (hoverNode) {{
                     isDimmed = !isHovered && !isConnectedToHover;
@@ -2571,6 +2606,26 @@ def generate_obsidian_graph():
 
         document.querySelectorAll('.cluster-btn').forEach(btn => {{
             btn.addEventListener('click', () => jumpToCluster(btn.dataset.cluster));
+        }});
+
+        document.querySelectorAll('.faction-filter').forEach(el => {{
+            el.addEventListener('click', () => {{
+                const fac = el.dataset.faction;
+                if (activeFactionFilter === fac) {{
+                    activeFactionFilter = null;
+                    el.style.border = 'none';
+                    el.style.background = 'transparent';
+                }} else {{
+                    activeFactionFilter = fac;
+                    document.querySelectorAll('.faction-filter').forEach(f => {{
+                        f.style.border = 'none';
+                        f.style.background = 'transparent';
+                    }});
+                    el.style.border = '1px solid rgba(255,255,255,0.4)';
+                    el.style.background = 'rgba(255,255,255,0.1)';
+                    el.style.borderRadius = '4px';
+                }}
+            }});
         }});
 
         // ── EASTER EGG TRIGGERS ──

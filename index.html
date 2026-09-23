@@ -2,33 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BLEACH - TYBW Intelligence</title>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;600&display=swap" as="style">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://unpkg.com/force-graph"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
-        body { margin: 0; padding: 0; background-color: #0A0A0F; color: white; font-family: 'Inter', sans-serif; overflow: hidden; }
+        body { margin: 0; padding: 0; background-color: #0A0A0F; color: white; font-family: 'Inter', sans-serif; overflow: hidden; touch-action: none; }
         #graph-container { width: 100vw; height: 100vh; position: absolute; z-index: 1; }
 
         /* Loader */
         #loader {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: #0A0A0F;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.6s ease;
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.8s ease-out, visibility 0.8s; cursor: pointer;
         }
         #loader.fade-out { opacity: 0; pointer-events: none; }
-        #loader img { max-width: 200px; max-height: 200px; margin-bottom: 20px; }
-        #loader .loader-text { font-family: 'Cinzel', serif; font-size: 14px; letter-spacing: 6px; color: rgba(255,255,255,0.5); text-transform: uppercase; }
+        .css-spinner {
+            width: 80px; height: 80px; border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #F59E0B; border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 20px;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loader-text {
+            font-family: 'Cinzel', serif; font-size: 24px; letter-spacing: 4px;
+            color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            animation: pulse-glow 2s ease-in-out infinite; text-transform: uppercase;
+        }
+        @keyframes pulse-glow { 0%, 100% { opacity: 0.8; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); } 50% { opacity: 1; text-shadow: 0 0 20px rgba(255, 255, 255, 0.9); } }
+        .loader-hint { margin-top: 15px; font-size: 13px; color: #888; font-weight: 300; letter-spacing: 1px; text-transform: uppercase; }
 
         /* Sidebar */
         #sidebar {
@@ -725,6 +734,27 @@
             letter-spacing: 0.5px;
             margin-top: 2px;
         }
+        /* Mobile Touch & Drawer Optimization */
+        @media (max-width: 768px) {
+            #sidebar {
+                top: auto; bottom: -120%; left: 0; right: 0; width: 100%; height: 55vh;
+                border-left: none; border-top: 1px solid rgba(255,255,255,0.15);
+                border-radius: 20px 20px 0 0;
+                transition: bottom 0.3s cubic-bezier(0.1, 0.82, 0.25, 1);
+            }
+            #sidebar.open { bottom: 0; right: 0; transform: none; }
+            #sidebar::before {
+                content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+                width: 40px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px;
+            }
+            #cluster-bar {
+                top: auto; bottom: 20px; left: 50%; transform: translateX(-50%); width: 95%;
+                flex-wrap: wrap; justify-content: center; z-index: 10;
+            }
+            .cluster-btn { padding: 6px 12px; font-size: 11px; margin: 3px; }
+            #legend { display: none; }
+            #node-hover-card { transform: translate(-50%, -110%); pointer-events: none; }
+        }
     </style>
 </head>
 <body>
@@ -778,7 +808,7 @@
 
     <!-- Loader Screen -->
     <div id="loader" title="Click to skip">
-        <img src="data:image/gif;base64,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" alt="Loading..." />
+        <div class="css-spinner"></div>
         <div class="loader-text">Loading Intelligence</div>
         <div class="loader-hint">Click anywhere to skip</div>
     </div>
@@ -858,7 +888,7 @@
             <div id="sidebar-factions" style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.08); padding-top:15px;">
                 <div class="section-title">FACTIONS</div>
                 <div class="legend-grid">
-                    <div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#FFD700;display:inline-block;margin-right:8px;box-shadow:0 0 5px #FFD700;"></span>Deity</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#4A9EFF;display:inline-block;margin-right:8px;box-shadow:0 0 5px #4A9EFF;"></span>Soul Reaper</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#DC2626;display:inline-block;margin-right:8px;box-shadow:0 0 5px #DC2626;"></span>Quincy</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#9CA3AF;display:inline-block;margin-right:8px;box-shadow:0 0 5px #9CA3AF;"></span>Human</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#A855F7;display:inline-block;margin-right:8px;box-shadow:0 0 5px #A855F7;"></span>Hybrid</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#D4AF37;display:inline-block;margin-right:8px;box-shadow:0 0 5px #D4AF37;"></span>Noble</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#F5E6C8;display:inline-block;margin-right:8px;box-shadow:0 0 5px #F5E6C8;"></span>Royal Guard</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#6B21A8;display:inline-block;margin-right:8px;box-shadow:0 0 5px #6B21A8;"></span>Hollow</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#F59E0B;display:inline-block;margin-right:8px;box-shadow:0 0 5px #F59E0B;"></span>Visored</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#10B981;display:inline-block;margin-right:8px;box-shadow:0 0 5px #10B981;"></span>Fullbringer</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#F472B6;display:inline-block;margin-right:8px;box-shadow:0 0 5px #F472B6;"></span>Mod Soul</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#E5E7EB;display:inline-block;margin-right:8px;box-shadow:0 0 5px #E5E7EB;"></span>Arrancar</div>
+                    <div class="faction-filter" data-faction="Deity" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#FFD700;display:inline-block;margin-right:8px;box-shadow:0 0 5px #FFD700;"></span>Deity</div><div class="faction-filter" data-faction="Soul Reaper" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#4A9EFF;display:inline-block;margin-right:8px;box-shadow:0 0 5px #4A9EFF;"></span>Soul Reaper</div><div class="faction-filter" data-faction="Quincy" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#DC2626;display:inline-block;margin-right:8px;box-shadow:0 0 5px #DC2626;"></span>Quincy</div><div class="faction-filter" data-faction="Human" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#9CA3AF;display:inline-block;margin-right:8px;box-shadow:0 0 5px #9CA3AF;"></span>Human</div><div class="faction-filter" data-faction="Hybrid" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#A855F7;display:inline-block;margin-right:8px;box-shadow:0 0 5px #A855F7;"></span>Hybrid</div><div class="faction-filter" data-faction="Noble" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#D4AF37;display:inline-block;margin-right:8px;box-shadow:0 0 5px #D4AF37;"></span>Noble</div><div class="faction-filter" data-faction="Royal Guard" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#F5E6C8;display:inline-block;margin-right:8px;box-shadow:0 0 5px #F5E6C8;"></span>Royal Guard</div><div class="faction-filter" data-faction="Hollow" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#6B21A8;display:inline-block;margin-right:8px;box-shadow:0 0 5px #6B21A8;"></span>Hollow</div><div class="faction-filter" data-faction="Visored" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#F59E0B;display:inline-block;margin-right:8px;box-shadow:0 0 5px #F59E0B;"></span>Visored</div><div class="faction-filter" data-faction="Fullbringer" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#10B981;display:inline-block;margin-right:8px;box-shadow:0 0 5px #10B981;"></span>Fullbringer</div><div class="faction-filter" data-faction="Mod Soul" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#F472B6;display:inline-block;margin-right:8px;box-shadow:0 0 5px #F472B6;"></span>Mod Soul</div><div class="faction-filter" data-faction="Arrancar" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#E5E7EB;display:inline-block;margin-right:8px;box-shadow:0 0 5px #E5E7EB;"></span>Arrancar</div>
                 </div>
             </div>
         </div>
@@ -877,7 +907,7 @@
     <!-- Mini legend -->
     <div id="mini-legend">
         <div class="title">FACTIONS</div>
-        <div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#FFD700;display:inline-block;margin-right:8px;box-shadow:0 0 5px #FFD700;"></span>Deity</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#4A9EFF;display:inline-block;margin-right:8px;box-shadow:0 0 5px #4A9EFF;"></span>Soul Reaper</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#DC2626;display:inline-block;margin-right:8px;box-shadow:0 0 5px #DC2626;"></span>Quincy</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#9CA3AF;display:inline-block;margin-right:8px;box-shadow:0 0 5px #9CA3AF;"></span>Human</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#A855F7;display:inline-block;margin-right:8px;box-shadow:0 0 5px #A855F7;"></span>Hybrid</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#D4AF37;display:inline-block;margin-right:8px;box-shadow:0 0 5px #D4AF37;"></span>Noble</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#F5E6C8;display:inline-block;margin-right:8px;box-shadow:0 0 5px #F5E6C8;"></span>Royal Guard</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#6B21A8;display:inline-block;margin-right:8px;box-shadow:0 0 5px #6B21A8;"></span>Hollow</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#F59E0B;display:inline-block;margin-right:8px;box-shadow:0 0 5px #F59E0B;"></span>Visored</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#10B981;display:inline-block;margin-right:8px;box-shadow:0 0 5px #10B981;"></span>Fullbringer</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#F472B6;display:inline-block;margin-right:8px;box-shadow:0 0 5px #F472B6;"></span>Mod Soul</div><div style="display:flex;align-items:center;"><span style="width:8px;height:8px;border-radius:50%;background:#E5E7EB;display:inline-block;margin-right:8px;box-shadow:0 0 5px #E5E7EB;"></span>Arrancar</div>
+        <div class="faction-filter" data-faction="Deity" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#FFD700;display:inline-block;margin-right:8px;box-shadow:0 0 5px #FFD700;"></span>Deity</div><div class="faction-filter" data-faction="Soul Reaper" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#4A9EFF;display:inline-block;margin-right:8px;box-shadow:0 0 5px #4A9EFF;"></span>Soul Reaper</div><div class="faction-filter" data-faction="Quincy" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#DC2626;display:inline-block;margin-right:8px;box-shadow:0 0 5px #DC2626;"></span>Quincy</div><div class="faction-filter" data-faction="Human" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#9CA3AF;display:inline-block;margin-right:8px;box-shadow:0 0 5px #9CA3AF;"></span>Human</div><div class="faction-filter" data-faction="Hybrid" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#A855F7;display:inline-block;margin-right:8px;box-shadow:0 0 5px #A855F7;"></span>Hybrid</div><div class="faction-filter" data-faction="Noble" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#D4AF37;display:inline-block;margin-right:8px;box-shadow:0 0 5px #D4AF37;"></span>Noble</div><div class="faction-filter" data-faction="Royal Guard" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#F5E6C8;display:inline-block;margin-right:8px;box-shadow:0 0 5px #F5E6C8;"></span>Royal Guard</div><div class="faction-filter" data-faction="Hollow" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#6B21A8;display:inline-block;margin-right:8px;box-shadow:0 0 5px #6B21A8;"></span>Hollow</div><div class="faction-filter" data-faction="Visored" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#F59E0B;display:inline-block;margin-right:8px;box-shadow:0 0 5px #F59E0B;"></span>Visored</div><div class="faction-filter" data-faction="Fullbringer" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#10B981;display:inline-block;margin-right:8px;box-shadow:0 0 5px #10B981;"></span>Fullbringer</div><div class="faction-filter" data-faction="Mod Soul" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#F472B6;display:inline-block;margin-right:8px;box-shadow:0 0 5px #F472B6;"></span>Mod Soul</div><div class="faction-filter" data-faction="Arrancar" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1"><span style="width:8px;height:8px;border-radius:50%;background:#E5E7EB;display:inline-block;margin-right:8px;box-shadow:0 0 5px #E5E7EB;"></span>Arrancar</div>
     </div>
 
     <!-- Search overlay (Ctrl+T) -->
@@ -907,6 +937,7 @@
 
         let hoverNode = null;
         let currentNode = null;
+        let activeFactionFilter = null;
         const navHistory = [];
 
         // Web Audio Synthesizer (Zero dependencies)
@@ -1473,24 +1504,24 @@
             .nodeId('id')
             .nodeRelSize(4)
             .backgroundColor('#0A0A0F')
-
-            // Link styling: clearly visible connections by default; highlighted on focus/hover/path
+            .linkCurvature(0.2)
             .linkWidth(link => {
                 const sid = typeof link.source === 'object' ? link.source.id : link.source;
                 const tid = typeof link.target === 'object' ? link.target.id : link.target;
-                if (highlightedPathLinks.size > 0) {
-                    return highlightedPathLinks.has(sid + '--' + tid) ? 3.2 : 0.35;
+                if (highlightedPathLinks.size > 0) return highlightedPathLinks.has(sid + '--' + tid) ? 3.2 : 0.35;
+                if (hoverNode) return (sid === hoverNode.id || tid === hoverNode.id) ? 2.5 : 0.35;
+                if (currentNode) return (sid === currentNode.id || tid === currentNode.id) ? 2.5 : 0.35;
+                
+                if (activeFactionFilter) {
+                    const sNode = typeof link.source === 'object' ? link.source : gData.nodes.find(n => n.id === sid);
+                    const tNode = typeof link.target === 'object' ? link.target : gData.nodes.find(n => n.id === tid);
+                    const sMatch = sNode && (sNode.race === activeFactionFilter || sNode.faction === activeFactionFilter);
+                    const tMatch = tNode && (tNode.race === activeFactionFilter || tNode.faction === activeFactionFilter);
+                    if (sMatch && tMatch) return 1.5;
+                    return 0.2;
                 }
-                if (hoverNode) {
-                    return (sid === hoverNode.id || tid === hoverNode.id) ? 2.2 : 0.35;
-                }
-                if (currentNode) {
-                    return (sid === currentNode.id || tid === currentNode.id) ? 2.0 : 0.35;
-                }
-                const zoom = (typeof Graph !== 'undefined' && Graph.zoom) ? Graph.zoom() : 1.0;
-                if (zoom < 0.6) return 0.95;
-                if (zoom < 1.2) return 1.15;
-                return 1.35;
+                
+                return 0.8;
             })
             .linkColor(link => {
                 const sid = typeof link.source === 'object' ? link.source.id : link.source;
@@ -1499,19 +1530,22 @@
                     return highlightedPathLinks.has(sid + '--' + tid) ? '#F59E0B' : 'rgba(255,255,255,0.025)';
                 }
                 if (hoverNode) {
-                    return (sid === hoverNode.id || tid === hoverNode.id) ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.025)';
+                    return (sid === hoverNode.id || tid === hoverNode.id) ? 'rgba(255,255,255,1.0)' : 'rgba(255,255,255,0.025)';
                 }
                 if (currentNode) {
-                    return (sid === currentNode.id || tid === currentNode.id) ? 'rgba(245,158,11,0.90)' : 'rgba(255,255,255,0.025)';
+                    return (sid === currentNode.id || tid === currentNode.id) ? 'rgba(245,158,11,1.0)' : 'rgba(255,255,255,0.025)';
                 }
-                // Crisp, visible connection lines by default when nothing is selected
-                const zoom = (typeof Graph !== 'undefined' && Graph.zoom) ? Graph.zoom() : 1.0;
-                if (zoom < 0.6) {
-                    return 'rgba(255,255,255,0.18)';
-                } else if (zoom < 1.2) {
-                    return 'rgba(255,255,255,0.22)';
+
+                if (activeFactionFilter) {
+                    const sNode = typeof link.source === 'object' ? link.source : gData.nodes.find(n => n.id === sid);
+                    const tNode = typeof link.target === 'object' ? link.target : gData.nodes.find(n => n.id === tid);
+                    const sMatch = sNode && (sNode.race === activeFactionFilter || sNode.faction === activeFactionFilter);
+                    const tMatch = tNode && (tNode.race === activeFactionFilter || tNode.faction === activeFactionFilter);
+                    if (sMatch && tMatch) return 'rgba(255,255,255,0.6)';
+                    return 'rgba(255,255,255,0.025)';
                 }
-                return 'rgba(255,255,255,0.26)';
+
+                return 'rgba(255,255,255,0.15)';
             })
             .linkDirectionalParticles(link => {
                 const sid = typeof link.source === 'object' ? link.source.id : link.source;
@@ -1546,7 +1580,9 @@
                 const isConnectedToSelected = currentNode && neighbors[currentNode.id] && neighbors[currentNode.id].has(node.id);
 
                 let isDimmed = false;
-                if (highlightedPathNodes.size > 0) {
+                if (activeFactionFilter) {
+                    isDimmed = (node.race !== activeFactionFilter && node.faction !== activeFactionFilter);
+                } else if (highlightedPathNodes.size > 0) {
                     isDimmed = !isPathNode;
                 } else if (hoverNode) {
                     isDimmed = !isHovered && !isConnectedToHover;
@@ -2444,6 +2480,26 @@
 
         document.querySelectorAll('.cluster-btn').forEach(btn => {
             btn.addEventListener('click', () => jumpToCluster(btn.dataset.cluster));
+        });
+
+        document.querySelectorAll('.faction-filter').forEach(el => {
+            el.addEventListener('click', () => {
+                const fac = el.dataset.faction;
+                if (activeFactionFilter === fac) {
+                    activeFactionFilter = null;
+                    el.style.border = 'none';
+                    el.style.background = 'transparent';
+                } else {
+                    activeFactionFilter = fac;
+                    document.querySelectorAll('.faction-filter').forEach(f => {
+                        f.style.border = 'none';
+                        f.style.background = 'transparent';
+                    });
+                    el.style.border = '1px solid rgba(255,255,255,0.4)';
+                    el.style.background = 'rgba(255,255,255,0.1)';
+                    el.style.borderRadius = '4px';
+                }
+            });
         });
 
         // ── EASTER EGG TRIGGERS ──
