@@ -58,23 +58,45 @@ def generate_obsidian_graph():
     }
 
     graph_data = {"nodes": [], "links": []}
-    top_nodes = set(sorted(deg_cent.keys(), key=lambda x: deg_cent[x], reverse=True)[:8])
 
     for char_id, data in chars.items():
         race = data.get("race", "Human")
         color = RACE_COLORS.get(race, "#9CA3AF")
-        size = 3 + (deg_cent.get(char_id, 0) * 15)
+        fac = data.get("faction", "")
+
+        # Hierarchical node tier sizing
+        # Tier 1: Supreme Leaders / Gods
+        if char_id in ('aizen', 'ichigo', 'yhwach', 'yamamoto', 'soul_king'):
+            tier = 1
+            node_val = 16.0
+        # Tier 2: Right-Hands, Top Espada, Supreme Captains, Faction Leaders, Original Gotei 13
+        elif char_id in ('gin', 'tosen', 'starrk', 'baraggan', 'harribel', 'ulquiorra', 'grimmjow', 'nnoitra', 'shunsui', 'kenpachi', 'byakuya', 'urahara', 'shinji', 'ginjo', 'jugram', 'rukia', 'renji', 'hitsugaya', 'unohana', 'chika_shihoin', 'kinroku_izuhara', 'chigiri_shijima', 'danjiro_obana', 'furofushi_saito', 'nobutsuna_shigyo', 'batsuunsai_katori', 'entetsu_kumoi', 'furuoki_otogawa', 'uhin_zenjoji', 'saizo_sakahone', 'soi_fon', 'mayuri', 'komamura', 'ukitake', 'rose', 'kensei'):
+            tier = 2
+            node_val = 11.5
+        # Tier 3: Core Espada, Captains, Elite Schutzstaffel, Key Lieutenants
+        elif char_id in ('zommari', 'szayelaporro', 'aaroniero', 'yammy', 'luppi', 'nelliel', 'wonderweiss', 'lille_barro', 'gerard_valkyrie', 'askin_nakk_le_vaar', 'pernida_parnkgjas', 'gremmy_thoumeaux', 'bazz_b', 'bambietta_basterbine', 'love', 'lisa', 'hachigen', 'yoruichi', 'isshin', 'ryuken', 'uryu', 'orihime', 'chad', 'tsukishima', 'tatsuki', 'omaeda', 'kira', 'isane', 'momo', 'nanao', 'hisagi', 'rangiku', 'yachiru', 'nemu', 'sasakibe'):
+            tier = 3
+            node_val = 8.5
+        # Tier 5: Minor Fracción, Fodder, Servants, Minor Hollows
+        elif 'Fracci' in fac or char_id in ('lilynette', 'loly', 'menoly', 'roka_paramia', 'charlotte', 'abirama', 'findorr', 'poww', 'ggio', 'nirgge', 'shawlong', 'edrad', 'ylfordt', 'diroy', 'nakim', 'apacci', 'milarose', 'sunsun', 'ayon', 'tesla', 'lumina', 'medazeppi', 'pesche', 'dondochakka', 'bawabawa', 'demoura', 'aisslinger', 'kukkapuro', 'aldegor', 'grand_fisher', 'jinta', 'ururu', 'kon', 'ririn', 'noba', 'kurodo', 'keigo', 'mizuiro', 'tatsuki', 'chizuru', 'ryo', 'michiru', 'mahana', 'misato', 'keisuke', 'mizuho', 'ikumi', 'kaoru', 'don_kanonji', 'kagine', 'asguiaro_ebern', 'luders_friegen', 'berenice_gabrielli', 'jerome_guizbatt', 'guenael_lee', 'shaz_domino'):
+            tier = 5
+            node_val = 3.5
+        # Tier 4: Lieutenants, Privaron Espada, Officers, Seated Members
+        else:
+            tier = 4
+            node_val = 5.8
 
         graph_data["nodes"].append({
             "id": char_id,
             "name": data.get("name", char_id),
             "race": race,
-            "faction": data.get("faction", "Unknown"),
+            "faction": fac or "Unknown",
             "family": data.get("family", "Unknown"),
             "desc": data.get("description", ""),
             "color": color,
-            "val": size,
-            "is_top": char_id in top_nodes,
+            "val": node_val,
+            "tier": tier,
+            "is_top": tier <= 2,
             "initials": get_initials(data.get("name", char_id)),
             "has_sprite": char_id in sprite_meta.get("sprites", {})
         })
@@ -111,6 +133,7 @@ def generate_obsidian_graph():
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://unpkg.com/force-graph"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -1214,9 +1237,19 @@ def generate_obsidian_graph():
         const pathBannerText = document.getElementById('path-banner-text');
         const pathCancelBtn = document.getElementById('path-cancel-btn');
 
-        document.getElementById('sidebar-close').addEventListener('click', () => {{
+        function deselectNode() {{
+            if (!currentNode && highlightedPathNodes.size === 0) return;
+            currentNode = null;
             sidebar.classList.remove('open');
             miniLegend.classList.remove('hidden');
+            if (pathFindingFrom || highlightedPathNodes.size > 0) {{
+                clearPathFinding();
+            }}
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+        }}
+
+        document.getElementById('sidebar-close').addEventListener('click', () => {{
+            deselectNode();
         }});
 
         document.getElementById('sidebar-search').addEventListener('click', () => {{
@@ -1676,9 +1709,27 @@ def generate_obsidian_graph():
                     canRenderAvatar = isHovered || isSelected || (isTopPillar && globalScale >= 0.42);
                 }}
 
+                // Hierarchical node sizing: Supreme leaders are large, fodder nodes are small
+                const tier = node.tier || 4;
+                let baseRadius;
+                if (tier === 1) {{
+                    baseRadius = 26.0; // Aizen, Ichigo, Yhwach, Yamamoto, Soul King
+                }} else if (tier === 2) {{
+                    baseRadius = 18.0; // Gin, Tosen, Top Espada, Head Captains
+                }} else if (tier === 3) {{
+                    baseRadius = 13.5; // Other Espada, Captains, Schutzstaffel
+                }} else if (tier === 4) {{
+                    baseRadius = 9.5;  // Officers, Privaron Espada, Lieutenants
+                }} else {{
+                    baseRadius = 5.8;  // Fraccion, Fodder, Minor Hollows
+                }}
+
+                const stateMultiplier = isHovered ? 1.35 : (isSelected ? 1.2 : 1.0);
+                const effectiveRadius = baseRadius * stateMultiplier * sizeMult * bankaiBoost;
+
                 const sSprite = SPRITE_MAP[node.id];
                 const hasAvatar = sSprite && spriteSheet.complete && spriteSheet.naturalWidth > 0;
-                const imgSize = hasAvatar ? (isHovered ? Math.max(size * 2.8, 22) : (isSelected ? Math.max(size * 2.4, 16) : Math.max(size * 2.0, 13))) : size;
+                const imgSize = (hasAvatar && canRenderAvatar) ? effectiveRadius : (effectiveRadius * 0.85);
 
                 // Sync floating hover card with screen position during animation/pan
                 if (isHovered) {{
@@ -1692,7 +1743,7 @@ def generate_obsidian_graph():
                 // Glow
                 if (!isDimmed) {{
                     ctx.beginPath();
-                    ctx.arc(node.x, node.y, (hasAvatar && canRenderAvatar ? imgSize : size) * 1.8, 0, 2 * Math.PI);
+                    ctx.arc(node.x, node.y, (hasAvatar && canRenderAvatar ? imgSize : effectiveRadius) * 1.8, 0, 2 * Math.PI);
                     if (isHollowGlitch) {{
                         ctx.fillStyle = '#6B21A888';
                     }} else if (isBankaiActive && isSoulReaper) {{
@@ -1736,7 +1787,7 @@ def generate_obsidian_graph():
                     ctx.stroke();
                 }} else if (canRenderAvatar && !isDimmed && globalScale >= 1.15) {{
                     // 7. Graceful Initials Fallback for characters without image
-                    const fallbackSize = Math.max(size * 1.5, 11);
+                    const fallbackSize = Math.max(effectiveRadius, 7);
                     ctx.beginPath();
                     ctx.arc(node.x, node.y, fallbackSize, 0, 2 * Math.PI);
                     ctx.fillStyle = isHollowGlitch ? '#3B0764' : '#0F1318';
@@ -1755,8 +1806,9 @@ def generate_obsidian_graph():
                     ctx.fillText(initials, node.x, node.y + 0.5);
                 }} else {{
                     // Minimalist colored glowing dot
+                    const dotRadius = Math.max(effectiveRadius * 0.65, 2.8);
                     ctx.beginPath();
-                    ctx.arc(node.x, node.y, size, 0, 2 * Math.PI);
+                    ctx.arc(node.x, node.y, dotRadius, 0, 2 * Math.PI);
                     ctx.fillStyle = isDimmed ? (node.color + '18') : (isHollowGlitch ? '#6B21A8' : (isPathNode ? '#F59E0B' : (isBankaiActive && isSoulReaper ? '#4A9EFF' : node.color)));
                     ctx.fill();
 
@@ -1773,7 +1825,7 @@ def generate_obsidian_graph():
                 }}
                 const label = node.__label;
                 const fontSize = Math.max(10 / globalScale, 2);
-                const currentRadius = (canRenderAvatar && hasAvatar && !isDimmed) ? imgSize : ((canRenderAvatar && !isDimmed && globalScale >= 1.15) ? Math.max(size * 1.5, 11) : size);
+                const currentRadius = (canRenderAvatar && hasAvatar && !isDimmed) ? imgSize : ((canRenderAvatar && !isDimmed && globalScale >= 1.15) ? Math.max(effectiveRadius, 7) : Math.max(effectiveRadius * 0.65, 2.8));
                 const labelY = node.y + currentRadius + 3;
 
                 let shouldShowLabel = false;
@@ -1852,6 +1904,12 @@ def generate_obsidian_graph():
             }})
             .onNodeClick(node => {{
                 if (node) {{
+                    // Clicking the currently selected node deselects it
+                    if (currentNode && currentNode.id === node.id && !pathFindingFrom) {{
+                        deselectNode();
+                        return;
+                    }}
+
                     // Rapid click detection for Hollowfication easter egg
                     const now = Date.now();
                     if (!nodeClickCounts[node.id] || (now - nodeClickCounts[node.id].lastTime > 2500)) {{
@@ -1872,19 +1930,58 @@ def generate_obsidian_graph():
                         selectNode(node, true);
                     }}
                 }}
+            }})
+            .onBackgroundClick(() => {{
+                deselectNode();
             }});
 
-        // Physics optimization for 190+ nodes
+        // Physics optimization: cohesive clusters, generous spacing around Baraggan, no runaway nodes
         Graph.warmupTicks(35);
         Graph.cooldownTicks(95);
         Graph.d3Force('charge')
-            .strength(-220)
-            .distanceMax(650);
+            .strength(-160)
+            .distanceMax(480);
         Graph.d3Force('link')
             .distance(link => {{
-                if (link.type === 'Fracci\u00f3n' || link.type === 'Soul Bond' || link.type === 'Parent') return 45;
-                return 68;
+                const sid = typeof link.source === 'object' ? link.source.id : link.source;
+                const tid = typeof link.target === 'object' ? link.target.id : link.target;
+                
+                // Gin & Tosen flank Aizen closely in the inner sanctum
+                if ((sid === 'aizen' && (tid === 'gin' || tid === 'tosen')) || (tid === 'aizen' && (sid === 'gin' || sid === 'tosen'))) {{
+                    return 52;
+                }}
+                // Core 10 Espada ring around Aizen in mid ring (145px)
+                const ESPADA_IDS = new Set(['starrk', 'baraggan', 'harribel', 'ulquiorra', 'nnoitra', 'grimmjow', 'zommari', 'szayelaporro', 'aaroniero', 'yammy']);
+                if ((sid === 'aizen' && ESPADA_IDS.has(tid)) || (tid === 'aizen' && ESPADA_IDS.has(sid))) {{
+                    return 145;
+                }}
+                // Outer subordinates, fodder, Privaron Espada, attendants, and creations connected to Aizen (245px)
+                if (sid === 'aizen' || tid === 'aizen') {{
+                    return 245;
+                }}
+                // Baraggan & Ikomikidomoe ancient rival spacing
+                if ((sid === 'baraggan' && tid === 'ikomikidomoe') || (tid === 'baraggan' && sid === 'ikomikidomoe')) {{
+                    return 130;
+                }}
+                // Baraggan & his 6 Fraccion (spread nicely without crowding)
+                if (sid === 'baraggan' || tid === 'baraggan') {{
+                    return 120;
+                }}
+                // Fraccion to their Espada (outer ring satellites)
+                if (link.type === 'Fracci\u00f3n') return 115;
+                if (link.type === 'Soul Bond' || link.type === 'Parent') return 60;
+                return 80;
             }});
+        if (window.d3 && typeof d3.forceCollide === 'function') {{
+            Graph.d3Force('collide', d3.forceCollide().radius(node => {{
+                const tier = node.tier || 4;
+                if (tier === 1) return 38;
+                if (tier === 2) return 26;
+                if (tier === 3) return 20;
+                if (tier === 4) return 15;
+                return 10;
+            }}).iterations(2));
+        }}
         Graph.d3VelocityDecay(0.35);
         Graph.d3AlphaDecay(0.032);
 
@@ -2014,16 +2111,8 @@ def generate_obsidian_graph():
             }}
             if (clusterType === 'gotei') {{
                 return n => {{
-                    const isSR = n.race === 'Soul Reaper' || n.race === 'Visored' || n.race === 'Noble';
-                    const fac = n.faction || '';
-                    const isGoteiFac = fac.includes('Gotei') || fac.includes('Division') || fac.includes('Kuchiki') || fac.includes('Shiba') || fac.includes('Tsunayashiro') || fac.includes('Seireitei') || fac.includes('Visored');
-                    return (isSR || isGoteiFac) &&
-                        fac !== 'Original Gotei 13' &&
-                        fac !== 'Soul King Palace' &&
-                        n.race !== 'Royal Guard' &&
-                        fac !== 'Urahara Shop' &&
-                        fac !== 'Human World' &&
-                        !['aizen', 'gin', 'tosen'].includes(n.id);
+                    const roster = ['yamamoto', 'sasakibe', 'soi_fon', 'omaeda', 'gin', 'kira', 'unohana', 'isane', 'aizen', 'momo', 'byakuya', 'renji', 'komamura', 'shunsui', 'nanao', 'tosen', 'hisagi', 'hitsugaya', 'rangiku', 'kenpachi', 'yachiru', 'mayuri', 'nemu', 'ukitake', 'rukia'];
+                    return roster.includes(n.id);
                 }};
             }}
             if (clusterType === 'wandenreich') {{
@@ -2031,6 +2120,7 @@ def generate_obsidian_graph():
             }}
             if (clusterType === 'arrancar') {{
                 return n => {{
+                    if (n.faction === 'Wandenreich') return false;
                     const fac = n.faction || '';
                     return n.race === 'Arrancar' || n.race === 'Hollow' ||
                         fac.includes('Espada') || fac.includes('Fracci') || fac.includes('Hueco') || fac.includes('Las Noches') ||
@@ -2044,9 +2134,13 @@ def generate_obsidian_graph():
             if (clusterType === 'karakura') {{
                 return n => {{
                     const fac = n.faction || '';
-                    return ['Human', 'Fullbringer', 'Mod Soul', 'Hybrid'].includes(n.race) ||
-                        fac.includes('Karakura') || fac.toUpperCase().includes('XCUTION') ||
-                        fac === 'Urahara Shop' || fac === 'Human World' || fac === 'Substitute Soul Reaper' ||
+                    const isHumanWorldFac = fac.includes('Karakura') || fac.toUpperCase().includes('XCUTION') ||
+                        fac === 'Urahara Shop' || fac === 'Human World' || fac === 'Substitute Soul Reaper';
+                    // Hybrid allowed only if faction is Human World-linked (excludes Hikone Ubuginu / noble clans)
+                    const isHybrid = n.race === 'Hybrid' && (isHumanWorldFac || n.id === 'ichigo');
+                    return ['Human', 'Fullbringer', 'Mod Soul', 'Visored'].includes(n.race) ||
+                        n.faction === 'Visored' ||
+                        isHumanWorldFac || isHybrid ||
                         ['ichigo', 'urahara', 'yoruichi', 'tessai'].includes(n.id);
                 }};
             }}
@@ -2097,13 +2191,309 @@ def generate_obsidian_graph():
                 label: l.label
             }}));
 
-            // Pin designated faction leader at center (0, 0)
-            const leader = filteredNodes.find(n => n.id === leaderId);
-            if (leader) {{
-                leader.x = 0;
-                leader.y = 0;
-                leader.fx = 0;
-                leader.fy = 0;
+            if (clusterType === 'arrancar') {{
+                // Pin Aizen at dead center
+                const aizen = filteredNodes.find(n => n.id === 'aizen');
+                if (aizen) {{
+                    aizen.x = 0; aizen.y = 0;
+                    aizen.fx = 0; aizen.fy = 0;
+                }}
+
+                // Pin Gin & Tosen flanking Aizen closely
+                const gin = filteredNodes.find(n => n.id === 'gin');
+                if (gin) {{
+                    gin.x = -36; gin.y = -52;
+                    gin.fx = -36; gin.fy = -52;
+                }}
+                const tosen = filteredNodes.find(n => n.id === 'tosen');
+                if (tosen) {{
+                    tosen.x = 36; tosen.y = -52;
+                    tosen.fx = 36; tosen.fy = -52;
+                }}
+
+                // 10 Espada arranged in strict ANTICLOCKWISE rank order around Aizen
+                // Order: 1: Starrk, 2: Baraggan, 3: Harribel, 4: Ulquiorra, 5: Nnoitra,
+                //        6: Grimmjow, 7: Zommari, 8: Szayelaporro, 9: Aaroniero, 10: Yammy
+                const ESPADA_ORDER = [
+                    'starrk',       // 1 - 12:00 (top)
+                    'baraggan',     // 2 - 10:48 (top-left)
+                    'harribel',     // 3 - 09:36 (left)
+                    'ulquiorra',    // 4 - 08:24 (bottom-left)
+                    'nnoitra',      // 5 - 07:12 (bottom-left)
+                    'grimmjow',     // 6 - 06:00 (bottom)
+                    'zommari',      // 7 - 04:48 (bottom-right)
+                    'szayelaporro', // 8 - 03:36 (right)
+                    'aaroniero',    // 9 - 02:24 (top-right)
+                    'yammy'         // 10 - 01:12 (top-right)
+                ];
+
+                const R_ESPADA = 145;
+                const espCoords = {{}};
+                ESPADA_ORDER.forEach((id, idx) => {{
+                    // Screen coordinates (+x right, +y down):
+                    // Top (12 o'clock) is -Math.PI / 2.
+                    // Decreasing angle rotates anticlockwise: 12:00 -> 10:48 -> 9:36 -> ... -> 1:12.
+                    const angle = -Math.PI / 2 - (idx * (2 * Math.PI / ESPADA_ORDER.length));
+                    const ex = Math.round(Math.cos(angle) * R_ESPADA);
+                    const ey = Math.round(Math.sin(angle) * R_ESPADA);
+                    espCoords[id] = {{ x: ex, y: ey, angle: angle }};
+                    const node = filteredNodes.find(n => n.id === id);
+                    if (node) {{
+                        node.x = ex;
+                        node.y = ey;
+                        node.fx = ex;
+                        node.fy = ey;
+                        node.vx = 0;
+                        node.vy = 0;
+                    }}
+                }});
+
+                // Seed outer / fodder / Fracción nodes outward along their Espada's radial sector
+                // to cleanly establish the outer perimeter (radius 240-275px)
+                const fracMasterMap = {{
+                    'lilynette': 'starrk',
+                    'charlotte': 'baraggan', 'findorr': 'baraggan', 'ggio': 'baraggan',
+                    'poww': 'baraggan', 'abirama': 'baraggan', 'nirgge': 'baraggan', 'ikomikidomoe': 'baraggan',
+                    'sunsun': 'harribel', 'milarose': 'harribel', 'apacci': 'harribel', 'ayon': 'harribel',
+                    'tesla': 'nnoitra', 'nelliel': 'nnoitra', 'pesche': 'nnoitra', 'dondochakka': 'nnoitra', 'bawabawa': 'nnoitra',
+                    'shawlong': 'grimmjow', 'edrad': 'grimmjow', 'yylfordt': 'grimmjow', 'diroy': 'grimmjow', 'nakim': 'grimmjow', 'luppi': 'grimmjow',
+                    'lumina': 'szayelaporro', 'medazeppi': 'szayelaporro', 'roka_paramia': 'szayelaporro',
+                    'kukkapuro': 'yammy',
+                    'aldegor': 'ulquiorra'
+                }};
+
+                const masterChildCounts = {{}};
+                filteredNodes.forEach(node => {{
+                    if (node.id === 'aizen' || node.id === 'gin' || node.id === 'tosen' || ESPADA_ORDER.includes(node.id)) return;
+                    
+                    const masterId = fracMasterMap[node.id];
+                    if (masterId && espCoords[masterId]) {{
+                        const m = espCoords[masterId];
+                        masterChildCounts[masterId] = (masterChildCounts[masterId] || 0) + 1;
+                        const count = masterChildCounts[masterId];
+                        const spreadAngle = m.angle + (count % 2 === 1 ? 1 : -1) * Math.ceil(count / 2) * 0.18;
+                        const dist = (node.id === 'ikomikidomoe' ? 275 : 250);
+                        node.x = Math.round(Math.cos(spreadAngle) * dist);
+                        node.y = Math.round(Math.sin(spreadAngle) * dist);
+                        node.vx = 0; node.vy = 0;
+                    }} else if (['dordoni', 'cirucci', 'gantenbainne'].includes(node.id)) {{
+                        const pIdx = ['dordoni', 'cirucci', 'gantenbainne'].indexOf(node.id);
+                        const pAngle = 0.08 + pIdx * 0.22;
+                        node.x = Math.round(Math.cos(pAngle) * 265);
+                        node.y = Math.round(Math.sin(pAngle) * 265);
+                        node.vx = 0; node.vy = 0;
+                    }} else if (['rudbornn', 'aisslinger', 'demoura'].includes(node.id)) {{
+                        const eIdx = ['rudbornn', 'aisslinger', 'demoura'].indexOf(node.id);
+                        const eAngle = Math.PI * 0.45 + (eIdx - 1) * 0.2;
+                        node.x = Math.round(Math.cos(eAngle) * 265);
+                        node.y = Math.round(Math.sin(eAngle) * 265);
+                        node.vx = 0; node.vy = 0;
+                    }} else if (['loly', 'menoly'].includes(node.id)) {{
+                        const lIdx = ['loly', 'menoly'].indexOf(node.id);
+                        const lAngle = -Math.PI * 0.75 + (lIdx === 0 ? -0.15 : 0.15);
+                        node.x = Math.round(Math.cos(lAngle) * 235);
+                        node.y = Math.round(Math.sin(lAngle) * 235);
+                        node.vx = 0; node.vy = 0;
+                    }} else {{
+                        const randAngle = Math.random() * Math.PI * 2;
+                        node.x = Math.round(Math.cos(randAngle) * 255);
+                        node.y = Math.round(Math.sin(randAngle) * 255);
+                        node.vx = 0; node.vy = 0;
+                    }}
+                }});
+            }} else if (clusterType === 'karakura') {{
+                // ─────────────────────────────────────────────────────────────────
+                // KARAKURA TOWN: 4-Sector Faction Layout
+                // Ichigo at center, with 3 main leaders (Shinji, Urahara, Ginjo) 
+                // in an inner triangle (radius ~120). Followers spread around them.
+                // ─────────────────────────────────────────────────────────────────
+
+                const VISORED_IDS      = ['shinji', 'hiyori', 'love', 'rose', 'kensei', 'mashiro', 'lisa', 'hachigen'];
+                const URAHARA_SHOP_IDS = ['urahara', 'yoruichi', 'tessai', 'jinta', 'ururu'];
+                const FULLBRINGER_IDS  = ['ginjo', 'tsukishima', 'riruka', 'yukio', 'jackie', 'moe', 'giriko', 'chad', 'aura_michibane'];
+
+                // ─── CENTER: Ichigo ───────────────────────────────────────────
+                const ichigo = filteredNodes.find(n => n.id === 'ichigo');
+                if (ichigo) {{
+                    ichigo.x = 0; ichigo.y = 0;
+                    ichigo.fx = 0; ichigo.fy = 0;
+                    ichigo.vx = 0; ichigo.vy = 0;
+                }}
+
+                // ─── SECTOR 1: Urahara Shop (West / -120, -60) ───────────────
+                const urahara = filteredNodes.find(n => n.id === 'urahara');
+                if (urahara) {{
+                    urahara.x = -130; urahara.y = -60;
+                    urahara.fx = -130; urahara.fy = -60;
+                }}
+                const shopNodes = filteredNodes.filter(n => URAHARA_SHOP_IDS.includes(n.id) && n.id !== 'urahara');
+                shopNodes.forEach((node, i) => {{
+                    const angle = Math.PI * 0.75 + (i * (Math.PI / Math.max(shopNodes.length, 1))); // fan outward left
+                    node.x = -130 + Math.cos(angle) * 75;
+                    node.y = -60 + Math.sin(angle) * 75;
+                    node.vx = 0; node.vy = 0;
+                }});
+
+                // ─── SECTOR 2: Visored (East / 130, -60) ─────────────────────
+                const shinji = filteredNodes.find(n => n.id === 'shinji');
+                if (shinji) {{
+                    shinji.x = 130; shinji.y = -60;
+                    shinji.fx = 130; shinji.fy = -60;
+                }}
+                const visNodes = filteredNodes.filter(n => VISORED_IDS.includes(n.id) && n.id !== 'shinji');
+                visNodes.forEach((node, i) => {{
+                    const angle = -Math.PI * 0.25 + (i * (Math.PI / Math.max(visNodes.length, 1))); // fan outward right
+                    node.x = 130 + Math.cos(angle) * 85;
+                    node.y = -60 + Math.sin(angle) * 85;
+                    node.vx = 0; node.vy = 0;
+                }});
+
+                // ─── SECTOR 3: Fullbringers (South / 0, 140) ──────────────────
+                const ginjo = filteredNodes.find(n => n.id === 'ginjo');
+                if (ginjo) {{
+                    ginjo.x = 0; ginjo.y = 150;
+                    ginjo.fx = 0; ginjo.fy = 150;
+                }}
+                const fbNodes = filteredNodes.filter(n => FULLBRINGER_IDS.includes(n.id) && n.id !== 'ginjo');
+                fbNodes.forEach((node, i) => {{
+                    const angle = Math.PI * 0.1 + (i * (Math.PI * 0.8 / Math.max(fbNodes.length, 1))); // fan downward
+                    node.x = 0 + Math.cos(angle) * 90;
+                    node.y = 150 + Math.sin(angle) * 90;
+                    node.vx = 0; node.vy = 0;
+                }});
+
+                // ─── SECTOR 4: Human Beings (Outer Ring) ─────────────────────
+                const PLACED_IDS = new Set(['ichigo', ...VISORED_IDS, ...URAHARA_SHOP_IDS, ...FULLBRINGER_IDS]);
+                const humanNodes = filteredNodes.filter(n => !PLACED_IDS.has(n.id));
+                const R_OUTER = 250;
+                humanNodes.forEach((node, i) => {{
+                    // Spread humans evenly around the far outer perimeter
+                    const angle = -Math.PI / 2 + (i * (2 * Math.PI / Math.max(humanNodes.length, 1)));
+                    const jitter = (i % 2 === 0) ? 25 : -25; // Create 2 sub-rings for less crowding
+                    node.x = Math.round(Math.cos(angle) * (R_OUTER + jitter));
+                    node.y = Math.round(Math.sin(angle) * (R_OUTER + jitter));
+                    node.vx = 0; node.vy = 0;
+                }});
+
+            }} else if (clusterType === 'gotei') {{
+                // ─────────────────────────────────────────────────────────────────
+                // MODERN GOTEI 13: Radial Branching Layout
+                // Yamamoto at Center, 12 Captains in a perfect ring (R=200),
+                // Lieutenants branching radially outward from their Captain (R=100).
+                // ─────────────────────────────────────────────────────────────────
+                
+                // Pin Yamamoto at Center
+                const yama = filteredNodes.find(n => n.id === 'yamamoto');
+                if (yama) {{
+                    yama.x = 0; yama.y = 0;
+                    yama.fx = 0; yama.fy = 0;
+                    yama.vx = 0; yama.vy = 0;
+                }}
+                
+                const SQUADS = [
+                    {{ cap: 'soi_fon',   subs: ['omaeda'] }},          // 2nd Div
+                    {{ cap: 'gin',       subs: ['kira'] }},            // 3rd Div
+                    {{ cap: 'unohana',   subs: ['isane'] }},           // 4th Div
+                    {{ cap: 'aizen',     subs: ['momo'] }},            // 5th Div
+                    {{ cap: 'byakuya',   subs: ['renji', 'rukia'] }},  // 6th Div
+                    {{ cap: 'komamura',  subs: [] }},                  // 7th Div
+                    {{ cap: 'shunsui',   subs: ['nanao'] }},           // 8th Div
+                    {{ cap: 'tosen',     subs: ['hisagi'] }},          // 9th Div
+                    {{ cap: 'hitsugaya', subs: ['rangiku'] }},         // 10th Div
+                    {{ cap: 'kenpachi',  subs: ['yachiru'] }},         // 11th Div
+                    {{ cap: 'mayuri',    subs: ['nemu'] }},            // 12th Div
+                    {{ cap: 'ukitake',   subs: [] }}                   // 13th Div
+                ];
+                
+                const R_CAPTAINS = 220;
+                const R_SUBS = 100;
+                
+                let placedIds = new Set(['yamamoto', 'sasakibe']);
+                
+                // Sasakibe (1st Div Lt) branches off Yamamoto (upwards)
+                const sasakibe = filteredNodes.find(n => n.id === 'sasakibe');
+                if (sasakibe) {{
+                    sasakibe.x = 0; sasakibe.y = -85;
+                    sasakibe.fx = 0; sasakibe.fy = -85;
+                    sasakibe.vx = 0; sasakibe.vy = 0;
+                }}
+                
+                SQUADS.forEach((squad, i) => {{
+                    const capNode = filteredNodes.find(n => n.id === squad.cap);
+                    // Anticlockwise distribution: subtract angle instead of adding
+                    const angle = -Math.PI / 2 - (i * (2 * Math.PI / SQUADS.length));
+                    
+                    if (capNode) {{
+                        capNode.x = Math.round(Math.cos(angle) * R_CAPTAINS);
+                        capNode.y = Math.round(Math.sin(angle) * R_CAPTAINS);
+                        // Pinning Captains creates the perfect ring
+                        capNode.fx = capNode.x;
+                        capNode.fy = capNode.y;
+                        capNode.vx = 0; capNode.vy = 0;
+                        placedIds.add(capNode.id);
+                        
+                        // Seed subordinates radially outward from the captain
+                        const subNodes = filteredNodes.filter(n => squad.subs.includes(n.id));
+                        subNodes.forEach((subNode, j) => {{
+                            // Spread subs in a small arc pointing outward
+                            const subAngle = angle + (j - (subNodes.length - 1)/2) * 0.4;
+                            subNode.x = capNode.x + Math.round(Math.cos(subAngle) * R_SUBS);
+                            subNode.y = capNode.y + Math.round(Math.sin(subAngle) * R_SUBS);
+                            // Strictly pin them to prevent force engine from pulling them to cross-linked characters!
+                            subNode.fx = subNode.x;
+                            subNode.fy = subNode.y;
+                            subNode.vx = 0; subNode.vy = 0;
+                            placedIds.add(subNode.id);
+                        }});
+                    }}
+                }});
+                
+                // Other Gotei elements (like jidanbo, hachigen, tokinada, etc.)
+                const otherNodes = filteredNodes.filter(n => !placedIds.has(n.id));
+                const R_OUTER = 380;
+                otherNodes.forEach((node, i) => {{
+                    const angle = -Math.PI / 2 + (i * (2 * Math.PI / Math.max(otherNodes.length, 1)));
+                    node.x = Math.round(Math.cos(angle) * R_OUTER);
+                    node.y = Math.round(Math.sin(angle) * R_OUTER);
+                    node.vx = 0; node.vy = 0;
+                }});
+
+            }} else if (clusterType === 'original') {{
+                // ─────────────────────────────────────────────────────────────────
+                // ORIGINAL GOTEI 13: Perfect Circle
+                // Yamamoto at Center, 12 Captains in a perfect ring
+                // ─────────────────────────────────────────────────────────────────
+                
+                // Pin Yamamoto at Center
+                const yama = filteredNodes.find(n => n.id === 'yamamoto');
+                if (yama) {{
+                    yama.x = 0; yama.y = 0;
+                    yama.fx = 0; yama.fy = 0;
+                    yama.vx = 0; yama.vy = 0;
+                }}
+                
+                const captains = filteredNodes.filter(n => n.id !== 'yamamoto');
+                const R = 180; // Radius of the circle
+                captains.forEach((node, i) => {{
+                    // Start from 12 o'clock and go clockwise
+                    const angle = -Math.PI / 2 + (i * (2 * Math.PI / Math.max(captains.length, 1)));
+                    node.x = Math.round(Math.cos(angle) * R);
+                    node.y = Math.round(Math.sin(angle) * R);
+                    // Explicitly pinning them makes it a perfect circle
+                    node.fx = node.x;
+                    node.fy = node.y;
+                    node.vx = 0; node.vy = 0;
+                }});
+
+            }} else {{
+                // Pin designated faction leader at center (0, 0)
+                const leader = filteredNodes.find(n => n.id === leaderId);
+                if (leader) {{
+                    leader.x = 0;
+                    leader.y = 0;
+                    leader.fx = 0;
+                    leader.fy = 0;
+                }}
             }}
 
             gData.nodes = filteredNodes;
@@ -2251,8 +2641,11 @@ def generate_obsidian_graph():
                 }}
             }}
             if (e.key === 'Escape') {{
-                if (searchOverlay.classList.contains('open')) closeSearch();
-                if (pathFindingFrom || highlightedPathNodes.size > 0) clearPathFinding();
+                if (searchOverlay.classList.contains('open')) {{
+                    closeSearch();
+                }} else if (currentNode || highlightedPathNodes.size > 0) {{
+                    deselectNode();
+                }}
                 document.getElementById('credits-modal').classList.remove('open');
             }}
         }});

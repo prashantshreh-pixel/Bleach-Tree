@@ -2128,5 +2128,101 @@
     "target": "don_kanonji",
     "type": "Allies",
     "label": "Protected by Don Kan'onji"
+  },
+  {
+    "source": "aizen",
+    "target": "yammy",
+    "type": "Espada",
+    "label": "Sovereign of Las Noches and Supreme Commander"
+  },
+  {
+    "source": "aizen",
+    "target": "zommari",
+    "type": "Espada",
+    "label": "Fanatically devoted to Lord Aizen as sovereign deity"
+  },
+  {
+    "source": "aizen",
+    "target": "aaroniero",
+    "type": "Espada",
+    "label": "First-generation Espada serving under Lord Aizen"
+  },
+  {
+    "source": "aizen",
+    "target": "dordoni",
+    "type": "Subordinate",
+    "label": "Privaron Espada demoted by Aizen upon Hōgyoku evolution"
+  },
+  {
+    "source": "aizen",
+    "target": "cirucci",
+    "type": "Subordinate",
+    "label": "Privaron Espada demoted by Aizen upon Hōgyoku evolution"
+  },
+  {
+    "source": "aizen",
+    "target": "gantenbainne",
+    "type": "Subordinate",
+    "label": "Privaron Espada demoted by Aizen upon Hōgyoku evolution"
+  },
+  {
+    "source": "ikomikidomoe",
+    "target": "baraggan",
+    "type": "Rival",
+    "label": "Ancient Rival Kings of Prehistoric Hueco Mundo"
+  },
+  {
+    "source": "harribel",
+    "target": "ayon",
+    "type": "Subordinate",
+    "label": "Summoned Chimera Parca beast of Tres Bestias"
+  },
+  {
+    "source": "rudbornn",
+    "target": "aisslinger",
+    "type": "Subordinate",
+    "label": "Las Noches gatekeeper under defense garrison"
+  },
+  {
+    "source": "rudbornn",
+    "target": "demoura",
+    "type": "Subordinate",
+    "label": "Las Noches gatekeeper under defense garrison"
+  },
+  {
+    "source": "lisa",
+    "target": "hachigen",
+    "type": "Allies",
+    "label": "Fellow Visored exiled by Central 46"
+  },
+  {
+    "source": "lisa",
+    "target": "love",
+    "type": "Allies",
+    "label": "Fellow Visored exiled by Central 46"
+  },
+  {
+    "source": "shinji",
+    "target": "rose",
+    "type": "Allies",
+    "label": "Fellow Visored and Vaizard corps comrade"
+  },
+  {
+    "source": "kensei",
+    "target": "hachigen",
+    "type": "Allies",
+    "label": "Fellow Visored exiled by Central 46"
+  },
+  {
+    "source": "ryuken",
+    "target": "urahara",
+    "type": "Allies",
+    "label": "Allied researcher on Quincy and Soul Reaper matters"
+  },
+  {
+    "source": "yamamoto",
+    "target": "mayuri",
+    "type": "Subordinate",
+    "label": "Commander & Captain"
   }
 ]

@@ -8,7 +8,7 @@ Inspired by Obsidian's graph architecture and themed around the *Thousand-Year B
 
 ## 🌟 Overview
 
-Instead of sifting through wikis to piece together who is related to who, allied with who, or fighting who, this project visualizes the entire Bleach character network as a hardware-accelerated **interactive force-directed graph** containing **189 characters** and **355 canonical relationships**.
+Instead of sifting through wikis to piece together who is related to who, allied with who, or fighting who, this project visualizes the entire Bleach character network as a hardware-accelerated **interactive force-directed graph** containing **189 characters** and **368 canonical relationships**.
 
 Click any character to inspect their classified dossier, examine their direct connections, and watch the viewport automatically pan and zoom to keep their allies, family, and enemies in focus.
 
@@ -17,20 +17,27 @@ Click any character to inspect their classified dossier, examine their direct co
 ## ✨ Features
 
 - **Obsidian Force-Directed Graph**: Hardware-accelerated HTML5 Canvas + D3.js physics engine delivering smooth 60–120 FPS pan, zoom, and node dragging across 189 characters without hitching.
+- **Hierarchical Node Sizing (5 Lore-Accurate Tiers)**: Clear visual hierarchy across all factions:
+  - **Tier 1 (Supreme Gods & Sovereign Leaders)**: Aizen, Ichigo, Yhwach, Yamamoto, Soul King tower with commanding **26px radius (52px diameter)** avatars.
+  - **Tier 2 (Elite Commanders & Top Espada)**: Gin, Tōsen, Starrk, Baraggan, Harribel, Ulquiorra, Grimmjow, Shunsui, Kenpachi, Byakuya rendered at **18px radius**.
+  - **Tier 3 (Core Espada & Captains)**: Yammy, Zommari, Szayelaporro, Nelliel, Schutzstaffel, Visored captains at **13.5px radius**.
+  - **Tier 4 (Lieutenants & Privaron Espada)**: Dordoni, Cirucci, Gantenbainne, Rudbornn, Lieutenants at **9.5px radius**.
+  - **Tier 5 (Fracción, Fodder & Minor Minions)**: Charlotte, Abirama, Findorr, Poww, Ggio, Nirgge, Tesla, Lumina, Medazeppi, etc. rendered as compact **5.8px satellite nodes**.
 - **Tactical Radar Minimap (Bottom-Left HUD)**: Real-time bird's-eye radar displaying the entire galaxy of character nodes and a dynamic viewport frustum rectangle. Click or drag anywhere on the minimap to instantly navigate across the universe.
 - **Interactive Faction Filter Navigation Bar**: Dedicated floating navigation bar that filters the graph to display only the selected faction's characters and internal relationships, pinning the faction's supreme leader in the exact center `(0, 0)`:
-  - **All Galaxy**: Displays all 189 characters and 355 relationships with **Ichigo Kurosaki** anchored at the cosmic center.
+  - **All Galaxy**: Displays all 189 characters and 368 relationships with **Ichigo Kurosaki** anchored at the cosmic center.
   - **Gotei 13**: Filters exclusively to Gotei 13 captains, lieutenants, and seated officers with **Genryūsai Shigekuni Yamamoto** pinned at the center.
   - **Wandenreich**: Isolates the Quincy empire, Schutzstaffel, and Sternritter with **Yhwach** commanding the center.
-  - **Hueco Mundo**: Shows the Espada, Privaron Espada, and Fracción with **Sōsuke Aizen** anchored at the throne.
+  - **Hueco Mundo**: Displays the true throne hierarchy with **Sōsuke Aizen** at the center, flanked closely by **Gin** and **Tōsen**, circled by the **Espada**, while their Fracción orbit outward around their respective masters.
   - **Royal Realm**: Focuses on the Soul King Palace and Zero Squad with the **Soul King (Reiō)** at the core.
   - **Karakura Town**: Displays the human world defenders, Fullbringers, and allies with **Ichigo Kurosaki** at the heart.
   - **Original Gotei**: Displays the legendary founding captains of the original Gotei 13 with **Genryūsai Shigekuni Yamamoto** at the center.
-- **Dynamic Connection Line Visibility**:
-  - **Crisp Default Threads**: Relationship links remain clearly visible by default (~1.1px, `0.20` opacity) across the dark canvas even when no node is selected, preserving the spiritual network structure at all zoom levels.
+- **Dynamic Connection Line Visibility & Clean Deselection**:
+  - **Crisp Default Threads**: Relationship links remain clearly visible by default (~1.15px, `0.20`–`0.26` opacity) across the dark canvas even when no node is selected, preserving the spiritual network structure at all zoom levels.
   - **Interactive Focus & Highlighting**: Selecting or hovering any character intensifies incident connections into high-contrast glowing trails (`0.95` opacity / amber `#F59E0B`), while unobtrusively dimming unrelated lines.
+  - **Instant Deselection**: Clicking the active node again, clicking anywhere on the background canvas, clicking the dossier close button, or pressing `Escape` immediately deselects the node and cleanly restores all connection lines to their original state.
   - **Tiered Level of Detail (LOD)**: Smoothly transitions between constellation view and full portrait avatars as you zoom into clusters.
-- **Single High-Res 192px Sprite Sheet (`characters.webp`)**: 161 character portraits are auto-cropped (face-centered), lanczos-filtered, and packed into a unified 192×192px WebP sprite sheet (~1.1 MB), replacing 160+ individual HTTP network requests with 1 single cached request.
+- **Single High-Res 192px Sprite Sheet (`characters.webp`)**: 163 character portraits are auto-cropped (face-centered), lanczos-filtered, and packed into a unified 192×192px WebP sprite sheet (~1.1 MB), replacing 160+ individual HTTP network requests with 1 single cached request.
 - **Floating High-Definition Hover HUD Card**: Hovering any node renders a sleek frosted-glass HUD card with a 76px circular avatar, faction-colored ring, race/faction metadata pills, and real-time live connection counters.
 - **Frosted-Glass Dossier & Character Backdrop**: Inspecting any character reveals a detailed sidebar with their portrait scaled, blurred, and softened as a background behind dark frosted glass.
 - **Shortest Path Tracing**: Select any character, hit "Trace Path", and click another character to calculate and visualize degrees of separation with directional glowing energy particles.
