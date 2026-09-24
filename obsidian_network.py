@@ -864,7 +864,7 @@ def generate_obsidian_graph():
         @media (max-width: 768px) {{
             #mobile-nav {{ display: flex !important; }}
             #sidebar {{
-                top: auto; bottom: -120%; left: 0; right: 0; width: 100%; height: 55vh;
+                top: auto; bottom: -120%; left: 0; right: 0; width: 100%; height: 50vh;
                 border-left: none; border-top: 1px solid rgba(255,255,255,0.15);
                 border-radius: 20px 20px 0 0;
                 transition: bottom 0.3s cubic-bezier(0.1, 0.82, 0.25, 1);
@@ -874,13 +874,30 @@ def generate_obsidian_graph():
                 content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
                 width: 40px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px;
             }}
+            #sidebar-content {{ padding: 20px 16px 30px 16px; }}
             #cluster-bar {{
-                top: auto; bottom: 20px; left: 50%; transform: translateX(-50%); width: 95%;
-                flex-wrap: wrap; justify-content: center; z-index: 10;
+                top: auto; bottom: 0; left: 0; right: 0; width: 100%;
+                transform: none;
+                flex-wrap: nowrap; justify-content: flex-start;
+                overflow-x: auto; overflow-y: hidden;
+                -webkit-overflow-scrolling: touch;
+                z-index: 10;
+                border-radius: 0;
+                padding: 8px 10px;
+                gap: 4px;
+                background: rgba(10, 10, 16, 0.95);
+                border-top: 1px solid rgba(255,255,255,0.08);
             }}
-            .cluster-btn {{ padding: 6px 12px; font-size: 11px; margin: 3px; }}
+            #cluster-bar::-webkit-scrollbar {{ display: none; }}
+            .cluster-btn {{
+                padding: 5px 10px; font-size: 10px; margin: 0;
+                white-space: nowrap; flex-shrink: 0;
+            }}
+            #minimap-container {{ display: none !important; }}
+            #mini-legend {{ display: none !important; }}
             #legend {{ display: none; }}
-            #node-hover-card {{ transform: translate(-50%, -110%); pointer-events: none; }}
+            #node-hover-card {{ display: none !important; }}
+            #s-avatar-wrap {{ width: 60px; height: 60px; }}
         }}
         /* Dossier Tabs & Timeline */
         .dossier-tabs {{ display: flex; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }}
@@ -899,6 +916,7 @@ def generate_obsidian_graph():
     </style>
 </head>
 <body>
+    <div id="dynamic-bg" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; background-size:cover; background-position:center; background-repeat:no-repeat; opacity:0; transition:opacity 1.2s ease; pointer-events:none; background-color:#0A0A0F;"></div>
     <div id="mobile-nav" style="position:fixed; top:20px; left:20px; z-index:40; display:none;">
         <button id="nav-search-btn" style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); color:#fff; padding:10px 15px; border-radius:20px; font-size:13px; cursor:pointer; font-family:'Cinzel'; letter-spacing:1px; backdrop-filter:blur(5px);"><span style="margin-right:6px;">&#x1F50D;</span> SEARCH</button>
     </div>
@@ -1579,10 +1597,11 @@ def generate_obsidian_graph():
 
             const screenW = window.innerWidth;
             const screenH = window.innerHeight;
+            const isMobile = screenW <= 768;
             
-            const cardWidth = 390;
+            const cardWidth = isMobile ? 0 : 390;
             const availW = Math.max(screenW - cardWidth - 60, screenW * 0.5);
-            const availH = Math.max(screenH - 120, 320);
+            const availH = isMobile ? Math.max(screenH * 0.5 - 60, 200) : Math.max(screenH - 120, 320);
 
             let fitZoom = Math.min(availW / boxW, availH / boxH);
             fitZoom = Math.max(0.65, Math.min(fitZoom, 1.8));
@@ -1592,8 +1611,10 @@ def generate_obsidian_graph():
 
             const screenShift = cardWidth / 2;
             const graphShiftX = screenShift / fitZoom;
+            // On mobile, shift graph up slightly to account for bottom sheet
+            const graphShiftY = isMobile ? -40 / fitZoom : 0;
 
-            Graph.centerAt(centerX + graphShiftX, centerY, 850);
+            Graph.centerAt(centerX + graphShiftX, centerY + graphShiftY, 850);
             Graph.zoom(fitZoom, 850);
         }}
 
@@ -1683,8 +1704,11 @@ def generate_obsidian_graph():
                     if (n.y < minY) minY = n.y;
                     if (n.y > maxY) maxY = n.y;
                 }});
-                const pZoom = Math.min((window.innerWidth - 450) / Math.max(maxX - minX + 220, 250), (window.innerHeight - 150) / Math.max(maxY - minY + 220, 250));
-                Graph.centerAt((minX + maxX) / 2 + 150 / pZoom, (minY + maxY) / 2, 850);
+                const pMobile = window.innerWidth <= 768;
+                const pSidebarOffset = pMobile ? 20 : 450;
+                const pCenterShift = pMobile ? 0 : 150;
+                const pZoom = Math.min((window.innerWidth - pSidebarOffset) / Math.max(maxX - minX + 220, 250), (window.innerHeight - 150) / Math.max(maxY - minY + 220, 250));
+                Graph.centerAt((minX + maxX) / 2 + pCenterShift / pZoom, (minY + maxY) / 2, 850);
                 Graph.zoom(Math.max(0.65, Math.min(pZoom, 1.6)), 850);
             }} else {{
                 pathBannerText.innerHTML = 'No connection path found between <strong>' + escapeHtml(pathFindingFrom.name) + '</strong> and <strong>' + escapeHtml(targetNode.name) + '</strong>';
@@ -1735,7 +1759,7 @@ def generate_obsidian_graph():
             .graphData(gData)
             .nodeId('id')
             .nodeRelSize(4)
-            .backgroundColor('#0A0A0F')
+            .backgroundColor('rgba(10, 10, 15, 0.45)')
             .linkCurvature(0.2)
             .linkWidth(link => {{
                 const sid = typeof link.source === 'object' ? link.source.id : link.source;
@@ -1806,9 +1830,12 @@ def generate_obsidian_graph():
                     window.__cachedTransform = ctx.getTransform();
                 }}
                 const transform = window.__cachedTransform;
-                const screenX = node.x * transform.a + transform.e;
-                const screenY = node.y * transform.d + transform.f;
-                const margin = 80;
+                const dpr = window.devicePixelRatio || 1;
+                // ctx.getTransform() returns physical canvas pixel coordinates (scaled by dpr).
+                // Divide by dpr to convert to CSS pixels matching window.innerWidth / window.innerHeight.
+                const screenX = (node.x * transform.a + transform.e) / dpr;
+                const screenY = (node.y * transform.d + transform.f) / dpr;
+                const margin = 120;
                 if (screenX < -margin || screenX > window.innerWidth + margin || screenY < -margin || screenY > window.innerHeight + margin) {{
                     return;
                 }}
@@ -2277,6 +2304,14 @@ def generate_obsidian_graph():
             }}
         }});
 
+        window.addEventListener('resize', () => {{
+            Graph.width(window.innerWidth);
+            Graph.height(window.innerHeight);
+            if (!currentNode) {{
+                fitGraphToScreen(200);
+            }}
+        }});
+
         // Faction Leaders Map
         const FACTION_LEADERS = {{
             'all':         'ichigo',
@@ -2337,11 +2372,76 @@ def generate_obsidian_graph():
         let currentCluster = 'all';
 
         // Cluster & Faction Filtering with Center-Pinned Leaders
+                // Responsive Framing: dynamically compute bounding box and framed camera
+        function fitGraphToScreen(duration = 600) {{
+            const nodes = (gData && gData.nodes && gData.nodes.length > 0) ? gData.nodes : RAW_GRAPH.nodes;
+            if (!nodes || nodes.length === 0) return;
+
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            nodes.forEach(n => {{
+                if (n.x === undefined || n.y === undefined) return;
+                if (n.x < minX) minX = n.x;
+                if (n.x > maxX) maxX = n.x;
+                if (n.y < minY) minY = n.y;
+                if (n.y > maxY) maxY = n.y;
+            }});
+
+            if (!isFinite(minX)) return;
+
+            const isMobile = window.innerWidth <= 768;
+            // Visible safe areas (subtracting UI elements)
+            // Desktop: top cluster bar (65px), bottom minimap/legend (140px on left, 50px general), right sidebar closed (40px) or open (380px)
+            // Mobile: top mobile-nav (60px), bottom cluster bar (65px)
+            const padTop = isMobile ? 65 : 75;
+            const padBottom = isMobile ? 85 : 65;
+            const padLeft = isMobile ? 25 : 45;
+            const padRight = isMobile ? 25 : (sidebar && sidebar.classList.contains('open') ? 380 : 55);
+
+            const availW = Math.max(window.innerWidth - padLeft - padRight, 200);
+            const availH = Math.max(window.innerHeight - padTop - padBottom, 200);
+
+            // Add node radius margin to the bounding box
+            const margin = isMobile ? 40 : 50;
+            const boxW = Math.max(maxX - minX + margin * 2, 100);
+            const boxH = Math.max(maxY - minY + margin * 2, 100);
+
+            const targetZoom = Math.min(availW / boxW, availH / boxH);
+            const clampedZoom = Math.max(0.15, Math.min(targetZoom, isMobile ? 0.95 : 1.6));
+
+            // Visual center of bounding box in graph coordinates
+            const boxCenterX = (minX + maxX) / 2;
+            const boxCenterY = (minY + maxY) / 2;
+
+            // Shift camera center so the box sits exactly in the center of the available screen area
+            const centerShiftX = ((padLeft - padRight) / 2) / clampedZoom;
+            const centerShiftY = ((padTop - padBottom) / 2) / clampedZoom;
+
+            Graph.centerAt(boxCenterX - centerShiftX, boxCenterY - centerShiftY, duration);
+            Graph.zoom(clampedZoom, duration);
+        }}
+
         function jumpToCluster(clusterType) {{
             currentCluster = clusterType;
             document.querySelectorAll('.cluster-btn').forEach(btn => {{
                 btn.classList.toggle('active', btn.dataset.cluster === clusterType);
             }});
+
+            // Dynamic Thematic Faction Backgrounds
+            const dynamicBg = document.getElementById('dynamic-bg');
+            if (dynamicBg) {{
+                if (clusterType === 'arrancar') {{
+                    dynamicBg.style.backgroundImage = "url('Asset/Background/weikomundo.jpg')";
+                    dynamicBg.style.opacity = '0.55';
+                }} else if (clusterType === 'original') {{
+                    dynamicBg.style.backgroundImage = "url('Asset/Background/Original 13.png')";
+                    dynamicBg.style.opacity = '0.60';
+                }} else if (clusterType === 'royal') {{
+                    dynamicBg.style.backgroundImage = "url('Asset/Background/Soul Palace.jpg')";
+                    dynamicBg.style.opacity = '0.55';
+                }} else {{
+                    dynamicBg.style.opacity = '0';
+                }}
+            }}
 
             const filterFn = getFactionFilter(clusterType);
             const leaderId = FACTION_LEADERS[clusterType] || 'ichigo';
@@ -2737,10 +2837,9 @@ def generate_obsidian_graph():
             Graph.graphData({{ nodes: filteredNodes, links: filteredLinks }});
 
             Graph.d3ReheatSimulation();
-            Graph.centerAt(0, 0, 500);
             setTimeout(() => {{
-                Graph.zoomToFit(600, 70);
-            }}, 300);
+                fitGraphToScreen(700);
+            }}, 400);
 
             if (currentNode && !validNodeIds.has(currentNode.id)) {{
                 sidebar.classList.remove('open');
@@ -2837,7 +2936,8 @@ def generate_obsidian_graph():
         // Developer Bounty Poster (Click brand 5x)
         let brandClickCount = 0;
         let lastBrandClick = 0;
-        document.getElementById('brand-wordmark').addEventListener('click', () => {{
+        const brandEl = document.getElementById('brand-wordmark');
+        if (brandEl) brandEl.addEventListener('click', () => {{
             const now = Date.now();
             if (now - lastBrandClick < 1500) {{
                 brandClickCount++;
@@ -3070,3 +3170,6 @@ def generate_obsidian_graph():
     print("Obsidian Canvas Database saved to: index.html")
 
 generate_obsidian_graph()
+
+
+
