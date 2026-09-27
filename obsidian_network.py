@@ -1609,12 +1609,8 @@ def generate_obsidian_graph():
             const centerX = (minX + maxX) / 2;
             const centerY = (minY + maxY) / 2;
 
-            const screenShift = cardWidth / 2;
-            const graphShiftX = screenShift / fitZoom;
-            // On mobile, shift graph up slightly to account for bottom sheet
-            const graphShiftY = isMobile ? -40 / fitZoom : 0;
-
-            Graph.centerAt(centerX + graphShiftX, centerY + graphShiftY, 850);
+            // Active node stays in the middle of the viewport
+            Graph.centerAt(node.x, node.y, 850);
             Graph.zoom(fitZoom, 850);
         }}
 
@@ -1853,6 +1849,8 @@ def generate_obsidian_graph():
                     isDimmed = !isPathNode;
                 }} else if (hoverNode) {{
                     isDimmed = !isHovered && !isConnectedToHover;
+                }} else if (currentNode) {{
+                    isDimmed = !isSelected && !isConnectedToSelected;
                 }}
 
                 // Easter egg: Yhwach The Almighty growth
@@ -2093,11 +2091,7 @@ def generate_obsidian_graph():
             }})
             .onNodeClick(node => {{
                 if (node) {{
-                    // Clicking the currently selected node deselects it
-                    if (currentNode && currentNode.id === node.id && !pathFindingFrom) {{
-                        deselectNode();
-                        return;
-                    }}
+                    
 
                     // Rapid click detection for Hollowfication easter egg
                     const now = Date.now();
@@ -2437,6 +2431,9 @@ def generate_obsidian_graph():
                     dynamicBg.style.opacity = '0.60';
                 }} else if (clusterType === 'royal') {{
                     dynamicBg.style.backgroundImage = "url('Asset/Background/Soul Palace.jpg')";
+                    dynamicBg.style.opacity = '0.55';
+                }} else if (clusterType === 'wandenreich') {{
+                    dynamicBg.style.backgroundImage = "url('Asset/Background/Quency base.jpg')";
                     dynamicBg.style.opacity = '0.55';
                 }} else {{
                     dynamicBg.style.opacity = '0';
