@@ -1,0 +1,78 @@
+/* ==========================================================================
+   ichigo-panel.css - Getsuga Tensho: a black/crimson crescent cuts through the
+   panel, then black reiatsu keeps pouring up from the edges.
+   Timeline: 0s impact flash + shake -> 0.05-1.0s crescent sweeps across (crosses centre ~0.5s: flash + shake)
+   -> 0.4s+ reiatsu wisps rise -> steady angry red glow + fast border glint.
+   Note: the panel's glow/shake are driven from here and JS (WAAPI), so keep
+   the index.html theme rule for this character to border/avatar only.
+   ========================================================================== */
+@property --ic-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+
+:where(.ichigo-panel) { position: relative; overflow: hidden; }
+.ic-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+
+/* red-black vignette behind the content: darkness at the edges, heat from below */
+.ic-shade {
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at 50% 112%, rgba(255,25,15,.42), transparent 60%),
+    radial-gradient(ellipse at 50% 45%, transparent 50%, rgba(0,0,0,.7) 100%);
+}
+.ichigo-panel.ic-open .ic-shade { opacity: 1; animation: ic-in .9s ease-out .35s both, ic-breathe 2.2s ease-in-out 1.3s infinite; }
+@keyframes ic-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ic-breathe { 0%, 100% { opacity: 1; } 50% { opacity: .68; } }
+
+/* reiatsu wisps (canvas) sit behind the text */
+.ic-canvas { z-index: 1; width: 100%; height: 100%; }
+.ichigo-panel.ic-open .ic-canvas { opacity: 1; }
+
+/* the crescent (over content, non-interactive) */
+.ic-svg { z-index: 6; width: 100%; height: 100%; overflow: hidden; }
+.ichigo-panel.ic-open .ic-svg { opacity: 1; }
+.ic-slash { opacity: 0; filter: drop-shadow(0 0 9px rgba(255,30,20,.95)); }
+.ichigo-panel.ic-open .ic-slash { animation: ic-slash .95s cubic-bezier(.4,.15,.6,.85) .05s both; }
+@keyframes ic-slash {
+  0%   { translate: calc(var(--R) * -1) 0; opacity: 0; }
+  10%  { opacity: 1; }
+  78%  { opacity: 1; }
+  100% { translate: var(--R) 0; opacity: 0; }
+}
+
+/* impact flash: red-white burst at the impact point, then a softer red pop on the follow-through */
+.ic-flash {
+  z-index: 8;
+  background: radial-gradient(circle at var(--ix,50%) var(--iy,45%), rgba(255,255,255,.85), rgba(255,40,30,.45) 14%, transparent 42%);
+}
+.ichigo-panel.ic-open .ic-flash { animation: ic-flash 1s ease-out .42s both; }
+@keyframes ic-flash { 0% { opacity: 0; } 12% { opacity: 1; } 45% { opacity: .25; } 100% { opacity: 0; } }
+
+/* border glint: fast, jagged red-white ring */
+.ic-ring {
+  z-index: 9; padding: 1.5px;
+  background: conic-gradient(from var(--ic-angle), rgba(255,40,30,.10) 0 45%, #b30d0d 60%, #ff3b30 72%, #fff 78%, #ff3b30 84%, rgba(255,40,30,.10) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity .5s ease;
+}
+.ichigo-panel.ic-open .ic-ring { opacity: 1; animation: ic-spin 3.2s linear infinite; }
+@keyframes ic-spin { to { --ic-angle: 360deg; } }
+
+/* panel: angry pulse (faster than the other themes) */
+.ichigo-panel.ic-open {
+  border-color: #ff3b30 !important;
+  animation: ic-pulse 1.8s infinite ease-in-out;
+}
+@keyframes ic-pulse {
+  0%, 100% { box-shadow: 0 0 28px rgba(255,20,10,.45), 0 0 70px rgba(0,0,0,.9), inset 0 0 22px rgba(255,20,10,.16); }
+  50%      { box-shadow: 0 0 48px rgba(255,20,10,.78), 0 0 70px rgba(0,0,0,.9), inset 0 0 36px rgba(255,20,10,.32); }
+}
+.ichigo-panel.ic-open #s-avatar { border-color: #ff5a4d !important; box-shadow: 0 0 22px rgba(255,40,30,.9), 0 0 0 3px rgba(0,0,0,.75) !important; }
+.ichigo-panel.ic-open .char-name { text-shadow: 0 0 10px rgba(255,40,30,.75), 2px 2px 0 #000; }
+.ichigo-panel.ic-open .scroll-fade { background: linear-gradient(to top, rgba(255,20,10,.24), transparent); }
+
+
+
+@media (prefers-reduced-motion: reduce) {
+  .ic-svg, .ic-canvas, .ic-flash { display: none; }
+  .ichigo-panel.ic-open, .ichigo-panel.ic-open .ic-ring, .ichigo-panel.ic-open .ic-shade { animation: none !important; }
+}

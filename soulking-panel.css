@@ -1,0 +1,109 @@
+/* ==========================================================================
+   soulking-panel.css - Soul King (Reio) panel animation.
+   Same architecture as flame-panel: mist, WebGL layer, particle canvas,
+   rotating border ring, pulsing panel glow. Recolored to divine white-gold
+   with a violet/prismatic edge. Effects only: layout untouched.
+   ========================================================================== */
+
+@property --sk-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+
+:where(.soulking-panel) { position: relative; overflow: hidden; }
+
+.soulking-panel {
+  --sk-gold:   #ffe08a;
+  --sk-white:  #fffaf0;
+  --sk-violet: #9d84ff;
+}
+
+.sk-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* ---- Mist -> divine radiance: slow gold/violet light drifting behind content ---- */
+.sk-mist {
+  z-index: 1;
+  filter: blur(32px);
+  inset: -20%;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 226, 150, .34), transparent 42%),
+    radial-gradient(circle at 25% 80%, rgba(157, 132, 255, .26), transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(190, 225, 255, .18), transparent 40%);
+  transition: opacity 1s ease;
+}
+.soulking-panel.sk-open .sk-mist {
+  opacity: .6;
+  animation: sk-drift 18s ease-in-out infinite alternate;
+}
+@keyframes sk-drift { to { transform: translate(-6%, 5%) rotate(-6deg) scale(1.08); } }
+
+/* ---- Halo: two thin rotating rings (one dashed) behind the pillar ---- */
+.sk-halo {
+  z-index: 1;
+  inset: auto;
+  left: 50%;
+  top: 36%;
+  width: min(92%, 340px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgba(255, 226, 150, .95) 0 1.1deg, transparent 1.1deg 5deg);
+  -webkit-mask-image: radial-gradient(circle, transparent 44%, #000 45%, #000 46%, transparent 47%,
+                                               transparent 62%, #000 63%, #000 64.5%, transparent 65.5%);
+          mask-image: radial-gradient(circle, transparent 44%, #000 45%, #000 46%, transparent 47%,
+                                               transparent 62%, #000 63%, #000 64.5%, transparent 65.5%);
+  transform: translate(-50%, -50%);
+  transition: opacity 1.2s ease;
+}
+.soulking-panel.sk-open .sk-halo {
+  opacity: .32;
+  animation: sk-halo-spin 70s linear infinite;
+}
+@keyframes sk-halo-spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+/* ---- Pillar of light: WebGL shader (descending beam, god rays, crystal glints) ---- */
+.sk-beam { z-index: 1; width: 100%; height: 100%; transition: opacity .8s ease; }
+.soulking-panel.sk-open .sk-beam { opacity: 1; }
+
+/* ---- Reishi motes canvas ---- */
+.sk-canvas { z-index: 1; width: 100%; height: 100%; transition: opacity .8s ease; }
+.soulking-panel.sk-open .sk-canvas { opacity: 1; }
+
+/* ---- Border glint: same rotating ring, slower and colder than the flame's ---- */
+.sk-ring {
+  z-index: 7;
+  padding: 1.5px;
+  background: conic-gradient(from var(--sk-angle),
+      rgba(255, 224, 138, .14) 0 45%,
+      var(--sk-violet) 66%, var(--sk-gold) 76%, var(--sk-white) 82%, var(--sk-gold) 88%, var(--sk-violet) 94%,
+      rgba(255, 224, 138, .14) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity .8s ease;
+}
+.soulking-panel.sk-open .sk-ring { opacity: 1; animation: sk-spin 8s linear infinite; }
+@keyframes sk-spin { to { --sk-angle: 360deg; } }
+
+/* ---- Panel border + glow: a slow, heavy breath (4s) rather than the flame's 3s flicker ---- */
+.soulking-panel.sk-open {
+  border-color: rgba(255, 226, 150, .85) !important;
+  animation: sk-pulse 4s infinite ease-in-out;
+}
+@keyframes sk-pulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(255, 224, 138, .32), 0 0 60px rgba(157, 132, 255, .12), inset 0 0 20px rgba(255, 250, 240, .10); }
+  50%      { box-shadow: 0 0 46px rgba(255, 230, 160, .58), 0 0 90px rgba(157, 132, 255, .26), inset 0 0 32px rgba(255, 250, 240, .24); }
+}
+.soulking-panel.sk-open #s-avatar {
+  border-color: #fff1c4 !important;
+  box-shadow: 0 0 22px rgba(255, 232, 170, .85), 0 0 44px rgba(157, 132, 255, .45) !important;
+}
+.soulking-panel.sk-open .char-name { text-shadow: 0 0 12px rgba(255, 232, 170, .6), 0 0 26px rgba(157, 132, 255, .35); }
+.soulking-panel.sk-open .scroll-fade { background: linear-gradient(to top, rgba(255, 232, 170, .20), transparent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .soulking-panel.sk-open, .soulking-panel.sk-open .sk-mist, .soulking-panel.sk-open .sk-halo,
+  .soulking-panel.sk-open .sk-ring { animation: none !important; }
+}

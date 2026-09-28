@@ -1,35 +1,43 @@
 # -*- coding: utf-8 -*-
+"""
+BLEACH: Thousand-Year Blood War - Spiritual Intelligence Network Generator
+Generates the complete standalone index.html with:
+- Force-directed graph of 185+ Bleach characters and 350+ canonical relationships
+- Sprite sheet slicing for instant circular avatar rendering on HTML5 Canvas
+- Specialized tactical cluster layouts (Gotei 13, Wandenreich, Hueco Mundo, Karakura Town, Original Gotei)
+- Character dossier sidebar with relationship filtering, timeline, and custom character themes (e.g. Rukia Frost effect)
+- Tactical Radar Minimap, shortest-path BFS relationship tracer, and quick search (Ctrl+K)
+"""
+
 import json
 import base64
 import os
 import networkx as nx
 
 def generate_obsidian_graph():
-    with open("data/characters.json", "r", encoding="utf-8") as f:
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    asset_dir = os.path.join(base_dir, "Asset")
+
+    # 1. Load canonical intelligence datasets
+    with open(os.path.join(base_dir, "data", "characters.json"), "r", encoding="utf-8") as f:
         chars = json.load(f)
-    with open("data/relationships.json", "r", encoding="utf-8") as f:
+    with open(os.path.join(base_dir, "data", "relationships.json"), "r", encoding="utf-8") as f:
         rels = json.load(f)
 
+    # 2. Build network graph & compute degree centralities
     G = nx.Graph()
     for char_id, data in chars.items():
         G.add_node(char_id, **data)
     for rel in rels:
         G.add_edge(rel["source"], rel["target"], type=rel["type"], label=rel["label"])
 
-    deg_cent = nx.degree_centrality(G)
-
-    # Ensure character sprite sheet and coordinate map are up-to-date
+    # 3. Ensure character sprite sheet and coordinate map are built and up-to-date
     from build_sprites import build_sprites
     sprite_meta = build_sprites()
 
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    asset_dir = os.path.join(base_dir, "Asset")
-    
-    # Removed base64 GIF to optimize DOM weight and FCP
-
-    # Load characters.webp as data URI fallback for local file:// testing
+    # 4. Read sprite sheet as base64 data URI fallback for local file:// execution
     sprite_webp_path = os.path.join(asset_dir, "sprites", "characters.webp")
-    sprite_version = int(os.path.getmtime(sprite_webp_path))
+    sprite_version = int(os.path.getmtime(sprite_webp_path)) if os.path.exists(sprite_webp_path) else 1
     with open(sprite_webp_path, "rb") as f:
         sprite_webp_b64 = base64.b64encode(f.read()).decode("ascii")
 
@@ -63,24 +71,19 @@ def generate_obsidian_graph():
         color = RACE_COLORS.get(race, "#9CA3AF")
         fac = data.get("faction", "")
 
-        # Hierarchical node tier sizing
-        # Tier 1: Supreme Leaders / Gods
+        # Hierarchical node tier sizing based on narrative power & authority
         if char_id in ('aizen', 'ichigo', 'yhwach', 'yamamoto', 'soul_king'):
             tier = 1
             node_val = 16.0
-        # Tier 2: Right-Hands, Top Espada, Supreme Captains, Faction Leaders, Original Gotei 13
         elif char_id in ('gin', 'tosen', 'starrk', 'baraggan', 'harribel', 'ulquiorra', 'grimmjow', 'nnoitra', 'shunsui', 'kenpachi', 'byakuya', 'urahara', 'shinji', 'ginjo', 'jugram', 'uryu', 'rukia', 'renji', 'hitsugaya', 'unohana', 'chika_shihoin', 'kinroku_izuhara', 'chigiri_shijima', 'danjiro_obana', 'furofushi_saito', 'nobutsuna_shigyo', 'batsuunsai_katori', 'entetsu_kumoi', 'furuoki_otogawa', 'uhin_zenjoji', 'saizo_sakahone', 'soi_fon', 'mayuri', 'komamura', 'ukitake', 'rose', 'kensei', 'lille_barro', 'gerard_valkyrie', 'pernida_parnkgjas', 'askin_nakk_le_vaar', 'gremmy_thoumeaux'):
             tier = 2
             node_val = 11.5
-        # Tier 3: Core Espada, Captains, Elite Schutzstaffel, Key Lieutenants
         elif char_id in ('zommari', 'szayelaporro', 'aaroniero', 'yammy', 'luppi', 'nelliel', 'wonderweiss', 'bazz_b', 'bambietta_basterbine', 'as_nodt', 'cang_du', 'quilge_opie', 'bg9', 'pepe_waccabrada', 'robert_accutrone', 'driscoll_berci', 'meninas_mcallon', 'mask_de_masculine', 'candice_catnipp', 'giselle_gewelle', 'nanana_najahkoop', 'nianzol_weizol', 'royd_lloyd', 'loyd_lloyd', 'liltotto_lamperd', 'love', 'lisa', 'hachigen', 'yoruichi', 'isshin', 'ryuken', 'orihime', 'chad', 'tsukishima', 'tatsuki', 'omaeda', 'kira', 'isane', 'momo', 'nanao', 'hisagi', 'rangiku', 'yachiru', 'nemu', 'sasakibe'):
             tier = 3
             node_val = 8.5
-        # Tier 5: Minor Fracción, Fodder, Servants, Minor Hollows
         elif 'Fracci' in fac or char_id in ('lilynette', 'loly', 'menoly', 'roka_paramia', 'charlotte', 'abirama', 'findorr', 'poww', 'ggio', 'nirgge', 'shawlong', 'edrad', 'ylfordt', 'diroy', 'nakim', 'apacci', 'milarose', 'sunsun', 'ayon', 'tesla', 'lumina', 'medazeppi', 'pesche', 'dondochakka', 'bawabawa', 'demoura', 'aisslinger', 'kukkapuro', 'aldegor', 'grand_fisher', 'jinta', 'ururu', 'kon', 'ririn', 'noba', 'kurodo', 'keigo', 'mizuiro', 'tatsuki', 'chizuru', 'ryo', 'michiru', 'mahana', 'misato', 'keisuke', 'mizuho', 'ikumi', 'kaoru', 'don_kanonji', 'kagine', 'asguiaro_ebern', 'luders_friegen', 'berenice_gabrielli', 'jerome_guizbatt', 'guenael_lee', 'shaz_domino'):
             tier = 5
             node_val = 3.5
-        # Tier 4: Lieutenants, Privaron Espada, Officers, Seated Members
         else:
             tier = 4
             node_val = 5.8
@@ -108,7 +111,7 @@ def generate_obsidian_graph():
             "label": rel["label"]
         })
 
-    # Build the legend HTML
+    # Render faction filter pills
     legend_items = "".join(
         f'<div class="faction-filter" data-faction="{race}" style="display:flex;align-items:center;cursor:pointer;padding:2px 0;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1">'
         f'<span style="width:8px;height:8px;border-radius:50%;background:{color};'
@@ -119,9 +122,9 @@ def generate_obsidian_graph():
     graph_json = json.dumps(graph_data)
     sprite_map_json = json.dumps(sprite_meta.get("sprites", {}))
     sprite_meta_json = json.dumps({
-        "sheetWidth": sprite_meta.get("sheetWidth", 128),
-        "sheetHeight": sprite_meta.get("sheetHeight", 128),
-        "tileSize": sprite_meta.get("tileSize", 128)
+        "sheetWidth": sprite_meta.get("sheetWidth", 2304),
+        "sheetHeight": sprite_meta.get("sheetHeight", 3072),
+        "tileSize": sprite_meta.get("tileSize", 192)
     })
 
     html = f"""<!DOCTYPE html>
@@ -129,798 +132,540 @@ def generate_obsidian_graph():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BLEACH - TYBW Intelligence</title>
+    <title>BLEACH - TYBW Intelligence Network</title>
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
     <link rel="dns-prefetch" href="https://unpkg.com">
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;600&display=swap" as="style">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://unpkg.com/force-graph"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="frost-panel.css">
+    <script src="frost-panel.js"></script>
+    <link rel="stylesheet" href="flame-panel.css">
+    <script src="flame-panel.js"></script>
+    <link rel="stylesheet" href="glass-panel.css">
+    <script src="glass-panel.js"></script>
+    <link rel="stylesheet" href="ichigo-panel.css">
+    <script src="ichigo-panel.js"></script>
+    <link rel="stylesheet" href="yhwach-panel.css">
+    <script src="yhwach-panel.js"></script>
+    <link rel="stylesheet" href="ichibei-panel.css">
+    <script src="ichibei-panel.js"></script>
+    <link rel="stylesheet" href="kisuke-panel.css">
+    <script src="kisuke-panel.js"></script>
+    <link rel="stylesheet" href="kenpachi-panel.css">
+    <script src="kenpachi-panel.js"></script>
+    <link rel="stylesheet" href="soulking-panel.css">
+    <script src="soulking-panel.js"></script>
     <style>
+        /* Base Reset & Pointer Cursor Defaults */
         * {{ box-sizing: border-box; }}
         body {{ margin: 0; padding: 0; background-color: #0A0A0F; color: white; font-family: 'Inter', sans-serif; overflow: hidden; touch-action: none; }}
         #graph-container {{ width: 100vw; height: 100vh; position: absolute; z-index: 1; }}
+        #graph-container canvas {{ cursor: pointer; }}
 
-        /* Loader */
+        /* Fast Responsive Loader */
         #loader {{
             position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 0.8s ease-out, visibility 0.8s; cursor: pointer;
+            transition: opacity 0.6s ease-out, visibility 0.6s; cursor: pointer;
         }}
         #loader.fade-out {{ opacity: 0; pointer-events: none; }}
         .css-spinner {{
-            width: 80px; height: 80px; border: 4px solid rgba(255, 255, 255, 0.1);
-            border-left-color: #F59E0B; border-radius: 50%;
-            animation: spin 1s linear infinite; margin-bottom: 20px;
+            width: 70px; height: 70px; border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #D4AF37; border-radius: 50%;
+            animation: spin 0.9s linear infinite; margin-bottom: 20px;
         }}
         @keyframes spin {{ 100% {{ transform: rotate(360deg); }} }}
         .loader-text {{
-            font-family: 'Cinzel', serif; font-size: 24px; letter-spacing: 4px;
+            font-family: 'Cinzel', serif; font-size: 22px; letter-spacing: 4px;
             color: #fff; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            animation: pulse-glow 2s ease-in-out infinite; text-transform: uppercase;
+            text-transform: uppercase;
         }}
-        @keyframes pulse-glow {{ 0%, 100% {{ opacity: 0.8; text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }} 50% {{ opacity: 1; text-shadow: 0 0 20px rgba(255, 255, 255, 0.9); }} }}
-        .loader-hint {{ margin-top: 15px; font-size: 13px; color: #888; font-weight: 300; letter-spacing: 1px; text-transform: uppercase; }}
+        .loader-hint {{ margin-top: 14px; font-size: 12px; color: #888; letter-spacing: 1px; text-transform: uppercase; }}
 
-        /* Sidebar */
+        /* Character Intelligence Sidebar */
         #sidebar {{
             position: fixed;
             top: 20px;
             bottom: 20px;
-            right: -400px;
-            width: 350px;
-            background: rgba(10,10,15,0.85);
-            border: 1px solid rgba(255,255,255,0.15);
+            right: -420px;
+            width: 360px;
+            background: rgba(10, 10, 16, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 12px;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.9);
-            z-index: 20;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9);
+            z-index: 30;
             display: flex;
             flex-direction: column;
             gap: 0;
-            transition: right 0.4s cubic-bezier(.175, .885, .32, 1.275);
-            overflow: hidden; /* For border radius */
+            transition: right 0.38s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+            overflow: hidden;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
         }}
         #sidebar.open {{ right: 20px; }}
 
         #sidebar-bg {{
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-size: cover;
-            background-position: center 20%;
-            background-repeat: no-repeat;
-            z-index: 0;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-size: cover; background-position: center 25%;
+            background-repeat: no-repeat; z-index: 0;
             transition: background-image 0.4s ease, opacity 0.4s ease;
-            opacity: 0.35;
-            filter: blur(14px) saturate(1.3) brightness(0.75);
-            transform: scale(1.12);
-            pointer-events: none;
+            opacity: 0.35; filter: blur(12px) saturate(1.3) brightness(0.8);
+            transform: scale(1.1); pointer-events: none;
         }}
         #sidebar-overlay {{
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to bottom, rgba(10,10,18,0.5) 0%, rgba(10,10,18,0.88) 45%, rgba(10,10,18,0.96) 100%);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            z-index: 0;
-            pointer-events: none;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, rgba(10,10,18,0.4) 0%, rgba(10,10,18,0.85) 40%, rgba(10,10,18,0.98) 100%);
+            z-index: 0; pointer-events: none;
         }}
         
         #sidebar-content {{
-            padding: 28px 22px 40px 22px;
+            padding: 24px 22px 35px 22px;
             height: 100%;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             z-index: 1;
             scrollbar-width: thin;
-            scrollbar-color: rgba(220, 38, 38, 0.6) rgba(15, 15, 25, 0.4);
+            scrollbar-color: rgba(212, 175, 55, 0.5) rgba(15, 15, 25, 0.4);
         }}
-        #sidebar-content::-webkit-scrollbar {{
-            width: 5px;
-        }}
-        #sidebar-content::-webkit-scrollbar-track {{
-            background: rgba(10, 10, 20, 0.4);
-            border-radius: 4px;
-        }}
-        #sidebar-content::-webkit-scrollbar-thumb {{
-            background: rgba(220, 38, 38, 0.5);
-            border-radius: 4px;
-        }}
-        #sidebar-content::-webkit-scrollbar-thumb:hover {{
-            background: rgba(220, 38, 38, 0.9);
-        }}
-        #sidebar-content::-webkit-scrollbar-button {{
-            display: none;
-            width: 0;
-            height: 0;
-        }}
+        #sidebar-content::-webkit-scrollbar {{ width: 5px; }}
+        #sidebar-content::-webkit-scrollbar-track {{ background: rgba(10, 10, 20, 0.4); border-radius: 4px; }}
+        #sidebar-content::-webkit-scrollbar-thumb {{ background: rgba(212, 175, 55, 0.5); border-radius: 4px; }}
 
         .scroll-fade {{
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 40px;
+            position: absolute; bottom: 0; left: 0; right: 0; height: 40px;
             background: linear-gradient(to top, rgba(10,10,18,0.95), transparent);
-            pointer-events: none;
-            z-index: 5;
-            border-bottom-left-radius: 12px;
-            border-bottom-right-radius: 12px;
+            pointer-events: none; z-index: 5;
+            border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
         }}
 
+        #s-banner{{display:none;height:150px;margin:-6px -22px 14px;background-size:cover;background-position:center 20%;
+          -webkit-mask-image:linear-gradient(#000 60%,transparent);mask-image:linear-gradient(#000 60%,transparent)}}
+
+        /* Close (X) Cross Mark Button */
         #sidebar-close {{
             position: absolute;
-            top: 14px;
-            right: 16px;
-            background: none;
-            border: 1px solid rgba(255,255,255,0.15);
+            top: 12px;
+            right: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: #fff;
             font-size: 18px;
             width: 32px;
             height: 32px;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.2s;
+            transition: all 0.2s ease;
+            z-index: 50;
         }}
-        #sidebar-close:hover {{ background: rgba(220,38,38,0.3); }}
-
-        #sidebar-search {{
-            position: absolute;
-            top: 14px;
-            right: 56px;
-            background: none;
-            border: 1px solid rgba(255,255,255,0.15);
+        #sidebar-close:hover {{
+            background: rgba(220, 38, 38, 0.45);
+            border-color: #DC2626;
             color: #fff;
-            font-size: 14px;
-            width: 32px;
-            height: 32px;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            animation: searchPulse 3.5s infinite ease-in-out;
+            transform: scale(1.05);
         }}
-        @keyframes searchPulse {{
-            0%, 100% {{ box-shadow: 0 0 0 rgba(220,38,38,0); border-color: rgba(255,255,255,0.15); }}
-            50% {{ box-shadow: 0 0 8px rgba(220,38,38,0.7); border-color: rgba(220,38,38,0.8); }}
-        }}
-        #sidebar-search:hover {{ background: rgba(220,38,38,0.3); animation: none; }}
 
-        #sidebar .brand {{ font-family: 'Cinzel', serif; font-size: 18px; font-weight: 700; color: #fff; letter-spacing: 2px; margin-bottom: 2px; }}
-        #sidebar .brand span {{ color: #DC2626; }}
-        #sidebar .sub {{ font-size: 9px; letter-spacing: 4px; color: #666; text-transform: uppercase; margin-bottom: 16px; }}
-
-        /* Back navigation */
-        .back-nav {{
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
+        /* Rukia Kuchiki Special Theme (Sode no Shirayuki Frost Aura) */
+        #sidebar.frost-theme {{
+            border: 1px solid rgba(186, 230, 253, 0.85) !important;
+            box-shadow: 0 0 35px rgba(186, 230, 253, 0.45), inset 0 0 25px rgba(255, 255, 255, 0.12) !important;
+            animation: frostPulse 3s infinite ease-in-out;
         }}
+        @keyframes frostPulse {{
+            0%, 100% {{ box-shadow: 0 0 30px rgba(186, 230, 253, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.1); }}
+            50% {{ box-shadow: 0 0 45px rgba(186, 230, 253, 0.65), inset 0 0 30px rgba(255, 255, 255, 0.25); }}
+        }}
+        #sidebar.frost-theme #s-avatar {{
+            border-color: #BAE6FD !important;
+            box-shadow: 0 0 25px rgba(186, 230, 253, 0.85) !important;
+        }}
+        #sidebar.frost-theme::before {{
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(186, 230, 253, 0.12) 0%, rgba(147, 197, 253, 0.05) 50%, rgba(10, 15, 30, 0.2) 100%);
+            pointer-events: none; z-index: 1;
+        }}
+
+        /* Yamamoto Genryusai Special Theme (Ryujin Jakka Flame Aura) */
+        #sidebar.flame-theme {{
+            border: 1px solid rgba(255, 150, 60, 0.85) !important;
+            box-shadow: 0 0 35px rgba(255, 120, 40, 0.45), inset 0 0 25px rgba(255, 200, 100, 0.12) !important;
+            animation: flamePulse 3s infinite ease-in-out;
+        }}
+        @keyframes flamePulse {{
+            0%, 100% {{ box-shadow: 0 0 30px rgba(255, 120, 40, 0.4), inset 0 0 20px rgba(255, 190, 120, 0.1); }}
+            50% {{ box-shadow: 0 0 45px rgba(255, 130, 50, 0.65), inset 0 0 30px rgba(255, 190, 120, 0.25); }}
+        }}
+        #sidebar.flame-theme #s-avatar {{
+            border-color: #ffb066 !important;
+            box-shadow: 0 0 25px rgba(255, 130, 50, 0.85) !important;
+        }}
+        #sidebar.flame-theme::before {{
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 130, 40, 0.12) 0%, rgba(255, 80, 20, 0.05) 50%, rgba(30, 10, 5, 0.2) 100%);
+            pointer-events: none; z-index: 1;
+        }}
+
+        /* Sosuke Aizen Special Theme (Kyoka Suigetsu Shatter Illusion Aura) */
+        #sidebar.glass-theme {{
+            border: 1px solid rgba(205, 195, 255, 0.85) !important;
+            box-shadow: 0 0 35px rgba(167, 139, 250, 0.45), inset 0 0 25px rgba(255, 255, 255, 0.12) !important;
+            animation: glassPulse 3s infinite ease-in-out;
+        }}
+        @keyframes glassPulse {{
+            0%, 100% {{ box-shadow: 0 0 30px rgba(167, 139, 250, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.1); }}
+            50% {{ box-shadow: 0 0 45px rgba(167, 139, 250, 0.65), inset 0 0 30px rgba(255, 255, 255, 0.25); }}
+        }}
+        #sidebar.glass-theme #s-avatar {{
+            border-color: #d8ccff !important;
+            box-shadow: 0 0 25px rgba(167, 139, 250, 0.85) !important;
+        }}
+        #sidebar.glass-theme::before {{
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.12) 0%, rgba(190, 170, 255, 0.05) 50%, rgba(20, 10, 35, 0.2) 100%);
+            pointer-events: none; z-index: 1;
+        }}
+
+        /* Ichigo Kurosaki Special Theme (Getsuga Tensho Aura) */
+        #sidebar.ichigo-theme {{
+            border: 1px solid #ff3b30 !important;
+            box-shadow: 0 0 35px rgba(255, 20, 10, 0.45), 0 0 70px rgba(0, 0, 0, 0.9), inset 0 0 25px rgba(255, 20, 10, 0.16) !important;
+        }}
+        #sidebar.ichigo-theme #s-avatar {{
+            border-color: #ff5a4d !important;
+            box-shadow: 0 0 22px rgba(255, 40, 30, 0.9), 0 0 0 3px rgba(0, 0, 0, 0.75) !important;
+        }}
+        #sidebar.ichigo-theme::before {{
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 30, 20, 0.12) 0%, rgba(200, 10, 10, 0.05) 50%, rgba(10, 0, 5, 0.3) 100%);
+            pointer-events: none; z-index: 1;
+        }}
+
+        /* Yhwach Special Theme (The Almighty / Reishi Void Aura) */
+        #sidebar.yhwach-theme {{
+            border: 1px solid rgba(215, 230, 255, 0.85) !important;
+            box-shadow: 0 0 35px rgba(170, 205, 255, 0.35), 0 0 90px rgba(0, 0, 0, 0.95), inset 0 0 30px rgba(0, 0, 0, 0.6) !important;
+        }}
+        #sidebar.yhwach-theme #s-avatar {{
+            border-color: #dbe9ff !important;
+            box-shadow: 0 0 24px rgba(170, 205, 255, 0.85), 0 0 0 3px rgba(0, 0, 0, 0.8) !important;
+        }}
+        #sidebar.yhwach-theme::before {{
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(190, 215, 255, 0.10) 0%, rgba(120, 160, 255, 0.04) 50%, rgba(5, 5, 12, 0.4) 100%);
+            pointer-events: none; z-index: 1;
+        }}
+
+        /* Ichibei Hyosube Special Theme (Ichimonji Sumi-e Black Ink Aura) */
+        #sidebar.ichibei-theme {{
+            border: 1px solid rgba(236, 230, 214, 0.85) !important;
+            box-shadow: 0 0 35px rgba(200, 194, 180, 0.35), 0 0 80px rgba(0, 0, 0, 0.95), inset 0 0 30px rgba(0, 0, 0, 0.7) !important;
+        }}
+        #sidebar.ichibei-theme #s-avatar {{
+            border-color: #ece6d6 !important;
+            box-shadow: 0 0 24px rgba(236, 230, 214, 0.85), 0 0 0 3px rgba(0, 0, 0, 0.8) !important;
+        }}
+        #sidebar.ichibei-theme::before {{
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(236, 230, 214, 0.08) 0%, rgba(10, 10, 12, 0.5) 100%);
+            pointer-events: none; z-index: 1;
+        }}
+
+        /* Kisuke Urahara Special Theme (Benihime / Kannonbiraki Seam Aura) */
+        #sidebar.kisuke-theme {{
+            border: 1px solid rgba(255, 74, 95, 0.85) !important;
+            box-shadow: 0 0 35px rgba(255, 74, 95, 0.45), 0 0 70px rgba(0, 0, 0, 0.9), inset 0 0 25px rgba(255, 74, 95, 0.16) !important;
+        }}
+        #sidebar.kisuke-theme #s-avatar {{
+            border-color: #ff6b7d !important;
+            box-shadow: 0 0 22px rgba(255, 74, 95, 0.9), 0 0 0 3px rgba(0, 0, 0, 0.75) !important;
+        }}
+        #sidebar.kisuke-theme::before {{
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 74, 95, 0.10) 0%, rgba(243, 232, 207, 0.04) 50%, rgba(20, 4, 8, 0.4) 100%);
+            pointer-events: none; z-index: 1;
+        }}
+
+        /* Kenpachi Zaraki Special Theme (Nozarashi Spiritual Pressure Aura) */
+        #sidebar.kenpachi-theme {{
+            border: 1px solid rgba(225, 29, 72, 0.85) !important;
+            box-shadow: 0 0 35px rgba(190, 18, 60, 0.45), 0 0 75px rgba(0, 0, 0, 0.95), inset 0 0 25px rgba(250, 204, 21, 0.16) !important;
+        }}
+        #sidebar.kenpachi-theme #s-avatar {{
+            border-color: #facc15 !important;
+            box-shadow: 0 0 22px rgba(225, 29, 72, 0.85), 0 0 10px rgba(250, 204, 21, 0.55), 0 0 0 3px rgba(0, 0, 0, 0.8) !important;
+        }}
+        #sidebar.kenpachi-theme::before {{
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(190, 18, 60, 0.12) 0%, rgba(250, 204, 21, 0.05) 50%, rgba(15, 2, 4, 0.4) 100%);
+            pointer-events: none; z-index: 1;
+        }}
+
+        /* Soul King Special Theme (Primordial Linchpin Divine Aura) */
+        #sidebar.soulking-theme {{
+            border: 1px solid rgba(255, 226, 150, 0.85) !important;
+            box-shadow: 0 0 35px rgba(255, 224, 138, 0.35), 0 0 85px rgba(10, 10, 20, 0.95), inset 0 0 25px rgba(157, 132, 255, 0.15) !important;
+        }}
+        #sidebar.soulking-theme #s-avatar {{
+            border-color: #fff1c4 !important;
+            box-shadow: 0 0 22px rgba(255, 232, 170, 0.85), 0 0 44px rgba(157, 132, 255, 0.45), 0 0 0 3px rgba(0, 0, 0, 0.8) !important;
+        }}
+        #sidebar.soulking-theme::before {{
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 226, 150, 0.10) 0%, rgba(157, 132, 255, 0.06) 50%, rgba(10, 8, 20, 0.5) 100%);
+            pointer-events: none; z-index: 1;
+        }}
+
+        /* Header & Navigation */
+        .sidebar-header-line {{
+            font-family: 'Cinzel', serif; color: #D4AF37; font-size: 10px; letter-spacing: 4px;
+            margin-bottom: 14px; border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 6px;
+            padding-right: 48px; display: flex; justify-content: space-between; align-items: center;
+        }}
+
+        .back-nav {{ display: flex; align-items: center; margin-bottom: 12px; }}
         .back-btn {{
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.12);
-            color: #ddd;
-            font-size: 11px;
-            padding: 4px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
+            color: #ddd; font-size: 11px; padding: 5px 10px; border-radius: 4px; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;
             font-family: 'Inter', sans-serif;
         }}
-        .back-btn:hover {{
-            background: rgba(220,38,38,0.25);
-            border-color: #DC2626;
-            color: #fff;
-        }}
-        .back-btn span {{ color: #888; }}
-        .back-btn strong {{
-            color: #fff;
-            max-width: 140px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }}
+        .back-btn:hover {{ background: rgba(212, 175, 55, 0.25); border-color: #D4AF37; color: #fff; }}
+        .back-btn strong {{ color: #fff; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
 
-        /* Floating Dossier Avatar Header */
-        #s-avatar-wrap {{
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 14px;
-        }}
+        /* Profile Header */
+        .char-header {{ display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }}
         #s-avatar {{
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background-color: #0F1318;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Cinzel', serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: #fff;
-            border: 2px solid rgba(255,255,255,0.2);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-            background-repeat: no-repeat;
-            flex-shrink: 0;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 64px; height: 64px; border-radius: 50%;
+            background-color: #0F1318; display: flex; align-items: center; justify-content: center;
+            font-family: 'Cinzel', serif; font-size: 22px; font-weight: 700; color: #fff;
+            border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            background-repeat: no-repeat; flex-shrink: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }}
-        #s-avatar-meta {{
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-width: 0;
-        }}
-
-        #sidebar .char-name {{ font-family: 'Cinzel', serif; font-size: 20px; color: #fff; margin: 0 0 4px 0; }}
-        #sidebar .char-meta {{ font-size: 11px; color: #DC2626; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0; }}
-        #sidebar .char-desc {{ font-size: 12px; color: #aaa; line-height: 1.6; margin-bottom: 14px; }}
-
-        /* Action buttons in profile (Trace path) */
-        .action-bar {{
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-        }}
-        .action-chip {{
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.12);
-            color: #aaa;
-            font-size: 10px;
-            padding: 5px 10px;
+        .char-title-block {{ display: flex; flex-direction: column; justify-content: center; min-width: 0; }}
+        .char-name {{ font-family: 'Cinzel', serif; font-size: 18px; color: #fff; margin: 0 0 3px 0; display: flex; align-items: center; flex-wrap: wrap; }}
+        .char-name-gif {{
+            display: inline-block;
+            vertical-align: middle;
+            height: 34px;
+            width: auto;
+            margin-left: 8px;
             border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
         }}
-        .action-chip:hover {{
-            background: rgba(220,38,38,0.25);
-            border-color: #DC2626;
-            color: #fff;
+        .ulquiorra-name-gif {{
+            height: 32px;
+            filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.85));
+            animation: ulq-gif-hover 2.2s ease-in-out infinite alternate;
         }}
-        .action-chip.active {{
-            background: #DC2626;
-            border-color: #DC2626;
-            color: #fff;
+        @keyframes ulq-gif-hover {{
+            0% {{ transform: translateY(0); filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.6)); }}
+            100% {{ transform: translateY(-3px); filter: drop-shadow(0 0 14px rgba(52, 211, 153, 0.95)); }}
         }}
-
-        /* Floating Path Finding Banner */
-        #path-banner {{
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(15, 15, 25, 0.96);
-            border: 1px solid #DC2626;
-            box-shadow: 0 6px 25px rgba(220, 38, 38, 0.35);
+        .ichigo-name-gif {{
+            height: 36px;
+            filter: drop-shadow(0 0 10px rgba(255, 30, 20, 0.85));
+            animation: ichigo-mask-hover 2.4s ease-in-out infinite alternate;
+        }}
+        @keyframes ichigo-mask-hover {{
+            0% {{ transform: translateY(0); filter: drop-shadow(0 0 8px rgba(255, 30, 20, 0.75)); }}
+            100% {{ transform: translateY(-2px); filter: drop-shadow(0 0 14px rgba(255, 60, 40, 0.95)); }}
+        }}
+        .byakuya-overview-card {{
             border-radius: 8px;
-            padding: 10px 18px;
-            z-index: 45;
-            display: none;
+            overflow: hidden;
+            border: 1px solid rgba(244, 114, 182, 0.45);
+            box-shadow: 0 0 22px rgba(244, 114, 182, 0.3), 0 6px 20px rgba(0, 0, 0, 0.75);
+            background: radial-gradient(ellipse at 50% 60%, rgba(244, 114, 182, 0.16) 0%, rgba(20, 10, 24, 0.85) 75%);
+            margin-top: 14px;
+            display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 12px;
-            backdrop-filter: blur(12px);
-            font-size: 12px;
-            color: #eee;
+            padding: 10px 0;
+        }}
+        .byakuya-overview-card img {{
+            max-width: 92%;
+            height: auto;
+            display: block;
+            border-radius: 7px;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            filter: drop-shadow(0 0 12px rgba(244, 114, 182, 0.45));
+        }}
+        .char-meta {{ font-size: 11px; color: #D4AF37; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }}
+        .char-desc {{ font-size: 12.5px; color: #bbb; line-height: 1.6; margin-bottom: 16px; font-style: italic; }}
+
+        /* Action Buttons */
+        .action-bar {{ display: flex; gap: 8px; margin-top: 15px; margin-bottom: 12px; }}
+        .action-btn {{
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
+            color: #ccc; font-size: 11px; padding: 8px 14px; border-radius: 4px;
+            cursor: pointer; display: flex; align-items: center; gap: 6px;
+            transition: all 0.2s; font-family: 'Inter', sans-serif;
+        }}
+        .action-btn:hover {{ background: rgba(212, 175, 55, 0.3); border-color: #D4AF37; color: #fff; }}
+        .action-btn.active {{ background: #D4AF37; border-color: #D4AF37; color: #000; font-weight: 600; }}
+
+        /* Tabs */
+        .dossier-tabs {{ display: flex; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; gap: 4px; }}
+        .tab-btn {{
+            background: transparent; border: none; border-bottom: 2px solid transparent;
+            color: #888; font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.5px;
+            padding: 8px 12px; cursor: pointer; transition: all 0.2s;
+        }}
+        .tab-btn:hover {{ color: #ddd; }}
+        .tab-btn.active {{ color: #D4AF37; border-bottom-color: #D4AF37; font-weight: 700; }}
+        .tab-pane {{ display: none; }}
+        .tab-pane.active {{ display: block; }}
+
+        /* Path Tracing Floating Banner */
+        #path-banner {{
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(15, 15, 25, 0.95); border: 1px solid #D4AF37;
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.35); border-radius: 8px;
+            padding: 10px 18px; z-index: 45; display: none; align-items: center; gap: 12px;
+            backdrop-filter: blur(12px); font-size: 12px; color: #eee;
         }}
         #path-banner.active {{ display: flex; }}
-        #path-banner .banner-text strong {{ color: #F59E0B; }}
+        #path-banner strong {{ color: #F59E0B; }}
         #path-banner button {{
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #fff;
-            padding: 4px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 11px;
-            transition: all 0.2s;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: #fff; padding: 4px 10px; border-radius: 4px; cursor: pointer;
+            font-size: 11px; transition: all 0.2s;
         }}
         #path-banner button:hover {{ background: rgba(220,38,38,0.4); border-color: #DC2626; }}
 
-        #sidebar .section-title {{ font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px; color: #888; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }}
-        #sidebar .section-title span {{ font-size: 10px; color: #555; }}
-
-        /* Connection filter chips */
-        .conn-filter-bar {{
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            margin-bottom: 10px;
-        }}
+        /* Connection Filter Chips & Cards */
+        .conn-filter-bar {{ display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }}
         .conn-chip {{
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: #777;
-            font-size: 9px;
-            padding: 3px 7px;
-            border-radius: 8px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.2s;
-            user-select: none;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            color: #888; font-size: 9.5px; padding: 3px 8px; border-radius: 8px;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
+            transition: all 0.2s; user-select: none;
         }}
-        .conn-chip:hover, .conn-chip.active {{
-            background: rgba(220,38,38,0.25);
-            border-color: #DC2626;
-            color: #fff;
-        }}
+        .conn-chip:hover, .conn-chip.active {{ background: rgba(212, 175, 55, 0.25); border-color: #D4AF37; color: #fff; }}
 
-        /* Connection items with category badges & colored left borders */
-        #sidebar .conn-list {{
-            list-style: none;
-            padding: 0;
-            margin: 0 0 20px 0;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }}
+        .conn-list {{ list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }}
         .conn-card {{
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 7px 10px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-left-width: 3px;
-            border-left-style: solid;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 12px; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06); border-left-width: 3px; border-left-style: solid;
+            border-radius: 4px; cursor: pointer; transition: all 0.2s; text-decoration: none;
         }}
-        .conn-card:hover {{
-            background: rgba(255,255,255,0.06);
-            border-color: rgba(255,255,255,0.2);
-            transform: translateX(3px);
-        }}
-        .conn-card-info {{
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            overflow: hidden;
-        }}
-        .conn-card-name {{
-            font-size: 11px;
-            font-weight: 600;
-            color: #eee;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }}
-        .conn-card-label {{
-            font-size: 10px;
-            color: #888;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }}
-        .conn-card-badge {{
-            font-size: 8px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            padding: 2px 5px;
-            border-radius: 3px;
-            flex-shrink: 0;
-            margin-left: 8px;
-        }}
+        .conn-card:hover {{ background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.25); transform: translateX(3px); }}
+        .conn-card-name {{ font-size: 11.5px; font-weight: 600; color: #eee; }}
+        .conn-card-label {{ font-size: 10px; color: #999; }}
+        .conn-card-badge {{ font-size: 8.5px; font-weight: 700; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; flex-shrink: 0; }}
 
-        #sidebar .legend-grid {{ display: flex; flex-direction: column; gap: 5px; font-size: 11px; color: rgba(255,255,255,0.65); }}
-
-        /* Tactical Cluster Navigation Bar */
+        /* Cluster Navigation Bar */
         #cluster-bar {{
-            position: fixed;
-            top: 18px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 25;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 5px 8px;
-            background: rgba(10, 10, 16, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 30px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(14px);
+            position: fixed; top: 18px; left: 50%; transform: translateX(-50%);
+            z-index: 20; display: flex; align-items: center; gap: 6px;
+            padding: 6px 10px; background: rgba(10, 10, 16, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.75); backdrop-filter: blur(14px);
             user-select: none;
         }}
         .cluster-btn {{
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: rgba(255, 255, 255, 0.7);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 10.5px;
-            font-family: 'Cinzel', serif;
-            letter-spacing: 0.8px;
-            cursor: pointer;
-            transition: all 0.22s ease;
-            white-space: nowrap;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.7); padding: 5px 12px; border-radius: 20px;
+            font-size: 11px; font-family: 'Cinzel', serif; letter-spacing: 0.8px;
+            cursor: pointer; transition: all 0.2s ease; white-space: nowrap;
         }}
-        .cluster-btn:hover {{
-            background: rgba(255, 255, 255, 0.14);
-            color: #fff;
-            border-color: rgba(255, 255, 255, 0.22);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-        }}
-        .cluster-btn.active {{
-            background: rgba(212, 175, 55, 0.22);
-            border-color: #D4AF37;
-            color: #F5E6C8;
-            box-shadow: 0 0 14px rgba(212, 175, 55, 0.4);
-        }}
+        .cluster-btn:hover {{ background: rgba(255, 255, 255, 0.15); color: #fff; border-color: rgba(255, 255, 255, 0.25); }}
+        .cluster-btn.active {{ background: rgba(212, 175, 55, 0.25); border-color: #D4AF37; color: #F5E6C8; box-shadow: 0 0 14px rgba(212, 175, 55, 0.4); }}
 
-        /* Tactical Minimap HUD (Bottom-Left) */
-        #minimap-container {{
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 15;
-            width: 172px;
-            background: rgba(10, 10, 16, 0.88);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(12px);
-            overflow: hidden;
-            user-select: none;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+        /* Mini Legend */
+        #mini-legend {{
+            position: absolute; bottom: 20px; left: 20px; z-index: 10;
+            background: rgba(10,10,15,0.7); padding: 10px 14px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(8px);
+            font-size: 10px; color: rgba(255,255,255,0.75); display: flex; flex-direction: column; gap: 5px;
+            pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease;
         }}
-        .minimap-header {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 5px 8px 4px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            background: rgba(255, 255, 255, 0.02);
-        }}
-        .minimap-title {{
-            font-family: 'Cinzel', serif;
-            font-size: 8.5px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            color: rgba(255, 255, 255, 0.7);
-        }}
-        .minimap-stats {{
-            font-family: 'Inter', sans-serif;
-            font-size: 8px;
-            color: #D4AF37;
-        }}
-        #minimap-canvas {{
-            display: block;
-            cursor: crosshair;
-            background: #08080C;
-        }}
-        .minimap-hint {{
-            text-align: center;
-            font-size: 7.5px;
-            color: rgba(255, 255, 255, 0.35);
-            padding: 2px 0 3px;
-            letter-spacing: 0.5px;
-        }}
-
-        /* Mini legend (bottom-left, adjacent to radar) */
-        #mini-legend {{ position: absolute; bottom: 20px; left: 202px; z-index: 5; background: rgba(10,10,15,0.5); padding: 10px 14px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.04); backdrop-filter: blur(5px); font-size: 10px; color: rgba(255,255,255,0.6); display: flex; flex-direction: column; gap: 6px; pointer-events: none; transition: opacity 0.3s ease, transform 0.3s ease; }}
         #mini-legend.hidden {{ opacity: 0; transform: translateY(20px); pointer-events: none; }}
-        #mini-legend .title {{ font-family: 'Cinzel', serif; letter-spacing: 2px; font-weight: 700; color: rgba(255,255,255,0.8); font-size: 9px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 3px; margin-bottom: 3px; }}
+        #mini-legend .title {{ font-family: 'Cinzel', serif; letter-spacing: 2px; font-weight: 700; color: rgba(255,255,255,0.85); font-size: 9px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 3px; margin-bottom: 3px; }}
 
-        /* Search overlay */
+        /* Search Overlay (Ctrl+K) */
         #search-overlay {{
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
-            z-index: 50;
-            display: none;
-            align-items: flex-start;
-            justify-content: center;
-            padding-top: 18vh;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
+            z-index: 60; display: none; align-items: flex-start; justify-content: center; padding-top: 18vh;
         }}
         #search-overlay.open {{ display: flex; }}
         #search-box {{
-            width: 420px;
-            background: rgba(15,15,22,0.95);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            width: 440px; background: rgba(15,15,22,0.96);
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
+            overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.9);
         }}
         #search-input {{
-            width: 100%;
-            padding: 16px 20px;
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            color: #fff;
-            font-family: 'Inter', sans-serif;
-            font-size: 15px;
-            outline: none;
+            width: 100%; padding: 16px 20px; background: transparent;
+            border: none; border-bottom: 1px solid rgba(255,255,255,0.08);
+            color: #fff; font-family: 'Inter', sans-serif; font-size: 15px; outline: none;
         }}
-        #search-input::placeholder {{ color: #555; }}
-        #search-results {{
-            max-height: 300px;
-            overflow-y: auto;
-        }}
+        #search-input::placeholder {{ color: #666; }}
+        #search-results {{ max-height: 320px; overflow-y: auto; }}
         .search-result {{
-            padding: 10px 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: background 0.15s;
-            border-bottom: 1px solid rgba(255,255,255,0.02);
+            padding: 10px 20px; cursor: pointer; display: flex; align-items: center; gap: 10px;
+            transition: background 0.15s; border-bottom: 1px solid rgba(255,255,255,0.02);
         }}
-        .search-result:hover, .search-result.active {{ background: rgba(220,38,38,0.15); }}
+        .search-result:hover, .search-result.active {{ background: rgba(212, 175, 55, 0.2); }}
         .search-result .dot {{ width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }}
         .search-result .sr-name {{ font-size: 13px; color: #eee; }}
-        .search-result .sr-faction {{ font-size: 10px; color: #666; margin-left: auto; text-transform: uppercase; letter-spacing: 1px; }}
-        #search-hint {{ padding: 10px 20px; font-size: 10px; color: #444; text-align: center; letter-spacing: 1px; }}
+        .search-result .sr-faction {{ font-size: 10px; color: #888; margin-left: auto; text-transform: uppercase; letter-spacing: 1px; }}
+        #search-hint {{ padding: 10px 20px; font-size: 10px; color: #555; text-align: center; letter-spacing: 1px; }}
 
-        /* ── EASTER EGG STYLES ── */
-        #bankai-overlay {{
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none; z-index: 90; display: none;
-            align-items: center; justify-content: center;
-            background: radial-gradient(circle, rgba(74, 158, 255, 0.4) 0%, rgba(220, 38, 38, 0.25) 60%, rgba(0,0,0,0.92) 100%);
-        }}
-        #bankai-overlay.active {{ display: flex; animation: bankaiFlash 2.5s forwards ease-out; }}
-        @keyframes bankaiFlash {{
-            0% {{ opacity: 0; transform: scale(0.9); }}
-            15% {{ opacity: 1; transform: scale(1.05); }}
-            35% {{ opacity: 0.9; transform: scale(1); }}
-            100% {{ opacity: 0; transform: scale(1); }}
-        }}
-        .bankai-kanji {{
-            font-family: 'Cinzel', serif; font-size: 64px; font-weight: 900;
-            letter-spacing: 16px; color: #fff;
-            text-shadow: 0 0 35px #4A9EFF, 0 0 70px #DC2626;
-            text-align: center; line-height: 1.2;
-        }}
-        .bankai-sub {{
-            font-size: 14px; letter-spacing: 12px; color: #4A9EFF;
-            text-transform: uppercase; margin-top: 10px; text-shadow: 0 0 15px #4A9EFF;
-        }}
-
-        #getsuga-slash {{
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none; z-index: 92; display: none;
-        }}
-        #getsuga-slash.active {{ display: block; animation: getsugaFade 0.75s forwards ease-out; }}
-        @keyframes getsugaFade {{ 0% {{ opacity: 1; }} 100% {{ opacity: 0; }} }}
-        .slash-blade {{
-            position: absolute; top: 50%; left: -20%; width: 140%; height: 7px;
-            background: linear-gradient(90deg, transparent 0%, #fff 25%, #DC2626 50%, #000 75%, transparent 100%);
-            box-shadow: 0 0 35px #DC2626, 0 0 70px #fff;
-            transform: translateY(-50%) rotate(-28deg);
-            animation: slashCut 0.45s ease-out;
-        }}
-        @keyframes slashCut {{
-            0% {{ transform: translateY(-50%) rotate(-28deg) scaleX(0); }}
-            50% {{ transform: translateY(-50%) rotate(-28deg) scaleX(1.1); }}
-            100% {{ transform: translateY(-50%) rotate(-28deg) scaleX(1); }}
-        }}
-
-        body.screen-shake {{ animation: screenShake 0.4s ease-in-out; }}
-        @keyframes screenShake {{
-            0%, 100% {{ transform: translate(0, 0); }}
-            20% {{ transform: translate(-6px, 4px); }}
-            40% {{ transform: translate(6px, -4px); }}
-            60% {{ transform: translate(-4px, 2px); }}
-            80% {{ transform: translate(4px, -2px); }}
-        }}
-
-        body.hogyoku-mode {{
-            animation: realityDistort 0.6s infinite alternate ease-in-out;
-        }}
-        @keyframes realityDistort {{
-            0% {{ filter: contrast(1.4) hue-rotate(45deg) saturate(1.8); }}
-            100% {{ filter: contrast(1.6) hue-rotate(280deg) saturate(2.2); }}
-        }}
-
-        body.midnight-mode {{ background-color: #06020c !important; }}
-        body.midnight-mode #graph-container {{ filter: hue-rotate(25deg) brightness(0.9); }}
-
-        #seireitei-barrier {{
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none; z-index: 85;
-            box-shadow: inset 0 0 70px rgba(212, 175, 55, 0.8), inset 0 0 150px rgba(74, 158, 255, 0.4);
-            border: 2px solid rgba(212, 175, 55, 0.6); display: none;
-            animation: barrierPulse 2s infinite alternate ease-in-out;
-        }}
-        @keyframes barrierPulse {{ 0% {{ opacity: 0.6; }} 100% {{ opacity: 1; }} }}
-
-        #love-banner {{
-            position: fixed; top: 75px; left: 50%; transform: translateX(-50%);
-            background: rgba(225, 29, 72, 0.92); color: #fff;
-            border: 1px solid #fff; box-shadow: 0 0 30px rgba(225, 29, 72, 0.7);
-            border-radius: 20px; padding: 9px 20px; font-size: 12px; z-index: 60;
-            display: none; align-items: center; gap: 8px; backdrop-filter: blur(10px);
-            animation: bounceIn 0.4s ease-out;
-        }}
-        @keyframes bounceIn {{
-            0% {{ transform: translateX(-50%) scale(0.7); opacity: 0; }}
-            100% {{ transform: translateX(-50%) scale(1); opacity: 1; }}
-        }}
-
-        #hollow-banner {{
-            position: fixed; top: 25px; left: 50%; transform: translateX(-50%);
-            background: rgba(10, 5, 20, 0.95); border: 2px solid #6B21A8;
-            box-shadow: 0 0 35px #6B21A8, 0 0 60px #DC2626;
-            color: #fff; padding: 10px 22px; border-radius: 6px;
-            font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 2px;
-            z-index: 65; display: none; text-align: center;
-        }}
-
-        #credits-modal {{
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
-            z-index: 99; display: none; align-items: center; justify-content: center;
-        }}
-        #credits-modal.open {{ display: flex; }}
-        .bounty-card {{
-            width: 400px; background: #0E0B12; border: 2px solid #D4AF37;
-            border-radius: 8px; padding: 32px 28px; box-shadow: 0 0 50px rgba(212, 175, 55, 0.4);
-            text-align: center; position: relative;
-        }}
-        .bounty-seal {{
-            font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 4px;
-            color: #D4AF37; text-transform: uppercase; border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-            padding-bottom: 8px; margin-bottom: 18px;
-        }}
-        .bounty-title {{ font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 6px; }}
-        .bounty-sub {{ font-size: 11px; color: #DC2626; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; font-weight: 600; }}
-        .bounty-body {{ font-size: 12px; color: #bbb; line-height: 1.7; margin-bottom: 22px; text-align: left; background: rgba(255,255,255,0.03); padding: 12px 16px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }}
-        .bounty-close {{
-            background: rgba(212, 175, 55, 0.15); border: 1px solid #D4AF37; color: #D4AF37;
-            padding: 7px 20px; border-radius: 4px; cursor: pointer; font-family: 'Inter', sans-serif;
-            font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; transition: all 0.2s; font-weight: 600;
-        }}
-        .bounty-close:hover {{ background: #D4AF37; color: #000; }}
-
-        /* Large High-Quality Floating Hover Card */
+        /* Floating Hover Tooltip */
         #node-hover-card {{
-            position: fixed;
-            pointer-events: none;
-            z-index: 60;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 10px 18px 10px 12px;
-            background: rgba(10, 10, 18, 0.88);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 14px;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), 0 0 24px rgba(220, 38, 38, 0.15);
-            opacity: 0;
-            transform: translate(-50%, -125%) scale(0.92);
-            transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            position: fixed; pointer-events: none; z-index: 50;
+            display: flex; align-items: center; gap: 12px; padding: 10px 16px;
+            background: rgba(10, 10, 18, 0.92); border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9);
+            opacity: 0; transform: translate(-50%, -125%) scale(0.92);
+            transition: opacity 0.15s ease, transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
         }}
-        #node-hover-card.visible {{
-            opacity: 1;
-            transform: translate(-50%, -125%) scale(1);
-        }}
+        #node-hover-card.visible {{ opacity: 1; transform: translate(-50%, -125%) scale(1); }}
         #hover-avatar {{
-            width: 76px;
-            height: 76px;
-            border-radius: 50%;
-            background-color: #0A0A0F;
-            background-repeat: no-repeat;
-            background-size: cover;
-            border: 2px solid #DC2626;
-            box-shadow: 0 0 18px rgba(220, 38, 38, 0.5);
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Cinzel', serif;
-            font-size: 26px;
-            font-weight: 700;
-            overflow: hidden;
+            width: 44px; height: 44px; border-radius: 50%;
+            background-color: #0F1318; border: 2px solid #D4AF37;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Cinzel', serif; font-size: 15px; font-weight: 700; color: #fff;
+            flex-shrink: 0; background-repeat: no-repeat;
         }}
-        .hover-text {{
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }}
-        #hover-name {{
-            font-family: 'Cinzel', serif;
-            font-size: 15px;
-            font-weight: 700;
-            color: #fff;
-            letter-spacing: 1px;
-            white-space: nowrap;
-        }}
-        #hover-meta {{
-            font-size: 11px;
-            color: #9CA3AF;
-            white-space: nowrap;
-        }}
-        #hover-conns {{
-            font-size: 10px;
-            color: #DC2626;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            margin-top: 2px;
-        }}
-        /* Mobile Touch & Drawer Optimization */
-        @media (max-width: 768px) {{
-            #mobile-nav {{ display: flex !important; }}
-            #sidebar {{
-                top: auto; bottom: -120%; left: 0; right: 0; width: 100%; height: 50vh;
-                border-left: none; border-top: 1px solid rgba(255,255,255,0.15);
-                border-radius: 20px 20px 0 0;
-                transition: bottom 0.3s cubic-bezier(0.1, 0.82, 0.25, 1);
-            }}
-            #sidebar.open {{ bottom: 0; right: 0; transform: none; }}
-            #sidebar::before {{
-                content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-                width: 40px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px;
-            }}
-            #sidebar-content {{ padding: 20px 16px 30px 16px; }}
-            #cluster-bar {{
-                top: auto; bottom: 0; left: 0; right: 0; width: 100%;
-                transform: none;
-                flex-wrap: nowrap; justify-content: flex-start;
-                overflow-x: auto; overflow-y: hidden;
-                -webkit-overflow-scrolling: touch;
-                z-index: 10;
-                border-radius: 0;
-                padding: 8px 10px;
-                gap: 4px;
-                background: rgba(10, 10, 16, 0.95);
-                border-top: 1px solid rgba(255,255,255,0.08);
-            }}
-            #cluster-bar::-webkit-scrollbar {{ display: none; }}
-            .cluster-btn {{
-                padding: 5px 10px; font-size: 10px; margin: 0;
-                white-space: nowrap; flex-shrink: 0;
-            }}
-            #minimap-container {{ display: none !important; }}
-            #mini-legend {{ display: none !important; }}
-            #legend {{ display: none; }}
-            #node-hover-card {{ display: none !important; }}
-            #s-avatar-wrap {{ width: 60px; height: 60px; }}
-        }}
-        /* Dossier Tabs & Timeline */
-        .dossier-tabs {{ display: flex; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }}
-        .tab-btn {{ flex: 1; background: transparent; border: none; color: rgba(255,255,255,0.4); font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px; padding: 10px 0; cursor: pointer; transition: all 0.2s; border-bottom: 2px solid transparent; }}
-        .tab-btn:hover {{ color: rgba(255,255,255,0.8); }}
-        .tab-btn.active {{ color: #D4AF37; border-bottom-color: #D4AF37; }}
-        .tab-pane {{ display: none; }}
-        .tab-pane.active {{ display: block; animation: fadeIn 0.3s ease; }}
-        
-        .vertical-timeline {{ border-left: 1px dashed rgba(255,255,255,0.2); margin-left: 10px; padding-left: 20px; margin-top: 10px; }}
-        .tl-item {{ position: relative; padding-bottom: 25px; font-size: 11px; letter-spacing: 1.5px; color: rgba(255,255,255,0.5); font-family: 'Cinzel', serif; }}
-        .tl-item::before {{ content: ''; position: absolute; left: -24px; top: 2px; width: 7px; height: 7px; background: #0F1318; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; }}
-        .tl-item.active {{ color: #D4AF37; }}
+        .hover-text {{ display: flex; flex-direction: column; }}
+        #hover-name {{ font-family: 'Cinzel', serif; font-size: 13px; color: #fff; }}
+        #hover-meta {{ font-size: 10px; color: #D4AF37; text-transform: uppercase; letter-spacing: 1px; }}
+        #hover-conns {{ font-size: 9px; color: #888; margin-top: 2px; }}
+
+        /* Timeline Items */
+        .vertical-timeline {{ position: relative; padding-left: 20px; margin-top: 10px; }}
+        .vertical-timeline::before {{ content: ''; position: absolute; left: 0; top: 5px; bottom: 5px; width: 2px; background: rgba(255,255,255,0.1); }}
+        .tl-item {{ position: relative; padding-bottom: 18px; font-size: 11px; color: #666; }}
+        .tl-item::before {{ content: ''; position: absolute; left: -24px; top: 2px; width: 8px; height: 8px; background: #0F1318; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; }}
+        .tl-item.active {{ color: #D4AF37; font-weight: 600; }}
         .tl-item.active::before {{ border-color: #D4AF37; background: #D4AF37; box-shadow: 0 0 10px rgba(212,175,55,0.5); }}
-        .tl-item:last-child {{ padding-bottom: 0; }}
     </style>
 </head>
 <body>
-    <div id="dynamic-bg" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; background-size:cover; background-position:center; background-repeat:no-repeat; opacity:0; transition:opacity 1.2s ease; pointer-events:none; background-color:#0A0A0F;"></div>
-    <div id="mobile-nav" style="position:fixed; top:20px; left:20px; z-index:40; display:none;">
-        <button id="nav-search-btn" style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); color:#fff; padding:10px 15px; border-radius:20px; font-size:13px; cursor:pointer; font-family:'Cinzel'; letter-spacing:1px; backdrop-filter:blur(5px);"><span style="margin-right:6px;">&#x1F50D;</span> SEARCH</button>
-    </div>
-    <!-- Large High-Quality Floating Hover Card -->
+    <div id="dynamic-bg" style="position:fixed; inset:0; z-index:0; background-size:cover; background-position:center; background-repeat:no-repeat; opacity:0; transition:opacity 1s ease; pointer-events:none; background-color:#0A0A0F;"></div>
+    
+    <!-- Floating Hover Tooltip -->
     <div id="node-hover-card">
         <div id="hover-avatar"></div>
         <div class="hover-text">
@@ -929,55 +674,18 @@ def generate_obsidian_graph():
             <div id="hover-conns"></div>
         </div>
     </div>
-    <!-- Fullscreen Easter Egg Overlays -->
-    <div id="bankai-overlay">
-        <div>
-            <div class="bankai-kanji">卍解</div>
-            <div class="bankai-sub">Bankai Awakening &bull; Reiatsu Surging</div>
-        </div>
-    </div>
 
-    <div id="getsuga-slash">
-        <div class="slash-blade"></div>
-    </div>
-
-    <div id="seireitei-barrier"></div>
-
-    <div id="love-banner">
-        <span>❤️</span>
-        <span>An eternal bond bridging Soul Reaper &amp; Quincy &mdash; Isshin &amp; Masaki</span>
-    </div>
-
-    <div id="hollow-banner">
-        <span id="hollow-banner-text">HOLLOWFICATION AWAKENED</span>
-    </div>
-
-    <!-- Developer Credits Modal -->
-    <div id="credits-modal">
-        <div class="bounty-card">
-            <div class="bounty-seal">Soul Society Intelligence &bull; Classified Dossier</div>
-            <div class="bounty-title">Prashant</div>
-            <div class="bounty-sub">Special War Potential &bull; System Architect</div>
-            <div class="bounty-body">
-                <div><strong>Zanpakuto:</strong> Code Releaser (Shikai: &ldquo;Decode&rdquo;)</div>
-                <div style="margin-top:4px;"><strong>Reiatsu Class:</strong> Captain-Commander Level</div>
-                <div style="margin-top:4px;"><strong>Mission:</strong> Reconstruct the entire Karakura &amp; TYBW spiritual network into an interactive intelligence database.</div>
-                <div style="margin-top:4px;color:#888;font-size:10px;">Status: Active &bull; Observes the World of the Living from the Shadows</div>
-            </div>
-            <button class="bounty-close" id="credits-close">Close Dossier</button>
-        </div>
-    </div>
-
-    <!-- Loader Screen -->
+    <!-- Fast Loader Screen -->
     <div id="loader" title="Click to skip">
         <div class="css-spinner"></div>
         <div class="loader-text">Loading Intelligence</div>
-        <div class="loader-hint">Click anywhere to SKIP INTRO</div>
+        <div class="loader-hint">Click anywhere to skip intro</div>
     </div>
 
+    <!-- Main Graph Container -->
     <div id="graph-container"></div>
 
-    <!-- Tactical Cluster Navigation Bar -->
+    <!-- Cluster Navigation Bar -->
     <div id="cluster-bar">
         <button class="cluster-btn active" data-cluster="all">All Galaxy</button>
         <button class="cluster-btn" data-cluster="gotei">Gotei 13</button>
@@ -988,40 +696,38 @@ def generate_obsidian_graph():
         <button class="cluster-btn" data-cluster="original">Original Gotei</button>
     </div>
 
-    <!-- Floating Path Finding Banner -->
+    <!-- Path Tracing Banner -->
     <div id="path-banner">
-        <span class="banner-text" id="path-banner-text">Select a target character to trace path from <strong>Ichigo</strong></span>
+        <span id="path-banner-text">Select a target character to trace connection</span>
         <button id="path-cancel-btn">Cancel</button>
     </div>
 
-    <!-- Sidebar -->
+    <!-- Character Profile Sidebar -->
     <div id="sidebar">
         <div id="sidebar-bg"></div>
         <div id="sidebar-overlay"></div>
         <div class="scroll-fade"></div>
         <div id="sidebar-content">
-            <button id="sidebar-close">&times;</button>
-            <div id="sidebar-search" title="Search characters (Ctrl+K)" style="display:none;">&#x1F50D;</div>
-            <div style="font-family:'Cinzel'; color:#D4AF37; font-size:10px; letter-spacing:4px; margin-bottom:15px; border-bottom:1px solid rgba(212,175,55,0.3); padding-bottom:6px; display: flex; justify-content: space-between;">
+            <button id="sidebar-close" title="Close dossier">&times;</button>
+            <div class="sidebar-header-line">
                 <span>CLASSIFIED // INTEL</span>
                 <span id="s-id-code">S-000</span>
             </div>
 
-            <!-- Back Navigation Button -->
+            <!-- Back Navigation -->
             <div class="back-nav" id="s-back-container" style="display:none;">
                 <button class="back-btn" id="s-back-btn">
                     <span>&larr; Back to</span> <strong id="s-back-name"></strong>
                 </button>
             </div>
 
-            <!-- Character Profile Header -->
-            <div class="char-header" style="margin-bottom: 15px;">
-                <div class="avatar-ring">
-                    <div class="char-avatar" id="s-avatar"></div>
-                </div>
+            <!-- Profile Header -->
+            <div id="s-banner"></div>
+            <div class="char-header">
+                <div class="char-avatar" id="s-avatar"></div>
                 <div class="char-title-block">
-                    <div class="char-name" id="s-name" style="text-transform:uppercase; font-size: 18px;">Select Node</div>
-                    <div class="char-meta" id="s-meta" style="color:#D4AF37; font-weight:600;">System Status</div>
+                    <div class="char-name" id="s-name">Select Node</div>
+                    <div class="char-meta" id="s-meta">System Status</div>
                 </div>
             </div>
 
@@ -1035,28 +741,29 @@ def generate_obsidian_graph():
 
                 <!-- OVERVIEW PANE -->
                 <div id="pane-overview" class="tab-pane active">
-                    <div id="s-intel-fields" style="font-size: 12px; margin-bottom: 20px; color: rgba(255,255,255,0.6); line-height: 1.6;">
-                        <div style="margin-bottom: 8px;"><strong style="color:#888; display:inline-block; width:90px;">RACE</strong> <span id="s-field-race" style="color:#fff;"></span></div>
-                        <div style="margin-bottom: 8px;"><strong style="color:#888; display:inline-block; width:90px;">AFFILIATION</strong> <span id="s-field-affil" style="color:#fff;"></span></div>
-                        <div style="margin-bottom: 8px;"><strong style="color:#888; display:inline-block; width:90px;">FAMILY/CLAN</strong> <span id="s-field-family" style="color:#fff;"></span></div>
-                        <div style="margin-bottom: 8px;"><strong style="color:#888; display:inline-block; width:90px;">REIATSU CLASS</strong> <span id="s-field-tier" style="color:#D4AF37; font-family:'Cinzel';"></span></div>
+                    <div id="s-intel-fields" style="font-size: 12px; margin-bottom: 18px; color: rgba(255,255,255,0.7); line-height: 1.7;">
+                        <div><strong style="color:#888; display:inline-block; width:95px;">RACE</strong> <span id="s-field-race" style="color:#fff;"></span></div>
+                        <div><strong style="color:#888; display:inline-block; width:95px;">AFFILIATION</strong> <span id="s-field-affil" style="color:#fff;"></span></div>
+                        <div><strong style="color:#888; display:inline-block; width:95px;">FAMILY/CLAN</strong> <span id="s-field-family" style="color:#fff;"></span></div>
+                        <div><strong style="color:#888; display:inline-block; width:95px;">REIATSU CLASS</strong> <span id="s-field-tier" style="color:#D4AF37; font-family:'Cinzel';"></span></div>
                     </div>
                     
-                    <div class="char-desc" id="s-desc" style="font-size: 13px; font-style:italic;"></div>
+                    <div class="char-desc" id="s-desc"></div>
                     
-                    <div class="action-bar" id="s-action-bar" style="margin-top: 25px;">
+                    <div class="action-bar" id="s-action-bar">
                         <button class="action-btn" id="trace-path-btn" style="width:100%; justify-content:center;">
-                            <span>&#x1F4CD;</span> TRACE CONNECTION
+                            <span>&#x1F4CD;</span> TRACE CONNECTION PATH
                         </button>
                     </div>
+                    <div id="s-overview-bottom" style="display:none;"></div>
                 </div>
 
                 <!-- RELATIONS PANE -->
                 <div id="pane-relations" class="tab-pane">
                     <div class="connections-section" id="conn-section" style="margin-top:0;">
-                        <div class="section-title">
+                        <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:1.5px; color:#888; margin-bottom:8px; display:flex; justify-content:space-between;">
                             <span>KNOWN RELATIONSHIPS</span>
-                            <span class="badge" id="conn-count">0</span>
+                            <span id="conn-count" style="color:#D4AF37;">0</span>
                         </div>
                         <div class="conn-filter-bar" id="conn-filter-bar"></div>
                         <div class="connections-list" id="s-connections"></div>
@@ -1075,21 +782,10 @@ def generate_obsidian_graph():
                 </div>
             </div>
 
-            <!-- Initial placeholder description -->
             <div id="s-placeholder" style="font-size: 13px; font-style:italic; color:#888; margin-top:20px;">
                 Click any character node in the spiritual network to inspect classified intelligence, examine family bloodlines, and trace tactical connections.
             </div>
         </div>
-    </div>
-
-    <!-- Tactical Minimap HUD (Bottom-Left) -->
-    <div id="minimap-container">
-        <div class="minimap-header">
-            <span class="minimap-title">TACTICAL RADAR</span>
-            <span class="minimap-stats" id="minimap-scale">1.00x</span>
-        </div>
-        <canvas id="minimap-canvas" width="172" height="110"></canvas>
-        <div class="minimap-hint">Click / Drag to navigate</div>
     </div>
 
     <!-- Mini legend -->
@@ -1108,28 +804,47 @@ def generate_obsidian_graph():
     </div>
 
     <script>
-        // Intro Skip Logic (Safe)
+        // Intro Loader Dismissal
         const loader = document.getElementById('loader');
-        try {{
-            const skipIntro = localStorage.getItem('skipIntro');
-            if (skipIntro === 'true') {{
-                if (loader) loader.style.display = 'none';
-            }} else {{
-                setTimeout(() => {{
-                    if (loader) loader.classList.add('fade-out');
-                    try {{ localStorage.setItem('skipIntro', 'true'); }} catch(e) {{}}
-                    setTimeout(() => {{ if (loader) loader.style.display = 'none'; }}, 800);
-                }}, 1500); // 1.5 seconds max
+        function dismissLoader() {{
+            if (loader && loader.style.display !== 'none') {{
+                loader.classList.add('fade-out');
+                setTimeout(() => {{ loader.style.display = 'none'; }}, 400);
             }}
-        }} catch(e) {{
-            // localStorage not available
-            setTimeout(() => {{
-                if (loader) loader.classList.add('fade-out');
-                setTimeout(() => {{ if (loader) loader.style.display = 'none'; }}, 800);
-            }}, 1500);
         }}
+        if (loader) loader.addEventListener('click', dismissLoader);
+        setTimeout(dismissLoader, 1200);
 
         const RAW_GRAPH = {graph_json};
+        const SPRITE_MAP = {sprite_map_json};
+        const SPRITE_META = {sprite_meta_json};
+        const SPRITE_DATA_URI = "data:image/webp;base64,{sprite_webp_b64}";
+        const SPRITE_SRC = 'Asset/sprites/characters.webp?v={sprite_version}';
+
+        // Load Sprite Sheet with instant local and remote compatibility
+        const spriteSheet = new Image();
+        if (location.protocol !== 'file:') {{
+            spriteSheet.crossOrigin = "anonymous";
+        }}
+        spriteSheet.onload = () => {{
+            if (typeof Graph !== 'undefined' && Graph && Graph.refresh) {{
+                Graph.refresh();
+            }}
+            dismissLoader();
+        }};
+        spriteSheet.onerror = () => {{
+            if (spriteSheet.src !== SPRITE_DATA_URI) {{
+                spriteSheet.src = SPRITE_DATA_URI;
+            }}
+        }};
+        // Use data URI directly on local file protocol for zero-latency local testing
+        if (location.protocol === 'file:') {{
+            spriteSheet.src = SPRITE_DATA_URI;
+        }} else {{
+            spriteSheet.src = SPRITE_SRC;
+        }}
+
+        // Graph State
         let gData = {{
             nodes: RAW_GRAPH.nodes.map(n => Object.assign({{}}, n)),
             links: RAW_GRAPH.links.map(l => Object.assign({{}}, l))
@@ -1138,344 +853,191 @@ def generate_obsidian_graph():
         // Pin Ichigo in the center on initial load
         const initIchigo = gData.nodes.find(n => n.id === 'ichigo');
         if (initIchigo) {{
-            initIchigo.x = 0;
-            initIchigo.y = 0;
-            initIchigo.fx = 0;
-            initIchigo.fy = 0;
+            initIchigo.x = 0; initIchigo.y = 0; initIchigo.fx = 0; initIchigo.fy = 0;
         }}
 
         let hoverNode = null;
         let currentNode = null;
         let activeFactionFilter = null;
-        const navHistory = [];
+        let navHistory = [];
 
-        // Web Audio Synthesizer (Zero dependencies)
-        function playSfx(type) {{
-            try {{
-                const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                if (!AudioCtx) return;
-                const ctx = new AudioCtx();
-                if (ctx.state === 'suspended') ctx.resume();
+        // Precompute Node Maps & Adjacency
+        const neighbors = {{}};
+        const nodeConnections = {{}};
+        const nodeNameMap = {{}};
 
-                if (type === 'slash') {{
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(600, ctx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.35);
-                    gain.gain.setValueAtTime(0.4, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.35);
-                }} else if (type === 'bankai') {{
-                    const osc1 = ctx.createOscillator();
-                    const gain1 = ctx.createGain();
-                    osc1.type = 'sine';
-                    osc1.frequency.setValueAtTime(140, ctx.currentTime);
-                    osc1.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 1.2);
-                    gain1.gain.setValueAtTime(0.6, ctx.currentTime);
-                    gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
-                    osc1.connect(gain1);
-                    gain1.connect(ctx.destination);
-                    osc1.start();
-                    osc1.stop(ctx.currentTime + 1.2);
+        RAW_GRAPH.nodes.forEach(n => {{
+            neighbors[n.id] = new Set();
+            nodeConnections[n.id] = [];
+            nodeNameMap[n.id] = n.name;
+        }});
 
-                    const osc2 = ctx.createOscillator();
-                    const gain2 = ctx.createGain();
-                    osc2.type = 'triangle';
-                    osc2.frequency.setValueAtTime(880, ctx.currentTime + 0.1);
-                    osc2.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.6);
-                    gain2.gain.setValueAtTime(0.2, ctx.currentTime + 0.1);
-                    gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.0);
-                    osc2.connect(gain2);
-                    gain2.connect(ctx.destination);
-                    osc2.start(ctx.currentTime + 0.1);
-                    osc2.stop(ctx.currentTime + 1.0);
-                }} else if (type === 'hollow') {{
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(90, ctx.currentTime);
-                    osc.frequency.linearRampToValueAtTime(180, ctx.currentTime + 0.2);
-                    osc.frequency.linearRampToValueAtTime(50, ctx.currentTime + 0.6);
-                    gain.gain.setValueAtTime(0.5, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.6);
-                }} else if (type === 'hogyoku') {{
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(220, ctx.currentTime);
-                    osc.frequency.linearRampToValueAtTime(880, ctx.currentTime + 0.4);
-                    osc.frequency.linearRampToValueAtTime(110, ctx.currentTime + 0.8);
-                    gain.gain.setValueAtTime(0.4, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.8);
-                }}
-            }} catch(e) {{}}
-        }}
+        RAW_GRAPH.links.forEach(l => {{
+            const sid = typeof l.source === 'object' ? l.source.id : l.source;
+            const tid = typeof l.target === 'object' ? l.target.id : l.target;
+            if (neighbors[sid]) neighbors[sid].add(tid);
+            if (neighbors[tid]) neighbors[tid].add(sid);
+            if (nodeConnections[sid]) nodeConnections[sid].push({{ targetId: tid, type: l.type, label: l.label }});
+            if (nodeConnections[tid]) nodeConnections[tid].push({{ targetId: sid, type: l.type, label: l.label }});
+        }});
 
-        // Relationship Categories mapping
-        const REL_CATEGORIES = {{
-            'Bloodline':   {{ name: 'Family',  color: '#F43F5E' }},
-            'Parent':      {{ name: 'Family',  color: '#F43F5E' }},
-            'Sibling':     {{ name: 'Family',  color: '#F43F5E' }},
-            'Spouse':      {{ name: 'Family',  color: '#F43F5E' }},
-            'Adopted':     {{ name: 'Family',  color: '#F43F5E' }},
-            'Marriage':    {{ name: 'Family',  color: '#F43F5E' }},
-            'Clan':        {{ name: 'Family',  color: '#F43F5E' }},
-            'Enemy':       {{ name: 'Rival',   color: '#EF4444' }},
-            'Enemies':     {{ name: 'Rival',   color: '#EF4444' }},
-            'Rivals':      {{ name: 'Rival',   color: '#EF4444' }},
-            'Rival':       {{ name: 'Rival',   color: '#EF4444' }},
-            'Absorption':  {{ name: 'Rival',   color: '#A855F7' }},
-            'Betrayal':    {{ name: 'Rival',   color: '#DC2626' }},
-            'Friend':      {{ name: 'Social',  color: '#38BDF8' }},
-            'Comrade':     {{ name: 'Social',  color: '#38BDF8' }},
-            'Allies':      {{ name: 'Social',  color: '#38BDF8' }},
-            'Bond':        {{ name: 'Social',  color: '#38BDF8' }},
-            'Soul Bond':   {{ name: 'Social',  color: '#818CF8' }},
-            'Mentor':      {{ name: 'Mentor',  color: '#34D399' }},
-            'Mentorship':  {{ name: 'Mentor',  color: '#34D399' }},
-            'Creator':     {{ name: 'Mentor',  color: '#34D399' }},
-            'Captain':     {{ name: 'Faction', color: '#F59E0B' }},
-            'Boss':        {{ name: 'Faction', color: '#F59E0B' }},
-            'Command':     {{ name: 'Faction', color: '#F59E0B' }},
-            'Fracci\u00f3n': {{ name: 'Faction', color: '#F59E0B' }},
-            'Subordinate': {{ name: 'Faction', color: '#F59E0B' }},
-            'Territory':   {{ name: 'Faction', color: '#9CA3AF' }}
-        }};
-
+        // Relationship Categories
         function getRelCategory(relType) {{
-            return REL_CATEGORIES[relType] || {{ name: 'Other', color: '#9CA3AF' }};
+            const typeLower = (relType || '').toLowerCase();
+            if (typeLower.includes('parent') || typeLower.includes('child') || typeLower.includes('sibling') || typeLower.includes('spouse') || typeLower.includes('cousin') || typeLower.includes('ancestor') || typeLower.includes('blood') || typeLower.includes('family') || typeLower.includes('clan')) {{
+                return {{ name: 'Family', color: '#D4AF37' }};
+            }}
+            if (typeLower.includes('rival') || typeLower.includes('enemy') || typeLower.includes('killed') || typeLower.includes('nemesis') || typeLower.includes('opposed') || typeLower.includes('betrayal')) {{
+                return {{ name: 'Rival', color: '#DC2626' }};
+            }}
+            if (typeLower.includes('captain') || typeLower.includes('lieutenant') || typeLower.includes('officer') || typeLower.includes('subordinate') || typeLower.includes('master') || typeLower.includes('creator') || typeLower.includes('leader') || typeLower.includes('command')) {{
+                return {{ name: 'Military', color: '#4A9EFF' }};
+            }}
+            if (typeLower.includes('friend') || typeLower.includes('ally') || typeLower.includes('comrade') || typeLower.includes('saved') || typeLower.includes('bond') || typeLower.includes('social')) {{
+                return {{ name: 'Allies', color: '#10B981' }};
+            }}
+            return {{ name: 'Organization', color: '#9CA3AF' }};
         }}
 
         function escapeHtml(str) {{
             if (!str) return '';
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }}
 
-        // Precompute adjacency map and connections from master intelligence database
-        const neighbors = {{}};
-        const nodeConnections = {{}};
-        RAW_GRAPH.nodes.forEach(n => {{
-            neighbors[n.id] = new Set();
-            nodeConnections[n.id] = [];
-        }});
-        RAW_GRAPH.links.forEach(l => {{
-            const sid = typeof l.source === 'object' ? l.source.id : l.source;
-            const tid = typeof l.target === 'object' ? l.target.id : l.target;
-            neighbors[sid].add(tid);
-            neighbors[tid].add(sid);
-            nodeConnections[sid].push({{ id: tid, label: l.label, type: l.type }});
-            nodeConnections[tid].push({{ id: sid, label: l.label, type: l.type }});
-        }});
-
-        // Node name lookup
-        const nodeNameMap = {{}};
-        RAW_GRAPH.nodes.forEach(n => {{ nodeNameMap[n.id] = n.name; }});
-
-        // Character Sprite Sheet Architecture (Single HTTP Request)
-        const SPRITE_MAP = {sprite_map_json};
-        const SPRITE_META = {sprite_meta_json};
-        const SPRITE_DATA_URI = "data:image/webp;base64,{sprite_webp_b64}";
-        const SPRITE_SRC = 'Asset/sprites/characters.webp?v={sprite_version}';
-
-        const spriteSheet = new Image();
-        if (location.protocol !== 'file:') {{
-            spriteSheet.crossOrigin = "anonymous";
-        }}
-        // Prefer relative path for GitHub Pages caching, with base64 data-URI fallback
-        spriteSheet.src = SPRITE_SRC;
-        spriteSheet.onerror = () => {{
-            if (spriteSheet.src !== SPRITE_DATA_URI) {{
-                spriteSheet.src = SPRITE_DATA_URI;
-            }}
-        }};
-        spriteSheet.onload = () => {{
-            if (typeof Graph !== 'undefined' && Graph.refresh) {{
-                Graph.refresh();
-            }}
-            dismissLoader();
-        }};
-
-        // Instant & Smooth Reactive Loader Dismissal
-        let loaderDismissed = false;
-        function dismissLoader() {{
-            if (loaderDismissed) return;
-            loaderDismissed = true;
-            const loader = document.getElementById('loader');
-            if (loader && loader.style.display !== 'none') {{
-                loader.classList.add('fade-out');
-                setTimeout(() => {{ loader.style.display = 'none'; }}, 300);
-            }}
-        }}
-        // Dismiss immediately once sprite cache or frame is available, with 350ms safety bound
-        requestAnimationFrame(() => {{
-            if (spriteSheet.complete && spriteSheet.naturalWidth > 0) {{
-                dismissLoader();
-            }} else {{
-                setTimeout(dismissLoader, 350);
-            }}
-        }});
-        document.getElementById('loader').addEventListener('click', dismissLoader);
-
-        // Sidebar elements
+        // HTML Elements
         const sidebar = document.getElementById('sidebar');
+        const fp = (typeof FrostPanel !== 'undefined' && FrostPanel.attach) ? FrostPanel.attach(sidebar, {{ particles: 30, snow: true }}) : null;
+        const fl = (typeof FlamePanel !== 'undefined' && FlamePanel.attach) ? FlamePanel.attach(sidebar, {{ embers: 45 }}) : null;
+        const gl = (typeof GlassPanel !== 'undefined' && GlassPanel.attach) ? GlassPanel.attach(sidebar, {{ impact: [0.7, 0.3] }}) : null;
+        const ic = (typeof IchigoPanel !== 'undefined' && IchigoPanel.attach) ? IchigoPanel.attach(sidebar) : null;
+        const yh = (typeof YhwachPanel !== 'undefined' && YhwachPanel.attach) ? YhwachPanel.attach(sidebar) : null;
+        const ib = (typeof IchibeiPanel !== 'undefined' && IchibeiPanel.attach) ? IchibeiPanel.attach(sidebar) : null;
+        const ks = (typeof KisukePanel !== 'undefined' && KisukePanel.attach) ? KisukePanel.attach(sidebar) : null;
+        const kp = (typeof KenpachiPanel !== 'undefined' && KenpachiPanel.attach) ? KenpachiPanel.attach(sidebar) : null;
+        const sk = (typeof SoulKingPanel !== 'undefined' && SoulKingPanel.attach) ? SoulKingPanel.attach(sidebar) : null;
+        const sidebarClose = document.getElementById('sidebar-close');
         const sName = document.getElementById('s-name');
         const sMeta = document.getElementById('s-meta');
         const sDesc = document.getElementById('s-desc');
-        const sConns = document.getElementById('s-connections');
         const connSection = document.getElementById('conn-section');
-        const miniLegend = document.getElementById('mini-legend');
+        const sConnections = document.getElementById('s-connections');
+        const connCount = document.getElementById('conn-count');
         const sActionBar = document.getElementById('s-action-bar');
-        const sBackContainer = document.getElementById('s-back-container');
-        const sBackName = document.getElementById('s-back-name');
-        const sBackBtn = document.getElementById('s-back-btn');
         const tracePathBtn = document.getElementById('trace-path-btn');
         const pathBanner = document.getElementById('path-banner');
         const pathBannerText = document.getElementById('path-banner-text');
         const pathCancelBtn = document.getElementById('path-cancel-btn');
+        const sBackContainer = document.getElementById('s-back-container');
+        const sBackBtn = document.getElementById('s-back-btn');
+        const sBackName = document.getElementById('s-back-name');
+        const miniLegend = document.getElementById('mini-legend');
 
-        function deselectNode() {{
-            if (!currentNode && highlightedPathNodes.size === 0) return;
-            currentNode = null;
-            sidebar.classList.remove('open');
-            miniLegend.classList.remove('hidden');
-            if (pathFindingFrom || highlightedPathNodes.size > 0) {{
-                clearPathFinding();
-            }}
-            history.replaceState(null, '', window.location.pathname + window.location.search);
+        // Tab Navigation
+        document.querySelectorAll('.tab-btn').forEach(btn => {{
+            btn.addEventListener('click', () => {{
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                const targetPane = document.getElementById(btn.dataset.target);
+                if (targetPane) targetPane.classList.add('active');
+            }});
+        }});
+
+        function closeAllPanels() {{
+            if (fp) fp.close();
+            if (fl) fl.close();
+            if (gl) gl.close();
+            if (ic) ic.close();
+            if (yh) yh.close();
+            if (ib) ib.close();
+            if (ks) ks.close();
+            if (kp) kp.close();
+            if (sk) sk.close();
+            sidebar.classList.remove('frost-theme', 'flame-theme', 'glass-theme', 'ichigo-theme', 'yhwach-theme', 'ichibei-theme', 'kisuke-theme', 'kenpachi-theme', 'soulking-theme');
         }}
 
-        document.getElementById('sidebar-close').addEventListener('click', () => {{
-            deselectNode();
-        }});
+        function deselectNode() {{
+            currentNode = null;
+            navHistory = [];
+            updateBackNav();
+            sidebar.classList.remove('open');
+            closeAllPanels();
+            const b = document.getElementById('s-banner');
+            if (b) b.style.display = 'none';
+            const ovBottom = document.getElementById('s-overview-bottom');
+            if (ovBottom) {{ ovBottom.innerHTML = ''; ovBottom.style.display = 'none'; }}
+            miniLegend.classList.remove('hidden');
+            clearPathFinding();
+            document.body.style.cursor = 'default';
+            history.replaceState(null, '', window.location.pathname);
+            fitGraphToScreen(700);
+        }}
 
-        document.getElementById('sidebar-search').addEventListener('click', () => {{
-            openSearch();
-        }});
-
-        // Back button navigation
-        sBackBtn.addEventListener('click', () => {{
-            if (navHistory.length > 0) {{
-                const prev = navHistory.pop();
-                selectNode(prev, false);
-            }}
-        }});
+        sidebarClose.addEventListener('click', deselectNode);
 
         function updateBackNav() {{
             if (navHistory.length > 0) {{
-                const prev = navHistory[navHistory.length - 1];
-                sBackName.innerText = prev.name;
+                const prevNode = navHistory[navHistory.length - 1];
+                sBackName.innerText = prevNode.name;
                 sBackContainer.style.display = 'flex';
             }} else {{
                 sBackContainer.style.display = 'none';
             }}
         }}
 
-        // Dossier Tabs Logic
-        document.querySelectorAll('.tab-btn').forEach(btn => {{
-            btn.addEventListener('click', (e) => {{
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-                e.target.classList.add('active');
-                document.getElementById(e.target.dataset.target).classList.add('active');
-            }});
+        sBackBtn.addEventListener('click', () => {{
+            if (navHistory.length > 0) {{
+                const prevNode = navHistory.pop();
+                selectNode(prevNode, false);
+            }}
         }});
 
-        // Connection Filtering & Rendering
-        let currentFilter = 'ALL';
-
-        function renderConnections(node, filter = 'ALL') {{
-            currentFilter = filter;
-            const conns = nodeConnections[node.id] || [];
+        function renderConnections(node, activeFilter = 'ALL') {{
+            const rawConns = nodeConnections[node.id] || [];
+            connCount.innerText = rawConns.length;
             const filterBar = document.getElementById('conn-filter-bar');
-            const connCount = document.getElementById('conn-count');
+            
+            const cats = new Set();
+            rawConns.forEach(c => cats.add(getRelCategory(c.type).name));
 
-            connCount.innerText = conns.length;
+            let filterHtml = '<div class="conn-chip' + (activeFilter === 'ALL' ? ' active' : '') + '" data-cat="ALL">ALL (' + rawConns.length + ')</div>';
+            cats.forEach(cat => {{
+                const count = rawConns.filter(c => getRelCategory(c.type).name === cat).length;
+                filterHtml += '<div class="conn-chip' + (activeFilter === cat ? ' active' : '') + '" data-cat="' + cat + '">' + cat.toUpperCase() + ' (' + count + ')</div>';
+            }});
+            filterBar.innerHTML = filterHtml;
 
-            if (conns.length === 0) {{
-                filterBar.innerHTML = '';
-                sConns.innerHTML = '<div style="font-size:11px;color:#666;padding:8px 0;">No recorded connections.</div>';
-                return;
-            }}
-
-            // Count per category
-            const catCounts = {{ 'ALL': conns.length }};
-            conns.forEach(c => {{
-                const cat = getRelCategory(c.type).name;
-                catCounts[cat] = (catCounts[cat] || 0) + 1;
+            filterBar.querySelectorAll('.conn-chip').forEach(chip => {{
+                chip.addEventListener('click', () => renderConnections(node, chip.dataset.cat));
             }});
 
-            // Build filter chips
-            const availableCats = Object.keys(catCounts);
-            filterBar.innerHTML = availableCats.map(cat => {{
-                const isActive = (cat === currentFilter) ? ' active' : '';
-                return '<span class="conn-chip' + isActive + '" data-cat="' + cat + '">' + cat + ' (' + catCounts[cat] + ')</span>';
-            }}).join('');
+            const filteredConns = activeFilter === 'ALL' ? rawConns : rawConns.filter(c => getRelCategory(c.type).name === activeFilter);
 
-            // Filter connections
-            const filtered = conns.filter(c => {{
-                if (currentFilter === 'ALL') return true;
-                return getRelCategory(c.type).name === currentFilter;
+            let html = '<div class="conn-list">';
+            filteredConns.forEach(c => {{
+                const targetNode = gData.nodes.find(n => n.id === c.targetId) || {{ name: c.targetId, race: 'Unknown', color: '#888' }};
+                const catObj = getRelCategory(c.type);
+                html += '<div class="conn-card" style="border-left-color:' + catObj.color + '" data-target-id="' + c.targetId + '">' +
+                    '<div class="conn-card-info">' +
+                    '<div class="conn-card-name">' + escapeHtml(targetNode.name) + '</div>' +
+                    '<div class="conn-card-label">' + escapeHtml(c.label || c.type) + '</div>' +
+                    '</div>' +
+                    '<div class="conn-card-badge" style="background:' + catObj.color + '22;color:' + catObj.color + ';border:1px solid ' + catObj.color + '44">' + catObj.name + '</div>' +
+                    '</div>';
             }});
+            html += '</div>';
+            sConnections.innerHTML = html;
 
-            // Render cards
-            sConns.innerHTML = filtered.map(c => {{
-                const targetNode = RAW_GRAPH.nodes.find(n => n.id === c.id);
-                const targetName = targetNode ? targetNode.name : (nodeNameMap[c.id] || c.id);
-                const cat = getRelCategory(c.type);
-                const isDashed = (cat.name === 'Military' || cat.name === 'Organization') ? '- - - -' : (cat.name === 'Rival') ? '× × × ×' : (cat.name === 'Allies') ? '· · · ·' : '━━━━━━';
-                return `<div class="conn-card" data-id="${{c.id}}" style="font-family:'Courier New', monospace; font-size:11px; margin-bottom:10px; cursor:pointer; padding:8px; border:1px solid rgba(255,255,255,0.08); background:rgba(0,0,0,0.4); display:flex; flex-direction:column; transition: border 0.2s;" onmouseover="this.style.borderColor='${{cat.color}}'" onmouseout="this.style.borderColor='rgba(255,255,255,0.08)'">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:4px; color:${{cat.color}};">
-                        <span>[${{cat.name.toUpperCase()}}]</span>
-                        <span>FILE: ${{escapeHtml(targetName).toUpperCase()}}</span>
-                    </div>
-                    <div style="color:rgba(255,255,255,0.7); display:flex; justify-content:space-between;">
-                        <span>${{escapeHtml(c.label)}}</span>
-                        <span style="letter-spacing:2px; opacity:0.5;">${{isDashed}}</span>
-                    </div>
-                </div>`;
-            }}).join('');
-
-            // Click chips to filter
-            filterBar.querySelectorAll('.conn-chip').forEach(el => {{
-                el.addEventListener('click', () => {{
-                    renderConnections(node, el.dataset.cat);
-                }});
-            }});
-
-            // Click cards to navigate
-            sConns.querySelectorAll('.conn-card').forEach(el => {{
-                el.addEventListener('click', () => {{
-                    const targetId = el.dataset.id;
-                    let target = gData.nodes.find(n => n.id === targetId);
-                    if (!target) {{
-                        jumpToCluster('all');
-                        target = gData.nodes.find(n => n.id === targetId);
-                    }}
-                    if (target) {{
-                        selectNode(target, true);
-                    }}
+            sConnections.querySelectorAll('.conn-card').forEach(card => {{
+                card.addEventListener('click', () => {{
+                    const targetId = card.dataset.targetId;
+                    const targetNode = gData.nodes.find(n => n.id === targetId);
+                    if (targetNode) selectNode(targetNode, true);
                 }});
             }});
         }}
 
-        // Offscreen avatar generator for high-res frosted backgrounds & previews
+        // Offscreen avatar generator for crisp sidebar and hover background
         const charAvatarCache = {{}};
         function getCharacterAvatarUrl(nodeId, size = 256) {{
             if (charAvatarCache[nodeId]) return charAvatarCache[nodeId];
@@ -1483,8 +1045,7 @@ def generate_obsidian_graph():
             if (!s || !spriteSheet.complete || spriteSheet.naturalWidth === 0) return null;
             try {{
                 const offCanvas = document.createElement('canvas');
-                offCanvas.width = size;
-                offCanvas.height = size;
+                offCanvas.width = size; offCanvas.height = size;
                 const offCtx = offCanvas.getContext('2d');
                 offCtx.imageSmoothingEnabled = true;
                 offCtx.imageSmoothingQuality = 'high';
@@ -1502,6 +1063,81 @@ def generate_obsidian_graph():
             const sAvatar = document.getElementById('s-avatar');
             const sSprite = SPRITE_MAP[node.id];
 
+            // Custom Backgrounds & Ability Themes
+            closeAllPanels();
+            const b = document.getElementById('s-banner');
+
+            if (node.id === 'rukia') {{
+                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Rukia.jpg')"; b.style.display = 'block'; }}
+                sidebar.classList.add('frost-theme');
+                sidebarBg.style.backgroundImage = "url('Asset/Images/Rukia.jpg')";
+                sidebarBg.style.opacity = '0.6';
+                if (fp) fp.open();
+            }} else if (node.id === 'yamamoto') {{
+                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Yamamoto.jpg')"; b.style.display = 'block'; }}
+                sidebar.classList.add('flame-theme');
+                sidebarBg.style.backgroundImage = "url('Asset/Images/Yamamoto.jpg')";
+                sidebarBg.style.opacity = '0.6';
+                if (fl) fl.open();
+            }} else if (node.id === 'aizen') {{
+                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Aizen.jpg')"; b.style.display = 'block'; }}
+                sidebar.classList.add('glass-theme');
+                sidebarBg.style.backgroundImage = "url('Asset/Images/Aizen.jpg')";
+                sidebarBg.style.opacity = '0.6';
+                if (gl) gl.open();
+            }} else if (node.id === 'ichigo') {{
+                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Ichigo.jpg')"; b.style.display = 'block'; }}
+                sidebar.classList.add('ichigo-theme');
+                sidebarBg.style.backgroundImage = "url('Asset/Images/Ichigo.jpg')";
+                sidebarBg.style.opacity = '0.6';
+                if (ic) ic.open();
+            }} else if (node.id === 'yhwach') {{
+                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Yhwach.jpg')"; b.style.display = 'block'; }}
+                sidebar.classList.add('yhwach-theme');
+                sidebarBg.style.backgroundImage = "url('Asset/Images/Yhwach.jpg')";
+                sidebarBg.style.opacity = '0.6';
+                if (yh) yh.open();
+            }} else if (node.id === 'ichibei') {{
+                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Ichibei.jpg')"; b.style.display = 'block'; }}
+                sidebar.classList.add('ichibei-theme');
+                sidebarBg.style.backgroundImage = "url('Asset/Images/Ichibei.jpg')";
+                sidebarBg.style.opacity = '0.6';
+                if (ib) ib.open();
+            }} else if (node.id === 'urahara' || node.id === 'kisuke') {{
+                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Kisuke.jpg')"; b.style.display = 'block'; }}
+                sidebar.classList.add('kisuke-theme');
+                sidebarBg.style.backgroundImage = "url('Asset/Images/Kisuke.jpg')";
+                sidebarBg.style.opacity = '0.6';
+                if (ks) ks.open();
+            }} else if (node.id === 'kenpachi' || node.id === 'zaraki') {{
+                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Kenpachi.jpg')"; b.style.display = 'block'; }}
+                sidebar.classList.add('kenpachi-theme');
+                sidebarBg.style.backgroundImage = "url('Asset/Images/Kenpachi.jpg')";
+                sidebarBg.style.opacity = '0.6';
+                if (kp) kp.open();
+            }} else if (node.id === 'soul_king' || node.id === 'soulking') {{
+                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Soul King.jpg')"; b.style.display = 'block'; }}
+                sidebar.classList.add('soulking-theme');
+                sidebarBg.style.backgroundImage = "url('Asset/Images/Soul King.jpg')";
+                sidebarBg.style.opacity = '0.6';
+                if (sk) sk.open();
+            }} else {{
+                if (b) b.style.display = 'none';
+                if (sSprite && spriteSheet.complete && spriteSheet.naturalWidth > 0) {{
+                    const avatarDataUrl = getCharacterAvatarUrl(node.id, 384);
+                    if (avatarDataUrl) {{
+                        sidebarBg.style.backgroundImage = 'url(' + avatarDataUrl + ')';
+                        sidebarBg.style.opacity = '0.38';
+                    }} else {{
+                        sidebarBg.style.backgroundImage = 'radial-gradient(circle at 85% 15%, ' + node.color + '33, transparent 65%)';
+                        sidebarBg.style.opacity = '1';
+                    }}
+                }} else {{
+                    sidebarBg.style.backgroundImage = 'radial-gradient(circle at 85% 15%, ' + node.color + '22, transparent 65%)';
+                    sidebarBg.style.opacity = '1';
+                }}
+            }}
+
             if (sSprite && spriteSheet.complete && spriteSheet.naturalWidth > 0) {{
                 sAvatar.innerText = '';
                 sAvatar.style.backgroundImage = 'url(' + spriteSheet.src + ')';
@@ -1511,16 +1147,6 @@ def generate_obsidian_graph():
                 sAvatar.style.backgroundPosition = '-' + (sSprite.x * scale) + 'px -' + (sSprite.y * scale) + 'px';
                 sAvatar.style.borderColor = node.color;
                 sAvatar.style.boxShadow = '0 0 20px ' + node.color + '55';
-
-                // High-resolution frosted glass background
-                const avatarDataUrl = getCharacterAvatarUrl(node.id, 384);
-                if (avatarDataUrl) {{
-                    sidebarBg.style.backgroundImage = 'url(' + avatarDataUrl + ')';
-                    sidebarBg.style.opacity = '0.38';
-                }} else {{
-                    sidebarBg.style.backgroundImage = 'radial-gradient(circle at 85% 15%, ' + node.color + '33, transparent 65%)';
-                    sidebarBg.style.opacity = '1';
-                }}
             }} else {{
                 sAvatar.style.backgroundImage = 'none';
                 sAvatar.style.backgroundColor = '#0F1318';
@@ -1528,13 +1154,16 @@ def generate_obsidian_graph():
                 sAvatar.style.boxShadow = '0 0 16px ' + node.color + '44';
                 sAvatar.innerText = node.initials || '??';
                 sAvatar.style.color = node.color;
-
-                sidebarBg.style.backgroundImage = 'radial-gradient(circle at 85% 15%, ' + node.color + '22, transparent 65%)';
-                sidebarBg.style.opacity = '1';
             }}
 
-            sName.innerText = node.name;
-            sMeta.innerText = 'STATUS: ACTIVE'; // Or something thematic
+            if (node.id === 'ulquiorra') {{
+                sName.innerHTML = escapeHtml(node.name) + ' <img class="char-name-gif ulquiorra-name-gif" src="Asset/GIF/Ulquiorra.gif" alt="Ulquiorra" />';
+            }} else if (node.id === 'ichigo') {{
+                sName.innerHTML = escapeHtml(node.name) + ' <img class="char-name-gif ichigo-name-gif" src="Asset/GIF/ichigo mask.gif?t=' + Date.now() + '" alt="Hollow Mask" />';
+            }} else {{
+                sName.innerText = node.name;
+            }}
+            sMeta.innerText = 'STATUS: ACTIVE';
             document.getElementById('s-id-code').innerText = 'S-' + Math.floor(Math.random()*900 + 100);
             document.getElementById('s-placeholder').style.display = 'none';
             document.getElementById('dossier-dynamic').style.display = 'block';
@@ -1554,6 +1183,17 @@ def generate_obsidian_graph():
             document.getElementById('s-field-tier').innerText = tiers[node.tier || 4] || 'UNMEASURED';
             sDesc.innerText = node.desc || 'No intelligence data available on this subject.';
 
+            const ovBottom = document.getElementById('s-overview-bottom');
+            if (ovBottom) {{
+                if (node.id === 'byakuya') {{
+                    ovBottom.innerHTML = '<div class="byakuya-overview-card"><img src="Asset/GIF/Byakuya.gif" alt="Byakuya Kuchiki" /></div>';
+                    ovBottom.style.display = 'block';
+                }} else {{
+                    ovBottom.innerHTML = '';
+                    ovBottom.style.display = 'none';
+                }}
+            }}
+
             const tlItems = document.querySelectorAll('.tl-item');
             const descLower = (node.desc || '').toLowerCase();
             tlItems[0].classList.toggle('active', descLower.includes('substitute'));
@@ -1564,6 +1204,7 @@ def generate_obsidian_graph():
             if (!Array.from(tlItems).some(item => item.classList.contains('active'))) {{
                 tlItems.forEach(item => item.classList.add('active'));
             }}
+
             const conns = nodeConnections[node.id] || [];
             if (conns.length > 0) {{
                 connSection.style.display = 'block';
@@ -1577,7 +1218,7 @@ def generate_obsidian_graph():
             miniLegend.classList.add('hidden');
         }}
 
-        // Auto-fit & Camera Framing (solves off-screen nodes / cutoff issue)
+        // Dynamic Camera Framing
         function focusOnNodeAndNeighbors(node) {{
             const nbrIds = Array.from(neighbors[node.id] || []);
             const nbrNodes = nbrIds.map(id => gData.nodes.find(n => n.id === id)).filter(Boolean);
@@ -1606,29 +1247,12 @@ def generate_obsidian_graph():
             let fitZoom = Math.min(availW / boxW, availH / boxH);
             fitZoom = Math.max(0.65, Math.min(fitZoom, 1.8));
 
-            const centerX = (minX + maxX) / 2;
-            const centerY = (minY + maxY) / 2;
-
-            // Active node stays in the middle of the viewport
             Graph.centerAt(node.x, node.y, 850);
             Graph.zoom(fitZoom, 850);
         }}
 
         function selectNode(node, pushHistory = true) {{
             if (!node) return;
-            
-            // Check Masaki & Isshin romance interaction
-            if (currentNode) {{
-                const isMasakiIsshin = (currentNode.id === 'isshin' && node.id === 'masaki') ||
-                                       (currentNode.id === 'masaki' && node.id === 'isshin');
-                if (isMasakiIsshin) {{
-                    const loveBanner = document.getElementById('love-banner');
-                    loveBanner.style.display = 'flex';
-                    playSfx('bankai');
-                    setTimeout(() => {{ loveBanner.style.display = 'none'; }}, 4000);
-                }}
-            }}
-
             if (pushHistory && currentNode && currentNode.id !== node.id) {{
                 navHistory.push(currentNode);
             }}
@@ -1736,21 +1360,7 @@ def generate_obsidian_graph():
             clearPathFinding();
         }});
 
-        // ── EASTER EGG STATES ──
-        let isBankaiActive = false;
-        let yhwachHoverTicks = 1.0;
-        const nodeClickCounts = {{}};
-        let rapidHollowNode = null;
-
-        // Birthday check (July 15)
-        const todayDate = new Date();
-        const isIchigoBirthday = (todayDate.getMonth() === 6 && todayDate.getDate() === 15);
-
-        // Midnight check (12:00 AM - 1:00 AM)
-        if (todayDate.getHours() === 0) {{
-            document.body.classList.add('midnight-mode');
-        }}
-
+        // ForceGraph Engine Initialization
         const Graph = ForceGraph()(document.getElementById('graph-container'))
             .graphData(gData)
             .nodeId('id')
@@ -1819,16 +1429,13 @@ def generate_obsidian_graph():
             .linkDirectionalParticleWidth(2.5)
             .linkDirectionalParticleColor(() => '#F59E0B')
 
-            // Custom Canvas node rendering
+            // Custom Canvas Node Rendering with Sprite Slicing
             .nodeCanvasObject((node, ctx, globalScale) => {{
-                // 1. Frustum / Viewport Culling with cached matrix transform
                 if (node === gData.nodes[0] || !window.__cachedTransform) {{
                     window.__cachedTransform = ctx.getTransform();
                 }}
                 const transform = window.__cachedTransform;
                 const dpr = window.devicePixelRatio || 1;
-                // ctx.getTransform() returns physical canvas pixel coordinates (scaled by dpr).
-                // Divide by dpr to convert to CSS pixels matching window.innerWidth / window.innerHeight.
                 const screenX = (node.x * transform.a + transform.e) / dpr;
                 const screenY = (node.y * transform.d + transform.f) / dpr;
                 const margin = 120;
@@ -1853,59 +1460,33 @@ def generate_obsidian_graph():
                     isDimmed = !isSelected && !isConnectedToSelected;
                 }}
 
-                // Easter egg: Yhwach The Almighty growth
-                let sizeMult = 1.0;
-                if (node.id === 'yhwach') {{
-                    if (isHovered) {{
-                        yhwachHoverTicks = Math.min(yhwachHoverTicks + 0.03, 2.3);
-                    }} else {{
-                        yhwachHoverTicks = Math.max(1.0, yhwachHoverTicks - 0.04);
-                    }}
-                    sizeMult = yhwachHoverTicks;
-                }}
-
-                // Easter egg: Bankai pulse for Soul Reapers
-                const isSoulReaper = (node.race === 'Soul Reaper' || node.race === 'Visored' || node.faction.includes('Soul Reaper'));
-                const bankaiBoost = (isBankaiActive && isSoulReaper) ? 1.6 : 1.0;
-                const isHollowGlitch = (rapidHollowNode === node.id);
-
-                const size = node.val * sizeMult * bankaiBoost;
-
-                // 2. Semantic Zoom & Level of Detail (LOD) for visual density
                 const isTopPillar = node.is_top || ['ichigo', 'yhwach', 'yamamoto', 'aizen', 'soul_king', 'shunsui', 'kenpachi', 'urahara', 'byakuya', 'rukia', 'gin', 'ulquiorra', 'grimmjow', 'hitsugaya'].includes(node.id);
 
+                // Responsive Level-of-Detail (LOD): Avatars render crisply at standard zoom
                 let canRenderAvatar = false;
-                if (globalScale >= 1.05) {{
+                if (globalScale >= 0.45) {{
                     canRenderAvatar = true;
-                }} else if (globalScale >= 0.62) {{
-                    canRenderAvatar = isTopPillar || isHovered || isSelected || isPathNode || isConnectedToHover || isConnectedToSelected;
+                }} else if (globalScale >= 0.22) {{
+                    canRenderAvatar = isTopPillar || isHovered || isSelected || isPathNode || isConnectedToHover || isConnectedToSelected || (node.tier <= 3);
                 }} else {{
-                    canRenderAvatar = isHovered || isSelected || (isTopPillar && globalScale >= 0.42);
+                    canRenderAvatar = isHovered || isSelected || isTopPillar;
                 }}
 
-                // Hierarchical node sizing: Supreme leaders are large, fodder nodes are small
                 const tier = node.tier || 4;
                 let baseRadius;
-                if (tier === 1) {{
-                    baseRadius = 26.0; // Aizen, Ichigo, Yhwach, Yamamoto, Soul King
-                }} else if (tier === 2) {{
-                    baseRadius = 18.0; // Gin, Tosen, Top Espada, Head Captains
-                }} else if (tier === 3) {{
-                    baseRadius = 13.5; // Other Espada, Captains, Schutzstaffel
-                }} else if (tier === 4) {{
-                    baseRadius = 9.5;  // Officers, Privaron Espada, Lieutenants
-                }} else {{
-                    baseRadius = 5.8;  // Fraccion, Fodder, Minor Hollows
-                }}
+                if (tier === 1) baseRadius = 26.0;
+                else if (tier === 2) baseRadius = 18.0;
+                else if (tier === 3) baseRadius = 13.5;
+                else if (tier === 4) baseRadius = 9.5;
+                else baseRadius = 5.8;
 
                 const stateMultiplier = isHovered ? 1.35 : (isSelected ? 1.2 : 1.0);
-                const effectiveRadius = baseRadius * stateMultiplier * sizeMult * bankaiBoost;
+                const effectiveRadius = baseRadius * stateMultiplier;
 
                 const sSprite = SPRITE_MAP[node.id];
                 const hasAvatar = sSprite && spriteSheet.complete && spriteSheet.naturalWidth > 0;
                 const imgSize = (hasAvatar && canRenderAvatar) ? effectiveRadius : (effectiveRadius * 0.85);
 
-                // Sync floating hover card with screen position during animation/pan
                 if (isHovered) {{
                     const hoverCard = document.getElementById('node-hover-card');
                     if (hoverCard && hoverCard.classList.contains('visible')) {{
@@ -1914,25 +1495,16 @@ def generate_obsidian_graph():
                     }}
                 }}
 
-                // Glow & Subtle Reiatsu
+                // Reiatsu Glow
                 if (!isDimmed) {{
                     ctx.beginPath();
-                    let pulse = 1.0;
-                    if (isSelected) {{
-                        pulse = 1.0 + Math.sin(Date.now() / 250) * 0.12;
-                    }}
+                    let pulse = isSelected ? (1.0 + Math.sin(Date.now() / 250) * 0.12) : 1.0;
                     const baseGlow = (hasAvatar && canRenderAvatar ? imgSize : effectiveRadius) * 1.8;
                     const finalGlow = isSelected ? (baseGlow * pulse * 1.3) : baseGlow;
                     
                     ctx.arc(node.x, node.y, finalGlow, 0, 2 * Math.PI);
                     
-                    if (isHollowGlitch) {{
-                        ctx.fillStyle = '#6B21A888';
-                    }} else if (isBankaiActive && isSoulReaper) {{
-                        ctx.fillStyle = '#4A9EFF66';
-                    }} else if (node.id === 'yhwach' && sizeMult > 1.2) {{
-                        ctx.fillStyle = '#DC262677';
-                    }} else if (isSelected) {{
+                    if (isSelected) {{
                         const grad = ctx.createRadialGradient(node.x, node.y, effectiveRadius, node.x, node.y, finalGlow);
                         grad.addColorStop(0, 'rgba(212,175,55,0.7)');
                         grad.addColorStop(1, 'rgba(212,175,55,0)');
@@ -1946,42 +1518,37 @@ def generate_obsidian_graph():
                 }}
 
                 if (canRenderAvatar && hasAvatar && !isDimmed) {{
-                    // 3. Circular Mask
                     ctx.save();
                     ctx.beginPath();
                     ctx.arc(node.x, node.y, imgSize, 0, 2 * Math.PI);
                     ctx.clip();
 
-                    // 5. Draw single sprite slice from sheet
                     ctx.drawImage(
                         spriteSheet,
                         sSprite.x, sSprite.y, sSprite.w, sSprite.h,
                         node.x - imgSize, node.y - imgSize, imgSize * 2, imgSize * 2
                     );
 
-                    // 4. Subtle ambient tint for unhighlighted nodes (hardware accelerated, zero GPU filter stall)
                     if (!isHovered && !isSelected && !isPathNode && !isConnectedToHover && !isConnectedToSelected) {{
-                        ctx.fillStyle = 'rgba(10, 10, 15, 0.18)';
+                        ctx.fillStyle = 'rgba(10, 10, 15, 0.16)';
                         ctx.fill();
                     }}
                     ctx.restore();
 
-                    // 6. Colored ring border matching race/faction
                     ctx.beginPath();
                     ctx.arc(node.x, node.y, imgSize, 0, 2 * Math.PI);
-                    ctx.lineWidth = (isHovered || isSelected || isPathNode || isHollowGlitch ? 2.5 : 1.5) / globalScale;
-                    ctx.strokeStyle = isHollowGlitch ? '#6B21A8' : (isPathNode ? '#F59E0B' : (isSelected ? '#FFFFFF' : (isHovered ? '#FFFFFF' : node.color)));
+                    ctx.lineWidth = (isHovered || isSelected || isPathNode ? 2.5 : 1.5) / globalScale;
+                    ctx.strokeStyle = isPathNode ? '#F59E0B' : (isSelected ? '#FFFFFF' : (isHovered ? '#FFFFFF' : node.color));
                     ctx.stroke();
-                }} else if (canRenderAvatar && !isDimmed && globalScale >= 1.15) {{
-                    // 7. Graceful Initials Fallback for characters without image
+                }} else if (canRenderAvatar && !isDimmed && globalScale >= 0.9) {{
                     const fallbackSize = Math.max(effectiveRadius, 7);
                     ctx.beginPath();
                     ctx.arc(node.x, node.y, fallbackSize, 0, 2 * Math.PI);
-                    ctx.fillStyle = isHollowGlitch ? '#3B0764' : '#0F1318';
+                    ctx.fillStyle = '#0F1318';
                     ctx.fill();
 
                     ctx.lineWidth = (isHovered || isSelected || isPathNode ? 2.0 : 1.0) / globalScale;
-                    ctx.strokeStyle = isHollowGlitch ? '#C084FC' : (isSelected ? '#FFFFFF' : (isHovered ? '#FFFFFF' : node.color));
+                    ctx.strokeStyle = isSelected ? '#FFFFFF' : (isHovered ? '#FFFFFF' : node.color);
                     ctx.stroke();
 
                     const initials = node.initials || '??';
@@ -1992,37 +1559,35 @@ def generate_obsidian_graph():
                     ctx.fillStyle = (isHovered || isSelected) ? '#FFFFFF' : node.color;
                     ctx.fillText(initials, node.x, node.y + 0.5);
                 }} else {{
-                    // Minimalist colored glowing dot
                     const dotRadius = Math.max(effectiveRadius * 0.65, 2.8);
                     ctx.beginPath();
                     ctx.arc(node.x, node.y, dotRadius, 0, 2 * Math.PI);
-                    ctx.fillStyle = isDimmed ? (node.color + '18') : (isHollowGlitch ? '#6B21A8' : (isPathNode ? '#F59E0B' : (isBankaiActive && isSoulReaper ? '#4A9EFF' : node.color)));
+                    ctx.fillStyle = isDimmed ? (node.color + '18') : (isPathNode ? '#F59E0B' : node.color);
                     ctx.fill();
 
                     if (!isDimmed) {{
-                        ctx.lineWidth = (isHovered || isPathNode || isHollowGlitch ? 2.5 : 0.6) / globalScale;
-                        ctx.strokeStyle = isHollowGlitch ? '#6B21A8' : (isPathNode ? '#F59E0B' : (isHovered ? '#fff' : '#000'));
+                        ctx.lineWidth = (isHovered || isPathNode ? 2.5 : 0.6) / globalScale;
+                        ctx.strokeStyle = isPathNode ? '#F59E0B' : (isHovered ? '#fff' : '#000');
                         ctx.stroke();
                     }}
                 }}
 
-                // Label with semantic density gating
                 if (!node.__label) {{
                     node.__label = node.name.split(' ')[0].toUpperCase();
                 }}
                 const label = node.__label;
                 const fontSize = Math.max(10 / globalScale, 2);
-                const currentRadius = (canRenderAvatar && hasAvatar && !isDimmed) ? imgSize : ((canRenderAvatar && !isDimmed && globalScale >= 1.15) ? Math.max(effectiveRadius, 7) : Math.max(effectiveRadius * 0.65, 2.8));
+                const currentRadius = (canRenderAvatar && hasAvatar && !isDimmed) ? imgSize : ((canRenderAvatar && !isDimmed && globalScale >= 0.9) ? Math.max(effectiveRadius, 7) : Math.max(effectiveRadius * 0.65, 2.8));
                 const labelY = node.y + currentRadius + 3;
 
                 let shouldShowLabel = false;
-                if (isHovered || isPathNode || isHollowGlitch) {{
+                if (isHovered || isPathNode) {{
                     shouldShowLabel = true;
-                }} else if (globalScale >= 1.25) {{
+                }} else if (globalScale >= 1.1) {{
                     shouldShowLabel = true;
-                }} else if (globalScale >= 0.72 && (isTopPillar || isConnectedToHover || isConnectedToSelected)) {{
+                }} else if (globalScale >= 0.6 && (isTopPillar || isConnectedToHover || isConnectedToSelected)) {{
                     shouldShowLabel = true;
-                }} else if (globalScale < 0.72 && isTopPillar && globalScale >= 0.42) {{
+                }} else if (globalScale < 0.6 && isTopPillar && globalScale >= 0.35) {{
                     shouldShowLabel = true;
                 }}
 
@@ -2030,20 +1595,13 @@ def generate_obsidian_graph():
                     ctx.font = fontSize + 'px Cinzel';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'top';
-                    ctx.fillStyle = isHollowGlitch ? '#D8B4FE' : (isPathNode ? '#F59E0B' : (isHovered ? '#fff' : (isBankaiActive && isSoulReaper ? '#93C5FD' : 'rgba(255,255,255,0.7)')));
+                    ctx.fillStyle = isPathNode ? '#F59E0B' : (isHovered ? '#fff' : 'rgba(255,255,255,0.75)');
                     ctx.fillText(label, node.x, labelY);
-
-                    // Birthday badge for Ichigo on July 15th
-                    if (node.id === 'ichigo' && isIchigoBirthday) {{
-                        ctx.font = (fontSize * 0.75) + 'px Inter';
-                        ctx.fillStyle = '#F59E0B';
-                        ctx.fillText('\\u2728 Birthday Boy!', node.x, labelY + fontSize + 2);
-                    }}
                 }}
             }})
             .onNodeHover(node => {{
                 hoverNode = node || null;
-                document.body.style.cursor = node ? 'pointer' : null;
+                document.body.style.cursor = node ? 'pointer' : 'default';
 
                 const hoverCard = document.getElementById('node-hover-card');
                 if (node) {{
@@ -2056,23 +1614,23 @@ def generate_obsidian_graph():
                     if (sSprite && spriteSheet.complete && spriteSheet.naturalWidth > 0) {{
                         hoverAvatar.innerText = '';
                         hoverAvatar.style.backgroundImage = 'url(' + spriteSheet.src + ')';
-                        const avatarSize = 76;
+                        const avatarSize = 44;
                         const scale = avatarSize / sSprite.w;
                         hoverAvatar.style.backgroundSize = (SPRITE_META.sheetWidth * scale) + 'px ' + (SPRITE_META.sheetHeight * scale) + 'px';
                         hoverAvatar.style.backgroundPosition = '-' + (sSprite.x * scale) + 'px -' + (sSprite.y * scale) + 'px';
                         hoverAvatar.style.borderColor = node.color;
-                        hoverAvatar.style.boxShadow = '0 0 20px ' + node.color + '77';
+                        hoverAvatar.style.boxShadow = '0 0 16px ' + node.color + '77';
                     }} else {{
                         hoverAvatar.style.backgroundImage = 'none';
                         hoverAvatar.style.backgroundColor = '#0F1318';
                         hoverAvatar.style.borderColor = node.color;
-                        hoverAvatar.style.boxShadow = '0 0 16px ' + node.color + '44';
+                        hoverAvatar.style.boxShadow = '0 0 12px ' + node.color + '44';
                         hoverAvatar.innerText = node.initials || '??';
                         hoverAvatar.style.color = node.color;
                     }}
 
                     hoverName.innerText = node.name;
-                    hoverMeta.innerText = node.race + ' \u2022 ' + node.faction;
+                    hoverMeta.innerText = node.race + ' • ' + node.faction;
                     const cCount = (nodeConnections[node.id] || []).length;
                     hoverConns.innerText = cCount + (cCount === 1 ? ' CONNECTION' : ' CONNECTIONS');
 
@@ -2084,29 +1642,13 @@ def generate_obsidian_graph():
                     hoverCard.classList.remove('visible');
                 }}
             }})
-            .onLinkHover(() => {{}})
             .onNodeDragEnd(node => {{
                 node.fx = node.x;
                 node.fy = node.y;
             }})
             .onNodeClick(node => {{
                 if (node) {{
-                    
-
-                    // Rapid click detection for Hollowfication easter egg
-                    const now = Date.now();
-                    if (!nodeClickCounts[node.id] || (now - nodeClickCounts[node.id].lastTime > 2500)) {{
-                        nodeClickCounts[node.id] = {{ count: 1, lastTime: now }};
-                    }} else {{
-                        nodeClickCounts[node.id].count++;
-                        nodeClickCounts[node.id].lastTime = now;
-                    }}
-
-                    if (nodeClickCounts[node.id].count >= 8) {{
-                        nodeClickCounts[node.id].count = 0;
-                        triggerHollowfication(node);
-                    }}
-
+                    document.body.style.cursor = 'pointer';
                     if (pathFindingFrom) {{
                         executePathFinding(node);
                     }} else {{
@@ -2118,43 +1660,23 @@ def generate_obsidian_graph():
                 deselectNode();
             }});
 
-        // Physics optimization: cohesive clusters, generous spacing around Baraggan, no runaway nodes
+        // Physics Engine Force Configuration
         Graph.warmupTicks(35);
         Graph.cooldownTicks(95);
-        Graph.d3Force('charge')
-            .strength(-160)
-            .distanceMax(480);
-        Graph.d3Force('link')
-            .distance(link => {{
-                const sid = typeof link.source === 'object' ? link.source.id : link.source;
-                const tid = typeof link.target === 'object' ? link.target.id : link.target;
-                
-                // Gin & Tosen flank Aizen closely in the inner sanctum
-                if ((sid === 'aizen' && (tid === 'gin' || tid === 'tosen')) || (tid === 'aizen' && (sid === 'gin' || sid === 'tosen'))) {{
-                    return 52;
-                }}
-                // Core 10 Espada ring around Aizen in mid ring (145px)
-                const ESPADA_IDS = new Set(['starrk', 'baraggan', 'harribel', 'ulquiorra', 'nnoitra', 'grimmjow', 'zommari', 'szayelaporro', 'aaroniero', 'yammy']);
-                if ((sid === 'aizen' && ESPADA_IDS.has(tid)) || (tid === 'aizen' && ESPADA_IDS.has(sid))) {{
-                    return 145;
-                }}
-                // Outer subordinates, fodder, Privaron Espada, attendants, and creations connected to Aizen (245px)
-                if (sid === 'aizen' || tid === 'aizen') {{
-                    return 245;
-                }}
-                // Baraggan & Ikomikidomoe ancient rival spacing
-                if ((sid === 'baraggan' && tid === 'ikomikidomoe') || (tid === 'baraggan' && sid === 'ikomikidomoe')) {{
-                    return 130;
-                }}
-                // Baraggan & his 6 Fraccion (spread nicely without crowding)
-                if (sid === 'baraggan' || tid === 'baraggan') {{
-                    return 120;
-                }}
-                // Fraccion to their Espada (outer ring satellites)
-                if (link.type === 'Fracci\u00f3n') return 115;
-                if (link.type === 'Soul Bond' || link.type === 'Parent') return 60;
-                return 80;
-            }});
+        Graph.d3Force('charge').strength(-160).distanceMax(480);
+        Graph.d3Force('link').distance(link => {{
+            const sid = typeof link.source === 'object' ? link.source.id : link.source;
+            const tid = typeof link.target === 'object' ? link.target.id : link.target;
+            if ((sid === 'aizen' && (tid === 'gin' || tid === 'tosen')) || (tid === 'aizen' && (sid === 'gin' || sid === 'tosen'))) return 52;
+            const ESPADA_IDS = new Set(['starrk', 'baraggan', 'harribel', 'ulquiorra', 'nnoitra', 'grimmjow', 'zommari', 'szayelaporro', 'aaroniero', 'yammy']);
+            if ((sid === 'aizen' && ESPADA_IDS.has(tid)) || (tid === 'aizen' && ESPADA_IDS.has(sid))) return 145;
+            if (sid === 'aizen' || tid === 'aizen') return 245;
+            if ((sid === 'baraggan' && tid === 'ikomikidomoe') || (tid === 'baraggan' && sid === 'ikomikidomoe')) return 130;
+            if (sid === 'baraggan' || tid === 'baraggan') return 120;
+            if (link.type === 'Fracción') return 115;
+            if (link.type === 'Soul Bond' || link.type === 'Parent') return 60;
+            return 80;
+        }});
         if (window.d3 && typeof d3.forceCollide === 'function') {{
             Graph.d3Force('collide', d3.forceCollide().radius(node => {{
                 const tier = node.tier || 4;
@@ -2167,136 +1689,6 @@ def generate_obsidian_graph():
         }}
         Graph.d3VelocityDecay(0.35);
         Graph.d3AlphaDecay(0.032);
-
-        // ── TACTICAL RADAR MINIMAP & CLUSTER NAVIGATION ──
-        const minimapCanvas = document.getElementById('minimap-canvas');
-        const mCtx = minimapCanvas ? minimapCanvas.getContext('2d') : null;
-        let isMinimapDragging = false;
-
-        function renderMinimap() {{
-            if (!mCtx || !Graph) return;
-            const mw = minimapCanvas.width;
-            const mh = minimapCanvas.height;
-
-            mCtx.clearRect(0, 0, mw, mh);
-
-            // Compute bounding box of all nodes
-            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-            const nodes = gData.nodes;
-            for (let i = 0; i < nodes.length; i++) {{
-                const nx = nodes[i].x || 0;
-                const ny = nodes[i].y || 0;
-                if (nx < minX) minX = nx;
-                if (nx > maxX) maxX = nx;
-                if (ny < minY) minY = ny;
-                if (ny > maxY) maxY = ny;
-            }}
-
-            const pad = 120;
-            minX -= pad; maxX += pad;
-            minY -= pad; maxY += pad;
-            const rangeX = Math.max(maxX - minX, 1);
-            const rangeY = Math.max(maxY - minY, 1);
-
-            // Draw character constellation points
-            for (let i = 0; i < nodes.length; i++) {{
-                const n = nodes[i];
-                const mx = (( (n.x || 0) - minX) / rangeX) * (mw - 14) + 7;
-                const my = (( (n.y || 0) - minY) / rangeY) * (mh - 14) + 7;
-
-                mCtx.beginPath();
-                mCtx.arc(mx, my, n.is_top ? 2.2 : 1.2, 0, 2 * Math.PI);
-                mCtx.fillStyle = n.color || '#4A9EFF';
-                mCtx.fill();
-            }}
-
-            // Draw Viewport Frustum Box
-            if (Graph.screen2GraphCoords) {{
-                const tl = Graph.screen2GraphCoords(0, 0);
-                const br = Graph.screen2GraphCoords(window.innerWidth, window.innerHeight);
-
-                const vLeft = Math.max(0, Math.min(mw, ((tl.x - minX) / rangeX) * (mw - 14) + 7));
-                const vTop = Math.max(0, Math.min(mh, ((tl.y - minY) / rangeY) * (mh - 14) + 7));
-                const vRight = Math.max(0, Math.min(mw, ((br.x - minX) / rangeX) * (mw - 14) + 7));
-                const vBottom = Math.max(0, Math.min(mh, ((br.y - minY) / rangeY) * (mh - 14) + 7));
-
-                mCtx.fillStyle = 'rgba(212, 175, 55, 0.08)';
-                mCtx.fillRect(vLeft, vTop, vRight - vLeft, vBottom - vTop);
-
-                mCtx.strokeStyle = 'rgba(212, 175, 55, 0.7)';
-                mCtx.lineWidth = 1.2;
-                mCtx.strokeRect(vLeft, vTop, vRight - vLeft, vBottom - vTop);
-            }}
-
-            const zoomScale = (Graph.zoom ? Graph.zoom() : 1.0);
-            const scaleEl = document.getElementById('minimap-scale');
-            if (scaleEl) scaleEl.innerText = zoomScale.toFixed(2) + 'x';
-        }}
-
-        function handleMinimapNav(e) {{
-            if (!Graph || !minimapCanvas) return;
-            const rect = minimapCanvas.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const clickY = e.clientY - rect.top;
-
-            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-            const nodes = gData.nodes;
-            for (let i = 0; i < nodes.length; i++) {{
-                const nx = nodes[i].x || 0;
-                const ny = nodes[i].y || 0;
-                if (nx < minX) minX = nx;
-                if (nx > maxX) maxX = nx;
-                if (ny < minY) minY = ny;
-                if (ny > maxY) maxY = ny;
-            }}
-            const pad = 120;
-            minX -= pad; maxX += pad;
-            minY -= pad; maxY += pad;
-            const rangeX = Math.max(maxX - minX, 1);
-            const rangeY = Math.max(maxY - minY, 1);
-
-            const targetGX = minX + ((clickX - 7) / (minimapCanvas.width - 14)) * rangeX;
-            const targetGY = minY + ((clickY - 7) / (minimapCanvas.height - 14)) * rangeY;
-
-            Graph.centerAt(targetGX, targetGY, 250);
-        }}
-
-        if (minimapCanvas) {{
-            minimapCanvas.addEventListener('pointerdown', e => {{
-                isMinimapDragging = true;
-                handleMinimapNav(e);
-            }});
-            window.addEventListener('pointermove', e => {{
-                if (isMinimapDragging) handleMinimapNav(e);
-            }});
-            window.addEventListener('pointerup', () => {{
-                isMinimapDragging = false;
-            }});
-        }}
-
-        // Performance optimization: Render minimap only when graph moves
-        let minimapDirty = false;
-        Graph.onEngineTick(() => {{ minimapDirty = true; }});
-        Graph.onZoom(() => {{ minimapDirty = true; }});
-        
-        function checkMinimapDirty() {{
-            if (minimapDirty && document.visibilityState === 'visible') {{
-                renderMinimap();
-                minimapDirty = false;
-            }}
-            requestAnimationFrame(checkMinimapDirty);
-        }}
-        requestAnimationFrame(checkMinimapDirty);
-
-        // Global Visibility Pause
-        document.addEventListener('visibilitychange', () => {{
-            if (document.visibilityState === 'hidden') {{
-                Graph.pauseAnimation();
-            }} else {{
-                Graph.resumeAnimation();
-                minimapDirty = true;
-            }}
-        }});
 
         window.addEventListener('resize', () => {{
             Graph.width(window.innerWidth);
@@ -2318,14 +1710,10 @@ def generate_obsidian_graph():
         }};
 
         function getFactionFilter(clusterType) {{
-            if (clusterType === 'all') {{
-                return () => true;
-            }}
+            if (clusterType === 'all') return () => true;
             if (clusterType === 'gotei') {{
-                return n => {{
-                    const roster = ['yamamoto', 'sasakibe', 'soi_fon', 'omaeda', 'gin', 'kira', 'unohana', 'isane', 'aizen', 'momo', 'byakuya', 'renji', 'komamura', 'shunsui', 'nanao', 'tosen', 'hisagi', 'hitsugaya', 'rangiku', 'kenpachi', 'yachiru', 'mayuri', 'nemu', 'ukitake', 'rukia'];
-                    return roster.includes(n.id);
-                }};
+                const roster = ['yamamoto', 'sasakibe', 'soi_fon', 'omaeda', 'gin', 'kira', 'unohana', 'isane', 'aizen', 'momo', 'byakuya', 'renji', 'komamura', 'shunsui', 'nanao', 'tosen', 'hisagi', 'hitsugaya', 'rangiku', 'kenpachi', 'yachiru', 'mayuri', 'nemu', 'ukitake', 'rukia'];
+                return n => roster.includes(n.id);
             }}
             if (clusterType === 'wandenreich') {{
                 const karakuraQuincies = ['masaki', 'ryuken', 'soken', 'kanae', 'izumi'];
@@ -2349,11 +1737,9 @@ def generate_obsidian_graph():
                     const fac = n.faction || '';
                     const isHumanWorldFac = fac.includes('Karakura') || fac.toUpperCase().includes('XCUTION') ||
                         fac === 'Urahara Shop' || fac === 'Human World' || fac === 'Substitute Soul Reaper';
-                    // Hybrid allowed only if faction is Human World-linked (excludes Hikone Ubuginu / noble clans)
                     const isHybrid = n.race === 'Hybrid' && (isHumanWorldFac || n.id === 'ichigo');
                     return ['Human', 'Fullbringer', 'Mod Soul', 'Visored'].includes(n.race) ||
-                        n.faction === 'Visored' ||
-                        isHumanWorldFac || isHybrid ||
+                        n.faction === 'Visored' || isHumanWorldFac || isHybrid ||
                         ['ichigo', 'urahara', 'yoruichi', 'tessai'].includes(n.id);
                 }};
             }}
@@ -2365,8 +1751,6 @@ def generate_obsidian_graph():
 
         let currentCluster = 'all';
 
-        // Cluster & Faction Filtering with Center-Pinned Leaders
-                // Responsive Framing: dynamically compute bounding box and framed camera
         function fitGraphToScreen(duration = 600) {{
             const nodes = (gData && gData.nodes && gData.nodes.length > 0) ? gData.nodes : RAW_GRAPH.nodes;
             if (!nodes || nodes.length === 0) return;
@@ -2383,9 +1767,6 @@ def generate_obsidian_graph():
             if (!isFinite(minX)) return;
 
             const isMobile = window.innerWidth <= 768;
-            // Visible safe areas (subtracting UI elements)
-            // Desktop: top cluster bar (65px), bottom minimap/legend (140px on left, 50px general), right sidebar closed (40px) or open (380px)
-            // Mobile: top mobile-nav (60px), bottom cluster bar (65px)
             const padTop = isMobile ? 65 : 75;
             const padBottom = isMobile ? 85 : 65;
             const padLeft = isMobile ? 25 : 45;
@@ -2394,7 +1775,6 @@ def generate_obsidian_graph():
             const availW = Math.max(window.innerWidth - padLeft - padRight, 200);
             const availH = Math.max(window.innerHeight - padTop - padBottom, 200);
 
-            // Add node radius margin to the bounding box
             const margin = isMobile ? 40 : 50;
             const boxW = Math.max(maxX - minX + margin * 2, 100);
             const boxH = Math.max(maxY - minY + margin * 2, 100);
@@ -2402,11 +1782,9 @@ def generate_obsidian_graph():
             const targetZoom = Math.min(availW / boxW, availH / boxH);
             const clampedZoom = Math.max(0.15, Math.min(targetZoom, isMobile ? 0.95 : 1.6));
 
-            // Visual center of bounding box in graph coordinates
             const boxCenterX = (minX + maxX) / 2;
             const boxCenterY = (minY + maxY) / 2;
 
-            // Shift camera center so the box sits exactly in the center of the available screen area
             const centerShiftX = ((padLeft - padRight) / 2) / clampedZoom;
             const centerShiftY = ((padTop - padBottom) / 2) / clampedZoom;
 
@@ -2420,7 +1798,6 @@ def generate_obsidian_graph():
                 btn.classList.toggle('active', btn.dataset.cluster === clusterType);
             }});
 
-            // Dynamic Thematic Faction Backgrounds
             const dynamicBg = document.getElementById('dynamic-bg');
             if (dynamicBg) {{
                 if (clusterType === 'arrancar') {{
@@ -2443,24 +1820,19 @@ def generate_obsidian_graph():
             const filterFn = getFactionFilter(clusterType);
             const leaderId = FACTION_LEADERS[clusterType] || 'ichigo';
 
-            // Filter nodes from master RAW_GRAPH
             const filteredNodes = RAW_GRAPH.nodes.filter(filterFn).map(n => {{
                 const existing = gData.nodes.find(en => en.id === n.id);
                 const clone = Object.assign({{}}, n);
                 if (existing) {{
-                    clone.x = existing.x;
-                    clone.y = existing.y;
-                    clone.vx = existing.vx;
-                    clone.vy = existing.vy;
+                    clone.x = existing.x; clone.y = existing.y;
+                    clone.vx = existing.vx; clone.vy = existing.vy;
                 }}
-                delete clone.fx;
-                delete clone.fy;
+                delete clone.fx; delete clone.fy;
                 return clone;
             }});
 
             const validNodeIds = new Set(filteredNodes.map(n => n.id));
 
-            // Filter links to internal relationships only
             const filteredLinks = RAW_GRAPH.links.filter(l => {{
                 const sid = typeof l.source === 'object' ? l.source.id : l.source;
                 const tid = typeof l.target === 'object' ? l.target.id : l.target;
@@ -2468,85 +1840,51 @@ def generate_obsidian_graph():
             }}).map(l => ({{
                 source: typeof l.source === 'object' ? l.source.id : l.source,
                 target: typeof l.target === 'object' ? l.target.id : l.target,
-                type: l.type,
-                label: l.label
+                type: l.type, label: l.label
             }}));
 
+            // Specialized cluster geometric layouts
             if (clusterType === 'arrancar') {{
-                // Pin Aizen at dead center
+                // Pin Aizen at center
                 const aizen = filteredNodes.find(n => n.id === 'aizen');
-                if (aizen) {{
-                    aizen.x = 0; aizen.y = 0;
-                    aizen.fx = 0; aizen.fy = 0;
-                }}
+                if (aizen) {{ aizen.x = 0; aizen.y = 0; aizen.fx = 0; aizen.fy = 0; }}
 
-                // Pin Gin & Tosen flanking Aizen closely
+                // Gin & Tosen flanking Aizen
                 const gin = filteredNodes.find(n => n.id === 'gin');
-                if (gin) {{
-                    gin.x = -36; gin.y = -52;
-                    gin.fx = -36; gin.fy = -52;
-                }}
+                if (gin) {{ gin.x = -36; gin.y = -52; gin.fx = -36; gin.fy = -52; }}
                 const tosen = filteredNodes.find(n => n.id === 'tosen');
-                if (tosen) {{
-                    tosen.x = 36; tosen.y = -52;
-                    tosen.fx = 36; tosen.fy = -52;
-                }}
+                if (tosen) {{ tosen.x = 36; tosen.y = -52; tosen.fx = 36; tosen.fy = -52; }}
 
-                // 10 Espada arranged in strict ANTICLOCKWISE rank order around Aizen
-                // Order: 1: Starrk, 2: Baraggan, 3: Harribel, 4: Ulquiorra, 5: Nnoitra,
-                //        6: Grimmjow, 7: Zommari, 8: Szayelaporro, 9: Aaroniero, 10: Yammy
-                const ESPADA_ORDER = [
-                    'starrk',       // 1 - 12:00 (top)
-                    'baraggan',     // 2 - 10:48 (top-left)
-                    'harribel',     // 3 - 09:36 (left)
-                    'ulquiorra',    // 4 - 08:24 (bottom-left)
-                    'nnoitra',      // 5 - 07:12 (bottom-left)
-                    'grimmjow',     // 6 - 06:00 (bottom)
-                    'zommari',      // 7 - 04:48 (bottom-right)
-                    'szayelaporro', // 8 - 03:36 (right)
-                    'aaroniero',    // 9 - 02:24 (top-right)
-                    'yammy'         // 10 - 01:12 (top-right)
-                ];
-
+                // 10 Espada in anticlockwise rank ring
+                const ESPADA_ORDER = ['starrk', 'baraggan', 'harribel', 'ulquiorra', 'nnoitra', 'grimmjow', 'zommari', 'szayelaporro', 'aaroniero', 'yammy'];
                 const R_ESPADA = 145;
                 const espCoords = {{}};
                 ESPADA_ORDER.forEach((id, idx) => {{
-                    // Screen coordinates (+x right, +y down):
-                    // Top (12 o'clock) is -Math.PI / 2.
-                    // Decreasing angle rotates anticlockwise: 12:00 -> 10:48 -> 9:36 -> ... -> 1:12.
                     const angle = -Math.PI / 2 - (idx * (2 * Math.PI / ESPADA_ORDER.length));
                     const ex = Math.round(Math.cos(angle) * R_ESPADA);
                     const ey = Math.round(Math.sin(angle) * R_ESPADA);
                     espCoords[id] = {{ x: ex, y: ey, angle: angle }};
                     const node = filteredNodes.find(n => n.id === id);
                     if (node) {{
-                        node.x = ex;
-                        node.y = ey;
-                        node.fx = ex;
-                        node.fy = ey;
-                        node.vx = 0;
-                        node.vy = 0;
+                        node.x = ex; node.y = ey; node.fx = ex; node.fy = ey; node.vx = 0; node.vy = 0;
                     }}
                 }});
 
-                // Seed outer / fodder / Fracción nodes outward along their Espada's radial sector
-                // to cleanly establish the outer perimeter (radius 240-275px)
+                // Fracción radial offsets
                 const fracMasterMap = {{
                     'lilynette': 'starrk',
                     'charlotte': 'baraggan', 'findorr': 'baraggan', 'ggio': 'baraggan',
                     'poww': 'baraggan', 'abirama': 'baraggan', 'nirgge': 'baraggan', 'ikomikidomoe': 'baraggan',
                     'sunsun': 'harribel', 'milarose': 'harribel', 'apacci': 'harribel', 'ayon': 'harribel',
                     'tesla': 'nnoitra', 'nelliel': 'nnoitra', 'pesche': 'nnoitra', 'dondochakka': 'nnoitra', 'bawabawa': 'nnoitra',
-                    'shawlong': 'grimmjow', 'edrad': 'grimmjow', 'yylfordt': 'grimmjow', 'diroy': 'grimmjow', 'nakim': 'grimmjow', 'luppi': 'grimmjow',
+                    'shawlong': 'grimmjow', 'edrad': 'grimmjow', 'ylfordt': 'grimmjow', 'diroy': 'grimmjow', 'nakim': 'grimmjow', 'luppi': 'grimmjow',
                     'lumina': 'szayelaporro', 'medazeppi': 'szayelaporro', 'roka_paramia': 'szayelaporro',
-                    'kukkapuro': 'yammy',
-                    'aldegor': 'ulquiorra'
+                    'kukkapuro': 'yammy', 'aldegor': 'ulquiorra'
                 }};
 
                 const masterChildCounts = {{}};
                 filteredNodes.forEach(node => {{
                     if (node.id === 'aizen' || node.id === 'gin' || node.id === 'tosen' || ESPADA_ORDER.includes(node.id)) return;
-                    
                     const masterId = fracMasterMap[node.id];
                     if (masterId && espCoords[masterId]) {{
                         const m = espCoords[masterId];
@@ -2582,116 +1920,30 @@ def generate_obsidian_graph():
                         node.vx = 0; node.vy = 0;
                     }}
                 }});
-            }} else if (clusterType === 'karakura') {{
-                // ─────────────────────────────────────────────────────────────────
-                // KARAKURA TOWN: 4-Sector Faction Layout
-                // Ichigo at center, with 3 main leaders (Shinji, Urahara, Ginjo) 
-                // in an inner triangle (radius ~120). Followers spread around them.
-                // ─────────────────────────────────────────────────────────────────
-
-                const VISORED_IDS      = ['shinji', 'hiyori', 'love', 'rose', 'kensei', 'mashiro', 'lisa', 'hachigen'];
-                const URAHARA_SHOP_IDS = ['urahara', 'yoruichi', 'tessai', 'jinta', 'ururu'];
-                const FULLBRINGER_IDS  = ['ginjo', 'tsukishima', 'riruka', 'yukio', 'jackie', 'moe', 'giriko', 'chad', 'aura_michibane'];
-
-                // ─── CENTER: Ichigo ───────────────────────────────────────────
-                const ichigo = filteredNodes.find(n => n.id === 'ichigo');
-                if (ichigo) {{
-                    ichigo.x = 0; ichigo.y = 0;
-                    ichigo.fx = 0; ichigo.fy = 0;
-                    ichigo.vx = 0; ichigo.vy = 0;
-                }}
-
-                // ─── SECTOR 1: Urahara Shop (West / -120, -60) ───────────────
-                const urahara = filteredNodes.find(n => n.id === 'urahara');
-                if (urahara) {{
-                    urahara.x = -130; urahara.y = -60;
-                    urahara.fx = -130; urahara.fy = -60;
-                }}
-                const shopNodes = filteredNodes.filter(n => URAHARA_SHOP_IDS.includes(n.id) && n.id !== 'urahara');
-                shopNodes.forEach((node, i) => {{
-                    const angle = Math.PI * 0.75 + (i * (Math.PI / Math.max(shopNodes.length, 1))); // fan outward left
-                    node.x = -130 + Math.cos(angle) * 75;
-                    node.y = -60 + Math.sin(angle) * 75;
-                    node.vx = 0; node.vy = 0;
-                }});
-
-                // ─── SECTOR 2: Visored (East / 130, -60) ─────────────────────
-                const shinji = filteredNodes.find(n => n.id === 'shinji');
-                if (shinji) {{
-                    shinji.x = 130; shinji.y = -60;
-                    shinji.fx = 130; shinji.fy = -60;
-                }}
-                const visNodes = filteredNodes.filter(n => VISORED_IDS.includes(n.id) && n.id !== 'shinji');
-                visNodes.forEach((node, i) => {{
-                    const angle = -Math.PI * 0.25 + (i * (Math.PI / Math.max(visNodes.length, 1))); // fan outward right
-                    node.x = 130 + Math.cos(angle) * 85;
-                    node.y = -60 + Math.sin(angle) * 85;
-                    node.vx = 0; node.vy = 0;
-                }});
-
-                // ─── SECTOR 3: Fullbringers (South / 0, 140) ──────────────────
-                const ginjo = filteredNodes.find(n => n.id === 'ginjo');
-                if (ginjo) {{
-                    ginjo.x = 0; ginjo.y = 150;
-                    ginjo.fx = 0; ginjo.fy = 150;
-                }}
-                const fbNodes = filteredNodes.filter(n => FULLBRINGER_IDS.includes(n.id) && n.id !== 'ginjo');
-                fbNodes.forEach((node, i) => {{
-                    const angle = Math.PI * 0.1 + (i * (Math.PI * 0.8 / Math.max(fbNodes.length, 1))); // fan downward
-                    node.x = 0 + Math.cos(angle) * 90;
-                    node.y = 150 + Math.sin(angle) * 90;
-                    node.vx = 0; node.vy = 0;
-                }});
-
-                // ─── SECTOR 4: Human Beings (Outer Ring) ─────────────────────
-                const PLACED_IDS = new Set(['ichigo', ...VISORED_IDS, ...URAHARA_SHOP_IDS, ...FULLBRINGER_IDS]);
-                const humanNodes = filteredNodes.filter(n => !PLACED_IDS.has(n.id));
-                const R_OUTER = 250;
-                humanNodes.forEach((node, i) => {{
-                    // Spread humans evenly around the far outer perimeter
-                    const angle = -Math.PI / 2 + (i * (2 * Math.PI / Math.max(humanNodes.length, 1)));
-                    const jitter = (i % 2 === 0) ? 25 : -25; // Create 2 sub-rings for less crowding
-                    node.x = Math.round(Math.cos(angle) * (R_OUTER + jitter));
-                    node.y = Math.round(Math.sin(angle) * (R_OUTER + jitter));
-                    node.vx = 0; node.vy = 0;
-                }});
-
             }} else if (clusterType === 'gotei') {{
-                // ─────────────────────────────────────────────────────────────────
-                // MODERN GOTEI 13: Radial Branching Layout
-                // Yamamoto at Center, 12 Captains in a perfect ring (R=200),
-                // Lieutenants branching radially outward from their Captain (R=100).
-                // ─────────────────────────────────────────────────────────────────
-                
-                // Pin Yamamoto at Center
+                // Yamamoto pinned at Center
                 const yama = filteredNodes.find(n => n.id === 'yamamoto');
-                if (yama) {{
-                    yama.x = 0; yama.y = 0;
-                    yama.fx = 0; yama.fy = 0;
-                    yama.vx = 0; yama.vy = 0;
-                }}
+                if (yama) {{ yama.x = 0; yama.y = 0; yama.fx = 0; yama.fy = 0; yama.vx = 0; yama.vy = 0; }}
                 
                 const SQUADS = [
-                    {{ cap: 'soi_fon',   subs: ['omaeda'] }},          // 2nd Div
-                    {{ cap: 'gin',       subs: ['kira'] }},            // 3rd Div
-                    {{ cap: 'unohana',   subs: ['isane'] }},           // 4th Div
-                    {{ cap: 'aizen',     subs: ['momo'] }},            // 5th Div
-                    {{ cap: 'byakuya',   subs: ['renji', 'rukia'] }},  // 6th Div
-                    {{ cap: 'komamura',  subs: [] }},                  // 7th Div
-                    {{ cap: 'shunsui',   subs: ['nanao'] }},           // 8th Div
-                    {{ cap: 'tosen',     subs: ['hisagi'] }},          // 9th Div
-                    {{ cap: 'hitsugaya', subs: ['rangiku'] }},         // 10th Div
-                    {{ cap: 'kenpachi',  subs: ['yachiru'] }},         // 11th Div
-                    {{ cap: 'mayuri',    subs: ['nemu'] }},            // 12th Div
-                    {{ cap: 'ukitake',   subs: [] }}                   // 13th Div
+                    {{ cap: 'soi_fon',   subs: ['omaeda'] }},
+                    {{ cap: 'gin',       subs: ['kira'] }},
+                    {{ cap: 'unohana',   subs: ['isane'] }},
+                    {{ cap: 'aizen',     subs: ['momo'] }},
+                    {{ cap: 'byakuya',   subs: ['renji', 'rukia'] }},
+                    {{ cap: 'komamura',  subs: [] }},
+                    {{ cap: 'shunsui',   subs: ['nanao'] }},
+                    {{ cap: 'tosen',     subs: ['hisagi'] }},
+                    {{ cap: 'hitsugaya', subs: ['rangiku'] }},
+                    {{ cap: 'kenpachi',  subs: ['yachiru'] }},
+                    {{ cap: 'mayuri',    subs: ['nemu'] }},
+                    {{ cap: 'ukitake',   subs: [] }}
                 ];
                 
                 const R_CAPTAINS = 220;
                 const R_SUBS = 100;
-                
                 let placedIds = new Set(['yamamoto', 'sasakibe']);
                 
-                // Sasakibe (1st Div Lt) branches off Yamamoto (upwards)
                 const sasakibe = filteredNodes.find(n => n.id === 'sasakibe');
                 if (sasakibe) {{
                     sasakibe.x = 0; sasakibe.y = -85;
@@ -2701,35 +1953,26 @@ def generate_obsidian_graph():
                 
                 SQUADS.forEach((squad, i) => {{
                     const capNode = filteredNodes.find(n => n.id === squad.cap);
-                    // Anticlockwise distribution: subtract angle instead of adding
                     const angle = -Math.PI / 2 - (i * (2 * Math.PI / SQUADS.length));
-                    
                     if (capNode) {{
                         capNode.x = Math.round(Math.cos(angle) * R_CAPTAINS);
                         capNode.y = Math.round(Math.sin(angle) * R_CAPTAINS);
-                        // Pinning Captains creates the perfect ring
-                        capNode.fx = capNode.x;
-                        capNode.fy = capNode.y;
+                        capNode.fx = capNode.x; capNode.fy = capNode.y;
                         capNode.vx = 0; capNode.vy = 0;
                         placedIds.add(capNode.id);
                         
-                        // Seed subordinates radially outward from the captain
                         const subNodes = filteredNodes.filter(n => squad.subs.includes(n.id));
                         subNodes.forEach((subNode, j) => {{
-                            // Spread subs in a small arc pointing outward
                             const subAngle = angle + (j - (subNodes.length - 1)/2) * 0.4;
                             subNode.x = capNode.x + Math.round(Math.cos(subAngle) * R_SUBS);
                             subNode.y = capNode.y + Math.round(Math.sin(subAngle) * R_SUBS);
-                            // Strictly pin them to prevent force engine from pulling them to cross-linked characters!
-                            subNode.fx = subNode.x;
-                            subNode.fy = subNode.y;
+                            subNode.fx = subNode.x; subNode.fy = subNode.y;
                             subNode.vx = 0; subNode.vy = 0;
                             placedIds.add(subNode.id);
                         }});
                     }}
                 }});
                 
-                // Other Gotei elements (like jidanbo, hachigen, tokinada, etc.)
                 const otherNodes = filteredNodes.filter(n => !placedIds.has(n.id));
                 const R_OUTER = 380;
                 otherNodes.forEach((node, i) => {{
@@ -2738,33 +1981,21 @@ def generate_obsidian_graph():
                     node.y = Math.round(Math.sin(angle) * R_OUTER);
                     node.vx = 0; node.vy = 0;
                 }});
-
             }} else if (clusterType === 'wandenreich') {{
-                // ─────────────────────────────────────────────────────────────────
-                // WANDENREICH: Concentric Tiered Circular Rings
-                // Yhwach at Center. Jugram/Uryu flanking. Elites in inner ring.
-                // Standard Sternritter in middle ring. Fodder in outer ring.
-                // ─────────────────────────────────────────────────────────────────
                 const yhwach = filteredNodes.find(n => n.id === 'yhwach');
-                if (yhwach) {{
-                    yhwach.x = 0; yhwach.y = 0;
-                    yhwach.fx = 0; yhwach.fy = 0;
-                    yhwach.vx = 0; yhwach.vy = 0;
-                }}
+                if (yhwach) {{ yhwach.x = 0; yhwach.y = 0; yhwach.fx = 0; yhwach.fy = 0; yhwach.vx = 0; yhwach.vy = 0; }}
                 
-                // Ring 1: Jugram & Uryu (The Successor and Grandmaster)
                 const rightHands = ['jugram', 'uryu'];
                 rightHands.forEach((id, i) => {{
                     const node = filteredNodes.find(n => n.id === id);
                     if (node) {{
-                        const angle = i === 0 ? Math.PI : 0; // Left and Right
+                        const angle = i === 0 ? Math.PI : 0;
                         node.x = Math.round(Math.cos(angle) * 120);
                         node.y = Math.round(Math.sin(angle) * 120);
                         node.fx = node.x; node.fy = node.y; node.vx = 0; node.vy = 0;
                     }}
                 }});
 
-                // Ring 2: Schutzstaffel & Elites (Tier 2, excluding Yhwach and right hands)
                 const elites = filteredNodes.filter(n => n.val === 11.5 && n.id !== 'yhwach' && !rightHands.includes(n.id));
                 elites.forEach((node, i) => {{
                     const angle = -Math.PI / 2 + (i * (2 * Math.PI / elites.length));
@@ -2773,7 +2004,6 @@ def generate_obsidian_graph():
                     node.fx = node.x; node.fy = node.y; node.vx = 0; node.vy = 0;
                 }});
 
-                // Ring 3: Standard Sternritter (Tier 3)
                 const standard = filteredNodes.filter(n => n.val === 8.5);
                 standard.forEach((node, i) => {{
                     const angle = -Math.PI / 2 + (i * (2 * Math.PI / standard.length));
@@ -2782,7 +2012,6 @@ def generate_obsidian_graph():
                     node.fx = node.x; node.fy = node.y; node.vx = 0; node.vy = 0;
                 }});
 
-                // Ring 4: Fodder & Minor (Tier 5, value < 8.5)
                 const minor = filteredNodes.filter(n => n.val < 8.5);
                 minor.forEach((node, i) => {{
                     const angle = -Math.PI / 2 + (i * (2 * Math.PI / Math.max(minor.length, 1)));
@@ -2790,56 +2019,80 @@ def generate_obsidian_graph():
                     node.y = Math.round(Math.sin(angle) * 620);
                     node.fx = node.x; node.fy = node.y; node.vx = 0; node.vy = 0;
                 }});
-
             }} else if (clusterType === 'original') {{
-                // ─────────────────────────────────────────────────────────────────
-                // ORIGINAL GOTEI 13: Perfect Circle
-                // Yamamoto at Center, 12 Captains in a perfect ring
-                // ─────────────────────────────────────────────────────────────────
-                
-                // Pin Yamamoto at Center
                 const yama = filteredNodes.find(n => n.id === 'yamamoto');
-                if (yama) {{
-                    yama.x = 0; yama.y = 0;
-                    yama.fx = 0; yama.fy = 0;
-                    yama.vx = 0; yama.vy = 0;
-                }}
+                if (yama) {{ yama.x = 0; yama.y = 0; yama.fx = 0; yama.fy = 0; yama.vx = 0; yama.vy = 0; }}
                 
                 const captains = filteredNodes.filter(n => n.id !== 'yamamoto');
-                const R = 180; // Radius of the circle
+                const R = 180;
                 captains.forEach((node, i) => {{
-                    // Start from 12 o'clock and go clockwise
                     const angle = -Math.PI / 2 + (i * (2 * Math.PI / Math.max(captains.length, 1)));
                     node.x = Math.round(Math.cos(angle) * R);
                     node.y = Math.round(Math.sin(angle) * R);
-                    // Explicitly pinning them makes it a perfect circle
-                    node.fx = node.x;
-                    node.fy = node.y;
+                    node.fx = node.x; node.fy = node.y;
+                    node.vx = 0; node.vy = 0;
+                }});
+            }} else if (clusterType === 'karakura') {{
+                const VISORED_IDS      = ['shinji', 'hiyori', 'love', 'rose', 'kensei', 'mashiro', 'lisa', 'hachigen'];
+                const URAHARA_SHOP_IDS = ['urahara', 'yoruichi', 'tessai', 'jinta', 'ururu'];
+                const FULLBRINGER_IDS  = ['ginjo', 'tsukishima', 'riruka', 'yukio', 'jackie', 'moe', 'giriko', 'chad', 'aura_michibane'];
+
+                const ichigo = filteredNodes.find(n => n.id === 'ichigo');
+                if (ichigo) {{ ichigo.x = 0; ichigo.y = 0; ichigo.fx = 0; ichigo.fy = 0; ichigo.vx = 0; ichigo.vy = 0; }}
+
+                const urahara = filteredNodes.find(n => n.id === 'urahara');
+                if (urahara) {{ urahara.x = -130; urahara.y = -60; urahara.fx = -130; urahara.fy = -60; }}
+                const shopNodes = filteredNodes.filter(n => URAHARA_SHOP_IDS.includes(n.id) && n.id !== 'urahara');
+                shopNodes.forEach((node, i) => {{
+                    const angle = Math.PI * 0.75 + (i * (Math.PI / Math.max(shopNodes.length, 1)));
+                    node.x = -130 + Math.cos(angle) * 75; node.y = -60 + Math.sin(angle) * 75;
                     node.vx = 0; node.vy = 0;
                 }});
 
+                const shinji = filteredNodes.find(n => n.id === 'shinji');
+                if (shinji) {{ shinji.x = 130; shinji.y = -60; shinji.fx = 130; shinji.fy = -60; }}
+                const visNodes = filteredNodes.filter(n => VISORED_IDS.includes(n.id) && n.id !== 'shinji');
+                visNodes.forEach((node, i) => {{
+                    const angle = -Math.PI * 0.25 + (i * (Math.PI / Math.max(visNodes.length, 1)));
+                    node.x = 130 + Math.cos(angle) * 85; node.y = -60 + Math.sin(angle) * 85;
+                    node.vx = 0; node.vy = 0;
+                }});
+
+                const ginjo = filteredNodes.find(n => n.id === 'ginjo');
+                if (ginjo) {{ ginjo.x = 0; ginjo.y = 150; ginjo.fx = 0; ginjo.fy = 150; }}
+                const fbNodes = filteredNodes.filter(n => FULLBRINGER_IDS.includes(n.id) && n.id !== 'ginjo');
+                fbNodes.forEach((node, i) => {{
+                    const angle = Math.PI * 0.1 + (i * (Math.PI * 0.8 / Math.max(fbNodes.length, 1)));
+                    node.x = 0 + Math.cos(angle) * 90; node.y = 150 + Math.sin(angle) * 90;
+                    node.vx = 0; node.vy = 0;
+                }});
+
+                const PLACED_IDS = new Set(['ichigo', ...VISORED_IDS, ...URAHARA_SHOP_IDS, ...FULLBRINGER_IDS]);
+                const humanNodes = filteredNodes.filter(n => !PLACED_IDS.has(n.id));
+                const R_OUTER = 250;
+                humanNodes.forEach((node, i) => {{
+                    const angle = -Math.PI / 2 + (i * (2 * Math.PI / Math.max(humanNodes.length, 1)));
+                    const jitter = (i % 2 === 0) ? 25 : -25;
+                    node.x = Math.round(Math.cos(angle) * (R_OUTER + jitter));
+                    node.y = Math.round(Math.sin(angle) * (R_OUTER + jitter));
+                    node.vx = 0; node.vy = 0;
+                }});
             }} else {{
-                // Pin designated faction leader at center (0, 0)
                 const leader = filteredNodes.find(n => n.id === leaderId);
-                if (leader) {{
-                    leader.x = 0;
-                    leader.y = 0;
-                    leader.fx = 0;
-                    leader.fy = 0;
-                }}
+                if (leader) {{ leader.x = 0; leader.y = 0; leader.fx = 0; leader.fy = 0; }}
             }}
 
             gData.nodes = filteredNodes;
             gData.links = filteredLinks;
             Graph.graphData({{ nodes: filteredNodes, links: filteredLinks }});
-
             Graph.d3ReheatSimulation();
-            setTimeout(() => {{
-                fitGraphToScreen(700);
-            }}, 400);
+            setTimeout(() => {{ fitGraphToScreen(700); }}, 400);
 
             if (currentNode && !validNodeIds.has(currentNode.id)) {{
                 sidebar.classList.remove('open');
+                closeAllPanels();
+                const b = document.getElementById('s-banner');
+                if (b) b.style.display = 'none';
                 miniLegend.classList.remove('hidden');
                 currentNode = null;
             }}
@@ -2862,8 +2115,7 @@ def generate_obsidian_graph():
                 }} else {{
                     activeFactionFilter = fac;
                     document.querySelectorAll('.faction-filter').forEach(f => {{
-                        f.style.border = 'none';
-                        f.style.background = 'transparent';
+                        f.style.border = 'none'; f.style.background = 'transparent';
                     }});
                     el.style.border = '1px solid rgba(255,255,255,0.4)';
                     el.style.background = 'rgba(255,255,255,0.1)';
@@ -2872,118 +2124,9 @@ def generate_obsidian_graph():
             }});
         }});
 
-        // ── EASTER EGG TRIGGERS ──
-
-        function triggerBankai() {{
-            playSfx('bankai');
-            const overlay = document.getElementById('bankai-overlay');
-            overlay.classList.add('active');
-            isBankaiActive = true;
-            document.body.classList.add('screen-shake');
-            setTimeout(() => document.body.classList.remove('screen-shake'), 400);
-            setTimeout(() => {{
-                overlay.classList.remove('active');
-                isBankaiActive = false;
-            }}, 6000);
-        }}
-
-        function triggerGetsuga() {{
-            playSfx('slash');
-            const slash = document.getElementById('getsuga-slash');
-            slash.classList.add('active');
-            document.body.classList.add('screen-shake');
-            setTimeout(() => document.body.classList.remove('screen-shake'), 350);
-            setTimeout(() => slash.classList.remove('active'), 800);
-        }}
-
-        function triggerHogyokuMode() {{
-            playSfx('hogyoku');
-            document.body.classList.add('hogyoku-mode');
-            const originalColors = gData.nodes.map(n => n.color);
-            const scrambleColors = ['#DC2626', '#4A9EFF', '#6B21A8', '#F59E0B', '#10B981', '#F472B6', '#D4AF37'];
-            
-            const interval = setInterval(() => {{
-                gData.nodes.forEach(n => {{
-                    n.color = scrambleColors[Math.floor(Math.random() * scrambleColors.length)];
-                }});
-            }}, 120);
-
-            setTimeout(() => {{
-                clearInterval(interval);
-                gData.nodes.forEach((n, i) => {{ n.color = originalColors[i]; }});
-                document.body.classList.remove('hogyoku-mode');
-                playSfx('bankai');
-            }}, 5000);
-        }}
-
-        function triggerHollowfication(node) {{
-            playSfx('hollow');
-            rapidHollowNode = node.id;
-            const hollowBanner = document.getElementById('hollow-banner');
-            document.getElementById('hollow-banner-text').innerText = 'HOLLOWFICATION AWAKENED - ' + node.name.toUpperCase();
-            hollowBanner.style.display = 'block';
-            document.body.classList.add('screen-shake');
-            setTimeout(() => document.body.classList.remove('screen-shake'), 400);
-            setTimeout(() => {{
-                rapidHollowNode = null;
-                hollowBanner.style.display = 'none';
-            }}, 4000);
-        }}
-
-        // Developer Bounty Poster (Click brand 5x)
-        let brandClickCount = 0;
-        let lastBrandClick = 0;
-        const brandEl = document.getElementById('brand-wordmark');
-        if (brandEl) brandEl.addEventListener('click', () => {{
-            const now = Date.now();
-            if (now - lastBrandClick < 1500) {{
-                brandClickCount++;
-            }} else {{
-                brandClickCount = 1;
-            }}
-            lastBrandClick = now;
-            if (brandClickCount >= 5) {{
-                brandClickCount = 0;
-                playSfx('bankai');
-                document.getElementById('credits-modal').classList.add('open');
-            }}
-        }});
-        document.getElementById('credits-close').addEventListener('click', () => {{
-            document.getElementById('credits-modal').classList.remove('open');
-        }});
-
-        // ── KEYBOARD SHORTCUTS & KONAMI CODE ──
-        let keyBuffer = '';
-        let konamiIdx = 0;
-        const KONAMI_CODE = ['arrowup','arrowup','arrowdown','arrowdown','arrowleft','arrowright','arrowleft','arrowright','b','a'];
-
+        // Keyboard Shortcuts (Ctrl+K search, Esc close)
         document.addEventListener('keydown', e => {{
             if (e.target && e.target.id === 'search-input') return;
-
-            // Konami Code check
-            if (e.key.toLowerCase() === KONAMI_CODE[konamiIdx]) {{
-                konamiIdx++;
-                if (konamiIdx === KONAMI_CODE.length) {{
-                    konamiIdx = 0;
-                    triggerHogyokuMode();
-                }}
-            }} else {{
-                konamiIdx = 0;
-            }}
-
-            // Keystroke words
-            if (e.key.length === 1 && /[a-zA-Z ]/.test(e.key)) {{
-                keyBuffer += e.key.toLowerCase();
-                if (keyBuffer.length > 30) keyBuffer = keyBuffer.slice(-30);
-
-                if (keyBuffer.endsWith('bankai')) {{
-                    keyBuffer = '';
-                    triggerBankai();
-                }} else if (keyBuffer.endsWith('getsuga') || keyBuffer.endsWith('getsugatensho')) {{
-                    keyBuffer = '';
-                    triggerGetsuga();
-                }}
-            }}
 
             if ((e.ctrlKey || e.metaKey) && e.key === 'k') {{
                 e.preventDefault();
@@ -2999,13 +2142,10 @@ def generate_obsidian_graph():
                 }} else if (currentNode || highlightedPathNodes.size > 0) {{
                     deselectNode();
                 }}
-                document.getElementById('credits-modal').classList.remove('open');
             }}
         }});
 
-        // ── Search (Ctrl+K) ──
-        const mobileSearchBtn = document.getElementById('nav-search-btn');
-        if (mobileSearchBtn) mobileSearchBtn.addEventListener('click', openSearch);
+        // Quick Search (Ctrl+K)
         const searchOverlay = document.getElementById('search-overlay');
         const searchInput = document.getElementById('search-input');
         const searchResults = document.getElementById('search-results');
@@ -3028,26 +2168,6 @@ def generate_obsidian_graph():
 
         function navigateToNode(node) {{
             closeSearch();
-            if (node.id === '__zangetsu') {{
-                openSidebar({{
-                    id: '__zangetsu',
-                    name: 'Zangetsu (The Old Man & The Hollow)',
-                    race: 'Quincy Heritage & Hollow Core',
-                    faction: 'Zanpakuto Spirit',
-                    desc: 'The manifestation of Ichigo\\'s spiritual power. The Old Man represents his Quincy lineage from Yhwach, while the White Hollow represents his true Shinigami and Hollow power. &ldquo;I am Zangetsu. What is the difference between a king and his horse? Instinct.&rdquo;',
-                    img: ''
-                }});
-                return;
-            }}
-            if (node.id === '__soul_society') {{
-                const barrier = document.getElementById('seireitei-barrier');
-                barrier.style.display = 'block';
-                playSfx('bankai');
-                setTimeout(() => {{ barrier.style.display = 'none'; }}, 6000);
-                Graph.zoom(0.85, 900);
-                return;
-            }}
-            // If the target node is outside currently active cluster, switch to 'all'
             let activeNode = gData.nodes.find(n => n.id === node.id);
             if (!activeNode) {{
                 jumpToCluster('all');
@@ -3064,31 +2184,11 @@ def generate_obsidian_graph():
             if (!query) {{ searchResults.innerHTML = ''; activeIdx = -1; return; }}
             const q = query.toLowerCase().trim();
 
-            let matches = RAW_GRAPH.nodes.filter(n => n.name.toLowerCase().includes(q)).slice(0, 12);
-
-            // Easter egg: Search "Zangetsu"
-            if ('zangetsu'.includes(q) || q.includes('zangetsu')) {{
-                matches.unshift({{
-                    id: '__zangetsu',
-                    name: 'Zangetsu (The Old Man & Hollow)',
-                    faction: 'Zanpakuto Spirit',
-                    color: '#D4AF37'
-                }});
-            }}
-
-            // Easter egg: Search "Soul Society" or "Seireitei"
-            if ('soul society'.includes(q) || 'seireitei'.includes(q)) {{
-                matches.unshift({{
-                    id: '__soul_society',
-                    name: '\\u26E9\\uFE0F Seireitei (Soul Society Realm)',
-                    faction: 'Soul Reaper Territory',
-                    color: '#4A9EFF'
-                }});
-            }}
+            let matches = RAW_GRAPH.nodes.filter(n => n.name.toLowerCase().includes(q) || n.faction.toLowerCase().includes(q) || n.race.toLowerCase().includes(q)).slice(0, 12);
 
             if (matches.length === 0) {{
                 activeIdx = -1;
-                searchResults.innerHTML = '<div style="padding:16px 20px;font-size:12px;color:#888;text-align:center;line-height:1.6;">Even Ichigo can\\'t sense that reiatsu.<br><span style="font-size:10px;color:#555;">Try another name or faction.</span></div>';
+                searchResults.innerHTML = '<div style="padding:16px 20px;font-size:12px;color:#888;text-align:center;line-height:1.6;">No character matching query.<br><span style="font-size:10px;color:#555;">Try searching another name or faction.</span></div>';
                 return;
             }}
 
@@ -3125,13 +2225,7 @@ def generate_obsidian_graph():
             }} else if (e.key === 'Enter') {{
                 e.preventDefault();
                 const q = searchInput.value.toLowerCase().trim();
-                let matches = RAW_GRAPH.nodes.filter(n => n.name.toLowerCase().includes(q)).slice(0, 12);
-                if ('zangetsu'.includes(q) || q.includes('zangetsu')) {{
-                    matches.unshift({{ id: '__zangetsu', name: 'Zangetsu', faction: 'Zanpakuto Spirit', color: '#D4AF37' }});
-                }}
-                if ('soul society'.includes(q) || 'seireitei'.includes(q)) {{
-                    matches.unshift({{ id: '__soul_society', name: 'Seireitei', faction: 'Soul Reaper Realm', color: '#4A9EFF' }});
-                }}
+                let matches = RAW_GRAPH.nodes.filter(n => n.name.toLowerCase().includes(q) || n.faction.toLowerCase().includes(q) || n.race.toLowerCase().includes(q)).slice(0, 12);
                 if (matches[activeIdx]) navigateToNode(matches[activeIdx]);
             }} else if (e.key === 'Escape') {{
                 closeSearch();
@@ -3142,7 +2236,7 @@ def generate_obsidian_graph():
             if (e.target === searchOverlay) closeSearch();
         }});
 
-        // URL hash sync on load
+        // URL Hash Deep Linking
         window.addEventListener('load', () => {{
             setTimeout(() => {{
                 if (window.location.hash) {{
@@ -3162,11 +2256,9 @@ def generate_obsidian_graph():
 </body>
 </html>"""
 
-    with open("index.html", "w", encoding="utf-8") as f:
+    with open(os.path.join(base_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(html)
     print("Obsidian Canvas Database saved to: index.html")
 
-generate_obsidian_graph()
-
-
-
+if __name__ == "__main__":
+    generate_obsidian_graph()

@@ -1,0 +1,84 @@
+/* ==========================================================================
+   flame-panel.css - Yamamoto panel animation, identical in behavior to Rukia's
+   ice panel (same layers, timings, creep/breathe, glint, sweep, particles),
+   recolored to fire. Effects only: layout untouched.
+   ========================================================================== */
+
+@property --fl-angle { syntax: '<angle>';      inherits: false; initial-value: 0deg; }
+@property --fl-reach { syntax: '<percentage>'; inherits: false; initial-value: 52%; }
+
+:where(.flame-panel) { position: relative; overflow: hidden; }
+
+.flame-panel {
+  --fl-core: #ffd27a;
+  --fl-fire: #ff7a2a;
+}
+
+.fl-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* ---- Mist -> heat haze: drifting warm light (behind content) ---- */
+.fl-mist {
+  z-index: 1;
+  filter: blur(28px);
+  inset: -20%;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 130, 40, .38), transparent 40%),
+    radial-gradient(circle at 75% 75%, rgba(255, 200, 110, .28), transparent 45%);
+  transition: opacity .8s ease;
+}
+.flame-panel.fl-open .fl-mist {
+  opacity: .55;
+  animation: fl-drift 14s ease-in-out infinite alternate;
+}
+@keyframes fl-drift { to { transform: translate(8%, 6%) rotate(8deg) scale(1.1); } }
+
+/* ---- Real fire: WebGL turbulent-flame shader (bottom + edges), drawn behind content ---- */
+.fl-fire { z-index: 1; width: 100%; height: 100%; transition: opacity .6s ease; }
+.flame-panel.fl-open .fl-fire { opacity: 1; }
+
+/* ---- Particles canvas ---- */
+.fl-canvas { z-index: 1; width: 100%; height: 100%; transition: opacity .6s ease; }
+.flame-panel.fl-open .fl-canvas { opacity: 1; }
+
+/* ---- Border glint (same rotating ring, same 6s speed) ---- */
+.fl-ring {
+  z-index: 7;
+  padding: 1.5px;
+  background: conic-gradient(from var(--fl-angle),
+      rgba(255, 122, 42, .15) 0 50%,
+      var(--fl-fire) 72%, #fff3d6 80%, var(--fl-fire) 88%,
+      rgba(255, 122, 42, .15) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity .6s ease;
+}
+.flame-panel.fl-open .fl-ring { opacity: 1; animation: fl-spin 6s linear infinite; }
+@keyframes fl-spin { to { --fl-angle: 360deg; } }
+
+/* ---- Panel border + glow pulse (matches your #sidebar.frost-theme: 3s pulse) ---- */
+.flame-panel.fl-open {
+  border-color: rgba(255, 150, 60, .85) !important;
+  animation: fl-pulse 3s infinite ease-in-out;
+}
+@keyframes fl-pulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(255, 120, 40, .40), inset 0 0 20px rgba(255, 190, 120, .10); }
+  50%      { box-shadow: 0 0 45px rgba(255, 130, 50, .65), inset 0 0 30px rgba(255, 190, 120, .25); }
+}
+.flame-panel.fl-open #s-avatar {
+  border-color: #ffb066 !important;
+  box-shadow: 0 0 25px rgba(255, 130, 50, .85) !important;
+}
+.flame-panel.fl-open .char-name { text-shadow: 0 0 12px rgba(255, 140, 50, .55); }
+.flame-panel.fl-open .scroll-fade { background: linear-gradient(to top, rgba(255, 140, 60, .20), transparent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .flame-panel.fl-open, .flame-panel.fl-open .fl-mist, .flame-panel.fl-open .fl-sweep,
+  .flame-panel.fl-open .fl-ring, .flame-panel.fl-open .fl-scorch { animation: none !important; }
+}

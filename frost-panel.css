@@ -1,0 +1,129 @@
+/* ==========================================================================
+   frost-panel.css  (fixed for the Bleach network sidebar)
+   Effects only: it does NOT change your sidebar's size, position, fonts or
+   layout. Layers sit between #sidebar-overlay and #sidebar-content.
+   ========================================================================== */
+
+@property --fp-angle { syntax: '<angle>';      inherits: false; initial-value: 0deg; }
+@property --fp-reach { syntax: '<percentage>'; inherits: false; initial-value: 52%; }
+
+:where(.frost-panel) { position: relative; overflow: hidden; }
+
+.frost-panel {
+  --fp-ice:   #bfefff;
+  --fp-ice-2: #7fd6ff;
+}
+
+/* shared layer setup */
+.fp-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* ---- Mist: drifting cold light (behind content) ---- */
+.fp-mist {
+  z-index: 1;
+  filter: blur(28px);
+  inset: -20%;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(127, 214, 255, .38), transparent 40%),
+    radial-gradient(circle at 75% 75%, rgba(200, 240, 255, .28), transparent 45%);
+  transition: opacity .8s ease;
+}
+.frost-panel.fp-open .fp-mist {
+  opacity: .55;
+  animation: fp-drift 14s ease-in-out infinite alternate;
+}
+@keyframes fp-drift { to { transform: translate(8%, 6%) rotate(8deg) scale(1.1); } }
+
+/* ---- Frost creeping in from the edges (behind content) ---- */
+.fp-frost {
+  z-index: 1;
+  --fp-reach: 52%;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 .78  0 0 0 0 .94  0 0 0 0 1  1.9 0 0 0 -.62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(circle at 0 0,       rgba(191, 239, 255, .55), transparent 35%),
+    radial-gradient(circle at 100% 0,    rgba(191, 239, 255, .35), transparent 30%),
+    radial-gradient(circle at 100% 100%, rgba(191, 239, 255, .50), transparent 35%);
+  -webkit-mask-image: radial-gradient(ellipse at center, transparent var(--fp-reach), #000 100%);
+          mask-image: radial-gradient(ellipse at center, transparent var(--fp-reach), #000 100%);
+  transition: opacity .7s ease;
+}
+.frost-panel.fp-open .fp-frost {
+  opacity: .9;
+  animation:
+    fp-creep   2.4s cubic-bezier(.2, .7, .2, 1) both,
+    fp-breathe 5s   ease-in-out 2.4s infinite alternate;
+}
+@keyframes fp-creep   { from { --fp-reach: 110%; } to { --fp-reach: 52%; } }
+@keyframes fp-breathe { from { --fp-reach: 52%;  } to { --fp-reach: 60%; } }
+
+/* ---- Thick ice crust along the bottom (behind content) ---- */
+.fp-crust {
+  z-index: 1;
+  top: auto;
+  height: 150px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' seed='9'/%3E%3CfeColorMatrix values='0 0 0 0 .85  0 0 0 0 .96  0 0 0 0 1  2.3 0 0 0 -.7'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(to top, rgba(191, 239, 255, .35), transparent);
+  -webkit-mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,.7) 35%, transparent 100%);
+          mask-image: linear-gradient(to top, #000 0%, rgba(0,0,0,.7) 35%, transparent 100%);
+  transition: opacity .8s ease;
+}
+.frost-panel.fp-open .fp-crust { opacity: .85; }
+
+/* ---- Snow canvas (behind content) ---- */
+.fp-canvas {
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  transition: opacity .6s ease;
+}
+.frost-panel.fp-open .fp-canvas { opacity: 1; }
+
+/* ---- Glass light sweep (over content, very faint) ---- */
+.fp-sweep {
+  z-index: 2;
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, .12) 50%, transparent 60%);
+  transform: translateX(-120%);
+}
+.frost-panel.fp-open .fp-sweep {
+  opacity: 1;
+  animation: fp-sweep 7s ease-in-out .8s infinite;
+}
+@keyframes fp-sweep { 0% { transform: translateX(-120%); } 35%, 100% { transform: translateX(120%); } }
+
+/* ---- Animated icy border glint (topmost, ring only) ---- */
+.fp-ring {
+  z-index: 7;
+  padding: 1.5px;
+  background: conic-gradient(from var(--fp-angle),
+      rgba(127, 214, 255, .15) 0 50%,
+      var(--fp-ice-2) 72%, #fff 80%, var(--fp-ice-2) 88%,
+      rgba(127, 214, 255, .15) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity .6s ease;
+}
+.frost-panel.fp-open .fp-ring {
+  opacity: 1;
+  animation: fp-spin 6s linear infinite;
+}
+@keyframes fp-spin { to { --fp-angle: 360deg; } }
+
+/* ---- Small icy touches on your existing elements (colors only) ---- */
+.frost-panel.fp-open .char-name { text-shadow: 0 0 12px rgba(127, 214, 255, .55); }
+.frost-panel.fp-open .scroll-fade {
+  background: linear-gradient(to top, rgba(150, 210, 245, .22), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frost-panel.fp-open .fp-mist,
+  .frost-panel.fp-open .fp-sweep,
+  .frost-panel.fp-open .fp-ring,
+  .frost-panel.fp-open .fp-frost { animation: none !important; }
+}

@@ -1,6 +1,10 @@
 # Bleach Intelligence Database
 
-An interactive, high-performance character relationship intelligence database for the Bleach universe — built to visually explore the intricate web of bloodlines, rivalries, factions, and alliances across the series, from the Kurosaki lineage to the Gotei 13, the Espada, the Wandenreich Quincy hierarchy, the Original Gotei 13 founders, and the light novel continuations (*Can't Fear Your Own World* and *Spirits Are Forever With You*).
+<p align="center">
+  <img src="Asset/Readme gif/captains.gif" width="100%" style="border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);" alt="Bleach Captains Preview" />
+</p>
+
+An interactive, high-performance character relationship intelligence database for the Bleach universe — built to visually explore the intricate web of bloodlines, rivalries, factions, and alliances across the series, from the Kurosaki lineage to the Gotei 13, the Espada, the Wandenreich Quincy hierarchy, the Original Gotei 13 founders, and light novel continuations.
 
 Inspired by Obsidian's graph architecture and themed around the *Thousand-Year Blood War* aesthetic.
 
@@ -17,6 +21,10 @@ Click any character to inspect their classified dossier, examine their direct co
 ## ✨ Features
 
 - **Obsidian Force-Directed Graph**: Hardware-accelerated HTML5 Canvas + D3.js physics engine delivering smooth 60–120 FPS pan, zoom, and node dragging across 189 characters without hitching.
+- **Interactive Mouse Pointer Navigation**: Intuitive pointer cursor indicators when hovering over or clicking interactive character nodes across the network graph.
+- **Character Card Custom Backgrounds & Ability Themes**:
+  - **Rukia Kuchiki (Sode no Shirayuki / Hakka no Togame)**: Clicking Rukia applies her custom high-res background (`Asset/Images/Rukai Bg.jpg`) along with a dynamic frosted-ice card shimmer effect and icy blue glow.
+- **Clean Header & Dossier UI Alignment**: Perfectly aligned card header, non-overlapping classified dossier code labels, and streamlined close (`X`) controls.
 - **Hierarchical Node Sizing (5 Lore-Accurate Tiers)**: Clear visual hierarchy across all factions:
   - **Tier 1 (Supreme Gods & Sovereign Leaders)**: Aizen, Ichigo, Yhwach, Yamamoto, Soul King tower with commanding **26px radius (52px diameter)** avatars.
   - **Tier 2 (Elite Commanders & Top Espada)**: Gin, Tōsen, Starrk, Baraggan, Harribel, Ulquiorra, Grimmjow, Shunsui, Kenpachi, Byakuya rendered at **18px radius**.
@@ -41,29 +49,8 @@ Click any character to inspect their classified dossier, examine their direct co
 - **Floating High-Definition Hover HUD Card**: Hovering any node renders a sleek frosted-glass HUD card with a 76px circular avatar, faction-colored ring, race/faction metadata pills, and real-time live connection counters.
 - **Frosted-Glass Dossier & Character Backdrop**: Inspecting any character reveals a detailed sidebar with their portrait scaled, blurred, and softened as a background behind dark frosted glass.
 - **Shortest Path Tracing**: Select any character, hit "Trace Path", and click another character to calculate and visualize degrees of separation with directional glowing energy particles.
-- **Command Palette & Quick Search (`Ctrl + T`)**: Instant search overlay to query characters, factions, or bloodlines and immediately teleport to any node.
-- **Zero-Dependency Procedural Audio**: In-browser sound effects powered by the Web Audio API (no external audio assets required).
-- **Sub-Second Load Time**: Precomputed layout warmup (`warmupTicks: 35`), idle simulation cooling (`cooldownTicks: 95`), and instant reactive loader dismissal (< 350ms).
-
----
-
-## 🗡️ Bleach Easter Eggs & Secret Interactions
-
-The intelligence database is packed with hidden interactions and secret triggers inspired by Bleach lore:
-
-| Trigger | Name | Visual & Audio Effect |
-| :--- | :--- | :--- |
-| **Type `bankai`** | Bankai Release | Screen-wide spiritual flash, synthesized reiatsu roar, and synchronized pulsing glow on all Soul Reaper nodes. |
-| **Type `getsuga`** | Getsuga Tenshō | High-velocity animated blade slash streak cuts across the screen with sword impact audio and camera tremor. |
-| **`↑ ↑ ↓ ↓ ← → ← → B A`** | Hōgyoku Mode | Konami code trigger: reality distorts and node colors/factions scramble chaotically for 3.5 seconds before snapping back. |
-| **Rapid click 8+ times** | Hollowfication | Rapidly clicking any node triggers a glitching red/black Hollow aura and mask distortion audio. |
-| **Hover Yhwach 3s** | The Almighty | Hovering over Yhwach's node without clicking causes him to steadily expand by 1.6x with dark Quincy reiatsu. |
-| **Isshin + Masaki** | Eternal Bond | Selecting Isshin while Masaki's dossier is open (or vice versa) generates an interlocking pink spiritual tether and lore message. |
-| **Search `zangetsu`** | Zanpakutō Spirit | Surfaces a classified dual-spirit profile detailing Old Man Zangetsu and the White Hollow. |
-| **Search `soul society`** | Seireitei Barrier | Deploys a golden spherical barrier and illuminates all Gotei 13 and Royal Guard members. |
-| **Click Brand Logo 5x** | Creator Bounty | Clicking the top-bar **BLEACH** wordmark 5 times reveals a Soul Society classified wanted poster / credits dossier. |
-| **Midnight (12 AM - 1 AM)** | Hueco Mundo Hour | The database shifts into an eerie purple/black Hueco Mundo palette. |
-| **July 15th** | Ichigo's Birthday | Celebratory birthday badge and spiritual confetti appear across the interface. |
+- **Command Palette & Quick Search (`Ctrl + K`)**: Instant search overlay to query characters, factions, or bloodlines and immediately teleport to any node.
+- **Optimized Performance**: Clean, non-redundant codebase engineered for speed and responsiveness.
 
 ---
 
@@ -71,7 +58,7 @@ The intelligence database is packed with hidden interactions and secret triggers
 
 | Key / Action | Function |
 | :--- | :--- |
-| `Ctrl + T` | Open Command Palette / Quick Search |
+| `Ctrl + K` | Open Command Palette / Quick Search |
 | `Escape` | Close active dossier or search modal |
 | `Click Node` | Open floating character dossier and auto-fit connected network |
 | `Click / Drag Minimap` | Instantly pan the viewport from the bottom-left tactical radar |
@@ -88,7 +75,6 @@ The intelligence database is packed with hidden interactions and secret triggers
 - **Physics & Layout Engine**: [D3.js](https://d3js.org/) (Force Simulation, Zoom behaviors, Drag gestures).
 - **Graphics Pipeline**: HTML5 Canvas with dual-pass glow shaders, matrix caching, and hardware-accelerated transforms.
 - **Sprite Generation**: Python Pillow (PIL) lanczos face-cropping to unified WebP format.
-- **Audio Engine**: Native HTML5 Web Audio API synthesizer (oscillators, noise buffers, and biquad filters).
 - **Backend / Data Pipeline**: Python generator (`obsidian_network.py`), JSON data sources (`data/characters.json`, `data/relationships.json`).
 - **Typography & Styling**: Google Fonts (*Cinzel*, *Inter*), CSS backdrop filters, and custom scrollbar theming.
 
@@ -111,18 +97,18 @@ cd Bleach-Tree
 python obsidian_network.py
 ```
 
-This compiles the network, discovers all character portraits in `Asset/`, builds `Asset/sprites/characters.webp`, and outputs **`bleach_intelligence_database.html`**. 
+This compiles the network, discovers all character portraits in `Asset/`, builds `Asset/sprites/characters.webp`, and outputs **`index.html`**. 
 
-Open `bleach_intelligence_database.html` directly in your browser:
+Open `index.html` directly in your browser:
 ```bash
 # Windows
-start bleach_intelligence_database.html
+start index.html
 
 # macOS
-open bleach_intelligence_database.html
+open index.html
 
 # Linux
-xdg-open bleach_intelligence_database.html
+xdg-open index.html
 ```
 
 ---
@@ -132,19 +118,16 @@ xdg-open bleach_intelligence_database.html
 ```text
 Bleach Tree/
 ├── Asset/
-│   ├── Image/                       # Synchronized repository of character portraits
-│   │   ├── ICHIGOAT.gif             # Custom loader animation
-│   │   ├── Ichigo Kurosaki.jpg      # High-res source character portrait
-│   │   └── ...                      # 160+ character portraits
-│   └── sprites/
-│       ├── characters.webp          # Compiled 192x192 WebP sprite sheet (161 portraits)
-│       └── characters-map.json      # Coordinate lookup for CSS & Canvas slices
+├── Asset/Readme gif/
+│   └── captains.gif                 # Animated README header preview
+├── Asset/Images/
+│   └── Rukai Bg.jpg                 # Rukia Hakka no Togame Bankai background
 ├── data/
 │   ├── characters.json              # Canonical character registry (189 entities)
 │   └── relationships.json           # Canonical relationship database (355 edges)
 ├── build_sprites.py                 # Automated face-crop & WebP sprite sheet compiler
-├── obsidian_network.py              # Main compiler generating the standalone HTML
-├── bleach_intelligence_database.html# Standalone, zero-dependency interactive web application
+├── obsidian_network.py              # Main compiler generating index.html
+├── index.html                       # Standalone, zero-dependency interactive web application
 └── README.md                        # Documentation
 ```
 

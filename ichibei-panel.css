@@ -1,0 +1,77 @@
+/* ==========================================================================
+   ichibei-panel.css - sumi-e: a wet paper wash blooms, one dry-brush stroke
+   sweeps across, ink bleeds and drips, and a red hanko seal stamps the page.
+   Timeline: 0-0.9s wash blooms -> 0.1-1.2s brush stroke -> 0.9s splatter
+   -> 1-2.8s bleed + drips -> 1.75s seal stamps (with a small thud).
+   Ink + wash sit behind the text so it stays readable.
+   Keep the index.html theme rule for this character to border/avatar only.
+   ========================================================================== */
+@property --ib-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --ib-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+:where(.ichibei-panel) { position: relative; overflow: hidden; }
+.ib-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+
+/* rice-paper wash: soaks outward from where the brush lands */
+.ib-wash {
+  z-index: 1;
+  background:
+    radial-gradient(circle at var(--ix,20%) var(--iy,75%), rgba(236,230,214,.24), rgba(236,230,214,.09) 50%, transparent 78%),
+    linear-gradient(to top, rgba(236,230,214,.10), transparent 45%);
+  -webkit-mask-image: radial-gradient(circle at var(--ix,20%) var(--iy,75%), #000 var(--ib-r), transparent calc(var(--ib-r) + 35%));
+          mask-image: radial-gradient(circle at var(--ix,20%) var(--iy,75%), #000 var(--ib-r), transparent calc(var(--ib-r) + 35%));
+}
+.ichibei-panel.ib-open .ib-wash { opacity: 1; animation: ib-wash 1.3s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes ib-wash { from { --ib-r: 0%; } to { --ib-r: 95%; } }
+
+/* ink (behind the text) */
+.ib-svg { z-index: 1; width: 100%; height: 100%; overflow: hidden; }
+.ichibei-panel.ib-open .ib-svg { opacity: 1; }
+.ib-b { fill: none; stroke: #050506; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: var(--L) 2; stroke-dashoffset: var(--L); }
+.ichibei-panel.ib-open .ib-b { animation: ib-draw var(--dur) cubic-bezier(.3,.1,.25,1) var(--d) both; }
+@keyframes ib-draw { to { stroke-dashoffset: 0; } }
+
+.ib-bleed { fill: none; stroke: #0a0a0c; stroke-linecap: round; stroke-width: 30; opacity: 0; filter: blur(2px); }
+.ichibei-panel.ib-open .ib-bleed { animation: ib-bleed 2.4s ease-out 1s both; }
+@keyframes ib-bleed { from { opacity: 0; filter: blur(2px); } to { opacity: .5; filter: blur(11px); } }
+
+.ib-dot { fill: #050506; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.ichibei-panel.ib-open .ib-dot { animation: ib-dot .5s cubic-bezier(.1,.8,.3,1) var(--d) both; }
+@keyframes ib-dot { from { opacity: 0; transform: translate(0,0) scale(.1); } to { opacity: 1; transform: translate(var(--tx),var(--ty)) scale(1); } }
+
+.ib-drip { fill: none; stroke: #050506; stroke-linecap: round; stroke-dasharray: 1 2; stroke-dashoffset: 1; }
+.ichibei-panel.ib-open .ib-drip { animation: ib-draw 1.7s cubic-bezier(.4,0,.3,1) var(--d) both; }
+.ib-bulb { fill: #050506; opacity: 0; }
+.ichibei-panel.ib-open .ib-bulb { animation: ib-bulb 1.7s cubic-bezier(.4,0,.3,1) var(--d) both; }
+@keyframes ib-bulb { 0% { opacity: 1; translate: 0 0; } 100% { opacity: 1; translate: 0 var(--len); } }
+
+/* hanko seal (over the text, small) */
+.ib-seal { z-index: 6; inset: auto; width: 46px; height: 46px; margin: -23px 0 0 -23px; }
+.ib-seal svg { width: 100%; height: 100%; filter: drop-shadow(0 2px 3px rgba(0,0,0,.6)); }
+.ichibei-panel.ib-open .ib-seal { animation: ib-stamp .4s cubic-bezier(.2,1.5,.4,1) 1.75s both; }
+@keyframes ib-stamp { from { opacity: 0; scale: 1.8; rotate: -14deg; } to { opacity: .93; scale: 1; rotate: -6deg; } }
+
+/* border: bone-white ring, no glow-y colour */
+.ib-ring {
+  z-index: 9; padding: 1.5px;
+  background: conic-gradient(from var(--ib-angle), rgba(236,230,214,.10) 0 55%, rgba(200,194,180,.6) 74%, #fff 82%, rgba(200,194,180,.6) 90%, rgba(236,230,214,.10) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity .8s ease;
+}
+.ichibei-panel.ib-open .ib-ring { opacity: 1; animation: ib-spin 10s linear infinite; }
+@keyframes ib-spin { to { --ib-angle: 360deg; } }
+
+.ichibei-panel.ib-open { border-color: rgba(230,224,208,.75) !important; animation: ib-pulse 5s infinite ease-in-out; }
+@keyframes ib-pulse {
+  0%, 100% { box-shadow: 0 0 24px rgba(236,230,214,.14), 0 0 70px rgba(0,0,0,.9); }
+  50%      { box-shadow: 0 0 36px rgba(236,230,214,.26), 0 0 70px rgba(0,0,0,.9); }
+}
+.ichibei-panel.ib-open #s-avatar { border-color: #ece6d6 !important; box-shadow: 0 0 18px rgba(236,230,214,.5), 0 0 0 3px rgba(0,0,0,.75) !important; }
+.ichibei-panel.ib-open .char-name { text-shadow: 0 0 10px rgba(236,230,214,.4); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ichibei-panel.ib-open, .ichibei-panel.ib-open .ib-ring { animation: none !important; }
+  .ichibei-panel.ib-open .ib-b, .ichibei-panel.ib-open .ib-drip { animation: none; stroke-dashoffset: 0; }
+  .ichibei-panel.ib-open .ib-dot, .ichibei-panel.ib-open .ib-bulb, .ichibei-panel.ib-open .ib-seal, .ichibei-panel.ib-open .ib-bleed { animation: none; opacity: 1; }
+}

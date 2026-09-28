@@ -1,0 +1,103 @@
+/* ==========================================================================
+   glass-panel.css - Aizen entrance: glass cracks, holds, then ALL of it falls
+   Timeline: 0s impact flash -> 0-1s cracks spread -> 1.2s+ pieces fall away
+   -> ~3s clear panel with violet glow + border glint.
+   ========================================================================== */
+@property --gs-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+
+:where(.glass-panel) { position: relative; overflow: hidden; }
+.gs-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+@keyframes gs-out { to { opacity: 0; } }
+
+/* glass sheen (behind content) - disappears when the pane falls */
+.gs-glass {
+  z-index: 1;
+  background:
+    linear-gradient(115deg, transparent 0 28%, rgba(255,255,255,.07) 28% 37%, transparent 37% 52%, rgba(255,255,255,.045) 52% 56%, transparent 56%),
+    linear-gradient(180deg, rgba(210,200,255,.10), transparent 35%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.4), inset 0 0 0 1px rgba(255,255,255,.07);
+}
+.glass-panel.gs-open .gs-glass { opacity: 1; animation: gs-out .5s ease 1.5s forwards; }
+
+/* crack web + falling pieces (over content, non-interactive) */
+.gs-svg { z-index: 6; width: 100%; height: 100%; overflow: hidden; }
+.glass-panel.gs-open .gs-svg { opacity: 1; }
+
+.gs-line { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 2; stroke-dashoffset: 1; }
+.gs-shadow .gs-line { stroke: rgba(10,5,30,.55); stroke-width: 2.2; transform: translate(.8px,.8px); }
+.gs-hi { filter: drop-shadow(0 0 3px rgba(190,170,255,.85)); }
+.gs-hi .gs-line { stroke: rgba(255,255,255,.9); stroke-width: .9; }
+.glass-panel.gs-open .gs-line { animation: gs-draw .6s cubic-bezier(.2,.6,.2,1) var(--d,0s) both; }
+@keyframes gs-draw { to { stroke-dashoffset: 0; } }
+/* crack lines hand over to the piece edges the moment the glass lets go */
+.glass-panel.gs-open .gs-shadow, .glass-panel.gs-open .gs-hi { animation: gs-out .25s linear 1.2s forwards; }
+.glass-panel.gs-open .gs-glints { animation: gs-out .3s linear 1.3s forwards; }
+
+/* glass pieces: tinted while held, then fall with gravity + spin */
+.gs-cells polygon {
+  fill: #fff; fill-opacity: 0; stroke: #fff; stroke-width: .9; stroke-linejoin: round; stroke-opacity: 0;
+  transform-box: fill-box; transform-origin: center;
+}
+.glass-panel.gs-open .gs-cells polygon {
+  animation: gs-cell 1s ease-out var(--d) both, gs-fall var(--fdur) cubic-bezier(.45,0,.9,.55) var(--fd) forwards;
+}
+@keyframes gs-cell { to { fill-opacity: var(--o); } }
+@keyframes gs-fall {
+  0%   { transform: translate(0,0) rotate(0); fill-opacity: var(--o); stroke-opacity: 0; opacity: 1; }
+  10%  { transform: translate(0,0) rotate(0); fill-opacity: .24; stroke-opacity: .95; opacity: 1; }
+  100% { transform: translate(var(--fx), var(--fy)) rotate(var(--fr)); fill-opacity: .24; stroke-opacity: .6; opacity: 0; }
+}
+
+.gs-glints circle { fill: #fff; opacity: 0; transform-box: fill-box; transform-origin: center; filter: drop-shadow(0 0 4px #cfc4ff); }
+.glass-panel.gs-open .gs-glints circle { animation: gs-tw var(--t) ease-in-out var(--d) infinite; }
+@keyframes gs-tw { 0%, 60%, 100% { opacity: 0; transform: scale(.4); } 75% { opacity: 1; transform: scale(1.7); } }
+
+/* flash at impact, and a second softer one when the glass lets go */
+.gs-flash {
+  z-index: 8;
+  background: radial-gradient(circle at var(--ix,70%) var(--iy,30%), rgba(255,255,255,.8), rgba(200,185,255,.25) 12%, transparent 34%);
+  transform-origin: var(--ix,70%) var(--iy,30%);
+}
+.glass-panel.gs-open .gs-flash { animation: gs-flash 2s ease-out both; }
+@keyframes gs-flash {
+  0% { opacity: 1; transform: scale(.6); } 30% { opacity: 0; transform: scale(1.3); }
+  60% { opacity: 0; transform: scale(.8); } 68% { opacity: .55; } 100% { opacity: 0; transform: scale(1.5); }
+}
+
+.gs-canvas { z-index: 8; width: 100%; height: 100%; }
+.glass-panel.gs-open .gs-canvas { opacity: 1; }
+
+/* one light sweep across the pane while it is still intact */
+.gs-sweep { z-index: 2; background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,.16) 50%, transparent 60%); transform: translateX(-120%); }
+.glass-panel.gs-open .gs-sweep { opacity: 1; animation: gs-sweep 1.1s ease-out .35s both; }
+@keyframes gs-sweep { from { transform: translateX(-120%); } to { transform: translateX(120%); } }
+
+/* border glint (same rotating ring, violet-silver) */
+.gs-ring {
+  z-index: 9; padding: 1.5px;
+  background: conic-gradient(from var(--gs-angle), rgba(190,170,255,.15) 0 50%, #a78bfa 72%, #fff 80%, #a78bfa 88%, rgba(190,170,255,.15) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity .6s ease;
+}
+.glass-panel.gs-open .gs-ring { opacity: 1; animation: gs-spin 6s linear infinite; }
+@keyframes gs-spin { to { --gs-angle: 360deg; } }
+
+/* panel: violet glow pulse + shake on impact and again when the glass drops */
+.glass-panel.gs-open {
+  border-color: rgba(205,195,255,.9) !important;
+  animation: gs-pulse 3s infinite ease-in-out, gs-shake .45s ease-out 1, gs-shake .35s ease-out 1.25s 1;
+}
+@keyframes gs-pulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(167,139,250,.40), inset 0 0 20px rgba(255,255,255,.08); }
+  50%      { box-shadow: 0 0 45px rgba(167,139,250,.65), inset 0 0 30px rgba(255,255,255,.20); }
+}
+@keyframes gs-shake { 0% { translate: 0 0; } 15% { translate: -4px 2px; } 30% { translate: 3px -2px; } 45% { translate: -2px 1px; } 60% { translate: 1px -1px; } 100% { translate: 0 0; } }
+.glass-panel.gs-open #s-avatar { border-color: #d8ccff !important; box-shadow: 0 0 25px rgba(167,139,250,.85) !important; }
+.glass-panel.gs-open .char-name { text-shadow: 0 0 12px rgba(190,170,255,.6); }
+.glass-panel.gs-open .scroll-fade { background: linear-gradient(to top, rgba(167,139,250,.20), transparent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .gs-svg, .gs-canvas, .gs-flash, .gs-sweep { display: none; }
+  .glass-panel.gs-open, .glass-panel.gs-open .gs-ring { animation: none !important; }
+}
