@@ -1,0 +1,233 @@
+/* ==========================================================================
+   nimaiya-panel.css - Ōetsu Nimaiya ("God of the Sword" / Sayafushi & Asauchi):
+   The creator of the Zanpakutō and wielder of Sayafushi (the sheath-less blade).
+   Features the crystal quench-fluid tank shimmer of Sayafushi, standing Asauchi
+   blade sentinels, an instantaneous razor-sharp dimensional slash, blade gleams,
+   fine forge sparks, and an authentic "刀神" (God of the Sword) hanko seal.
+   All blade silhouettes, slashes, and washes sit behind the text (z-index: 1)
+   for pristine legibility.
+   ========================================================================== */
+@property --nm-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --nm-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+:where(.nimaiya-panel) { position: relative; overflow: hidden; }
+.nm-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+
+/* swordsmith forge & Sayafushi quench tank wash */
+.nm-wash {
+  z-index: 1;
+  background:
+    radial-gradient(circle at 50% 75%, rgba(56,189,248,.18), rgba(245,158,11,.12) 42%, rgba(2,6,23,.55) 78%, transparent 92%),
+    linear-gradient(to top, rgba(14,116,144,.20), rgba(180,83,9,.10) 35%, transparent 65%);
+  -webkit-mask-image: radial-gradient(circle at 50% 75%, #000 var(--nm-r), transparent calc(var(--nm-r) + 38%));
+          mask-image: radial-gradient(circle at 50% 75%, #000 var(--nm-r), transparent calc(var(--nm-r) + 38%));
+}
+.nimaiya-panel.nm-open .nm-wash { opacity: 1; animation: nm-wash 1.3s cubic-bezier(.16,1,.3,1) both; }
+@keyframes nm-wash { from { --nm-r: 0%; } to { --nm-r: 100%; } }
+
+/* SVG layer holding Asauchi blades, Sayafushi slash, quench fluid & gleams */
+.nm-svg { z-index: 1; width: 100%; height: 100%; overflow: hidden; }
+.nimaiya-panel.nm-open .nm-svg { opacity: 1; }
+
+/* Asauchi standing blade sentinels */
+.nm-blade {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+.nimaiya-panel.nm-open .nm-blade {
+  animation: nm-blade-rise 1.1s cubic-bezier(.16,1,.3,1) var(--d, 0s) both;
+}
+@keyframes nm-blade-rise {
+  from { opacity: 0; transform: translateY(28px) scaleY(.8); }
+  to   { opacity: var(--op, .75); transform: translateY(0) scaleY(1); }
+}
+
+/* hamon edge shine on blades */
+.nm-hamon {
+  fill: none;
+  stroke: rgba(226,232,240,.65);
+  stroke-width: 1.2;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+}
+.nimaiya-panel.nm-open .nm-hamon {
+  animation: nm-hamon-draw 1.4s cubic-bezier(.25,.1,.25,1) var(--d, .2s) both,
+             nm-hamon-gleam 3.5s ease-in-out calc(var(--d, .2s) + 1.4s) infinite alternate;
+}
+@keyframes nm-hamon-draw { to { stroke-dashoffset: 0; } }
+@keyframes nm-hamon-gleam {
+  0%   { stroke: rgba(226,232,240,.45); filter: drop-shadow(0 0 2px rgba(56,189,248,.3)); }
+  100% { stroke: rgba(255,255,255,.9); filter: drop-shadow(0 0 6px rgba(56,189,248,.7)); }
+}
+
+/* Sayafushi instantaneous razor-sharp dimensional slash */
+.nm-slash {
+  fill: none;
+  stroke: #ffffff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 4px #ffffff) drop-shadow(0 0 10px rgba(56,189,248,.8));
+}
+.nimaiya-panel.nm-open .nm-slash {
+  animation: nm-slash-cut .38s cubic-bezier(.05,.9,.1,1) .25s both;
+}
+@keyframes nm-slash-cut {
+  0%   { stroke-dashoffset: 1; opacity: 0; }
+  15%  { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: .88; }
+}
+
+/* razor cut parting flare */
+.nm-slash-flare {
+  fill: none;
+  stroke: rgba(56,189,248,.45);
+  stroke-linecap: round;
+  stroke-width: 16;
+  opacity: 0;
+  filter: blur(4px);
+}
+.nimaiya-panel.nm-open .nm-slash-flare {
+  animation: nm-flare-flash 1.6s cubic-bezier(.16,1,.3,1) .28s both;
+}
+@keyframes nm-flare-flash {
+  0%   { opacity: 0; filter: blur(2px); stroke-width: 6; }
+  25%  { opacity: .75; stroke-width: 22; filter: blur(8px); }
+  100% { opacity: .2; stroke-width: 12; filter: blur(12px); }
+}
+
+/* razor-edge diamond gleams (4-point star glints) */
+.nm-gleam {
+  fill: var(--gc, #ffffff);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.nimaiya-panel.nm-open .nm-gleam {
+  animation: nm-gleam-twinkle var(--dur, 2.4s) ease-in-out var(--d, 0s) infinite;
+}
+@keyframes nm-gleam-twinkle {
+  0%   { opacity: 0; transform: scale(.1) rotate(0deg); }
+  45%  { opacity: 1; transform: scale(1) rotate(45deg); filter: drop-shadow(0 0 6px var(--gc, #38bdf8)); }
+  70%  { opacity: .65; transform: scale(.8) rotate(90deg); }
+  100% { opacity: 0; transform: scale(.2) rotate(135deg); }
+}
+
+/* Sayafushi tank quench bubbles */
+.nm-bubble {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.nimaiya-panel.nm-open .nm-bubble {
+  animation: nm-bubble-rise var(--dur, 3.2s) cubic-bezier(.35,.15,.25,1) var(--d, 0s) infinite;
+}
+@keyframes nm-bubble-rise {
+  0%   { opacity: 0; transform: translateY(10px) scale(.3); }
+  25%  { opacity: .8; }
+  85%  { opacity: .45; }
+  100% { opacity: 0; transform: translateY(var(--ty, -100px)) scale(1.1); }
+}
+
+/* swordsmith fine steel sparks */
+.nm-spark {
+  fill: var(--sc, #fde68a);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.nimaiya-panel.nm-open .nm-spark {
+  animation: nm-spark-float 1.2s cubic-bezier(.1,.8,.3,1) var(--d, 0s) both,
+             nm-spark-drift 3.5s ease-in-out calc(var(--d, 0s) + 1.2s) infinite alternate;
+}
+@keyframes nm-spark-float {
+  from { opacity: 0; transform: translate(0,0) scale(.1); }
+  to   { opacity: .85; transform: translate(var(--tx), var(--ty)) scale(1); }
+}
+@keyframes nm-spark-drift {
+  from { translate: 0 0; opacity: .55; }
+  to   { translate: 0 -8px; opacity: .9; }
+}
+
+/* Hanko Seal: "刀神" (Tōshin - God of the Sword) */
+.nm-seal {
+  z-index: 6;
+  inset: auto;
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+}
+.nm-seal svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,.75));
+}
+.nimaiya-panel.nm-open .nm-seal {
+  animation: nm-stamp .45s cubic-bezier(.18,1.4,.35,1) 1.5s both;
+}
+@keyframes nm-stamp {
+  from { opacity: 0; scale: 1.85; rotate: -15deg; }
+  to   { opacity: .94; scale: 1; rotate: -4deg; }
+}
+
+/* border: razor-polished Katana steel, quench cyan & Phoenix gold ring */
+.nm-ring {
+  z-index: 9;
+  padding: 1.5px;
+  background: conic-gradient(from var(--nm-angle),
+    rgba(226,232,240,.15) 0 48%,
+    #38bdf8 64%,
+    #ffffff 75%,
+    #f8fafc 80%,
+    #f59e0b 88%,
+    #cbd5e1 95%,
+    rgba(226,232,240,.15) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity .8s ease;
+}
+.nimaiya-panel.nm-open .nm-ring {
+  opacity: 1;
+  animation: nm-spin 9.5s linear infinite;
+}
+@keyframes nm-spin { to { --nm-angle: 360deg; } }
+
+/* panel outer glow: diamond blade razor gleam */
+.nimaiya-panel.nm-open {
+  border-color: rgba(226,232,240,.85) !important;
+  animation: nm-blade-glow 4.6s infinite ease-in-out;
+}
+@keyframes nm-blade-glow {
+  0%, 100% {
+    box-shadow: 0 0 28px rgba(56,189,248,.25), inset 0 0 16px rgba(245,158,11,.14), 0 0 70px rgba(0,0,0,.92);
+  }
+  50% {
+    box-shadow: 0 0 42px rgba(226,232,240,.4), inset 0 0 24px rgba(56,189,248,.2), 0 0 70px rgba(0,0,0,.92);
+  }
+}
+
+.nimaiya-panel.nm-open #s-avatar {
+  border-color: #f8fafc !important;
+  box-shadow: 0 0 22px rgba(56,189,248,.85), 0 0 12px rgba(245,158,11,.55), 0 0 0 3px rgba(0,0,0,.82) !important;
+}
+.nimaiya-panel.nm-open .char-name {
+  text-shadow: 0 0 12px rgba(56,189,248,.55), 0 0 2px #fff;
+}
+.nimaiya-panel.nm-open .scroll-fade {
+  background: linear-gradient(to top, rgba(15,23,42,.3), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nimaiya-panel.nm-open, .nimaiya-panel.nm-open .nm-ring { animation: none !important; }
+  .nimaiya-panel.nm-open .nm-blade,
+  .nimaiya-panel.nm-open .nm-hamon,
+  .nimaiya-panel.nm-open .nm-slash,
+  .nimaiya-panel.nm-open .nm-slash-flare,
+  .nimaiya-panel.nm-open .nm-gleam,
+  .nimaiya-panel.nm-open .nm-bubble,
+  .nimaiya-panel.nm-open .nm-spark,
+  .nimaiya-panel.nm-open .nm-seal { animation: none; opacity: 1; stroke-dashoffset: 0; }
+}

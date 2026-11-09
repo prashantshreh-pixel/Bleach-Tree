@@ -1,0 +1,92 @@
+/* ==========================================================================
+   hitsugaya-panel.css - Tōshirō Hitsugaya (Daiguren Hyōrinmaru / 氷輪丸):
+   Clean, aesthetic, anime-grade living Ice Dragon engine.
+   Features:
+   - Living, undulating animated Ice Dragon Hyōrinmaru gliding across the panel
+   - Realistic 3D faceted crystal icicles & ground frost mist
+   - Floating Crimson Lotus ice flowers (Zekku) with crimson-to-cyan glow
+   - Atmospheric diamond blizzard particles & sub-zero mist
+   - Authentic traditional "氷輪丸" Hanko seal stamp
+   - Rotating arctic frost aura ring around the avatar
+   All dynamic animations sit strictly at z-index: 1 behind #sidebar-content
+   for pristine legibility and breathtaking visual aesthetics.
+   ========================================================================== */
+@property --hg-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --hg-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+:where(.hitsugaya-panel) { position: relative; overflow: hidden; }
+.hg-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+
+/* Sub-zero glacial atmospheric wash: crystalline cyan, arctic mist, and deep navy */
+.hg-wash {
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at 50% 20%, rgba(56, 189, 248, 0.18), rgba(14, 116, 144, 0.12) 42%, rgba(2, 6, 23, 0.65) 85%),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.10), rgba(8, 47, 73, 0.14) 50%, rgba(3, 7, 18, 0.70) 100%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 var(--hg-r), transparent calc(var(--hg-r) + 38%));
+          mask-image: radial-gradient(ellipse at 50% 30%, #000 var(--hg-r), transparent calc(var(--hg-r) + 38%));
+}
+.hitsugaya-panel.hg-open .hg-wash {
+  opacity: 1;
+  animation: hg-wash-spread 1.2s cubic-bezier(.16, 1, .3, 1) both;
+}
+@keyframes hg-wash-spread { from { --hg-r: 0%; } to { --hg-r: 100%; } }
+
+/* Dynamic 60 FPS HTML5 Canvas Layer (Moving Ice Dragon, Crystalline Spires, Snow) */
+.hg-canvas {
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(.16, 1, .3, 1);
+}
+.hitsugaya-panel.hg-open .hg-canvas {
+  opacity: 1;
+}
+
+/* Authentic Ice Hanko Seal with "氷輪丸" (Hyōrinmaru) */
+.hg-seal {
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  pointer-events: auto;
+  cursor: pointer;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform .25s cubic-bezier(.16, 1, .3, 1), filter .25s;
+}
+.hg-seal:hover {
+  transform: translate(-50%, -50%) scale(1.15) rotate(4deg);
+  filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.95)) drop-shadow(0 0 24px rgba(2, 132, 199, 0.7));
+}
+.hitsugaya-panel.hg-open .hg-seal {
+  animation: hg-seal-stamp .6s cubic-bezier(.2, .9, .3, 1.3) .8s both;
+}
+@keyframes hg-seal-stamp {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(2.4) rotate(25deg); }
+  60%  { opacity: 1; transform: translate(-50%, -50%) scale(0.92) rotate(-3deg); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+}
+
+/* Avatar Border Ring: Glacial Arctic Cyan & Diamond White Conic Aura */
+.hg-ring {
+  z-index: 2;
+  position: absolute;
+  top: 96px;
+  left: 56px;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  background: conic-gradient(from var(--hg-angle), #ffffff, #38bdf8 30%, #0284c7 60%, #0c4a6e 85%, #ffffff 100%);
+  -webkit-mask: radial-gradient(closest-side, transparent 40px, #000 41px);
+          mask: radial-gradient(closest-side, transparent 40px, #000 41px);
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.85));
+}
+.hitsugaya-panel.hg-open .hg-ring {
+  opacity: 0.95;
+  animation: hg-ring-spin 5.5s linear infinite;
+}
+@keyframes hg-ring-spin {
+  to { --hg-angle: 360deg; }
+}

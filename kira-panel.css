@@ -1,0 +1,208 @@
+/* ==========================================================================
+   kira-panel.css - Izuru Kira ("Wabisuke" / The Gallows of Penance Bankai):
+   Based on Tite Kubo's official sketch: towering braided gallows cord rising
+   into an ominous executioner canopy, draped heavy iron chains with metallic
+   links, twin hooked Wabisuke guillotine scythes, downward-pressing
+   gravitational distortion pulses, sinking weight motes, and authentic
+   "侘助" (Wabisuke) seal stamp.
+   All gallows trees, chains, and particles sit behind the text (z-index: 1)
+   for maximum contrast and pristine legibility.
+   ========================================================================== */
+@property --iz-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --iz-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+:where(.kira-panel) { position: relative; overflow: hidden; }
+.iz-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+
+/* gloomy execution wash: deep slate-grey, mournful violet, and heavy shadow */
+.iz-wash {
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at 50% 15%, rgba(100,116,139,.25), rgba(71,85,105,.18) 40%, rgba(15,23,42,.65) 80%, transparent 100%),
+    linear-gradient(to bottom, rgba(51,65,85,.30), rgba(30,41,59,.18) 45%, rgba(10,12,20,.65) 100%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 var(--iz-r), transparent calc(var(--iz-r) + 38%));
+          mask-image: radial-gradient(ellipse at 50% 30%, #000 var(--iz-r), transparent calc(var(--iz-r) + 38%));
+}
+.kira-panel.iz-open .iz-wash { opacity: 1; animation: iz-wash 1.3s cubic-bezier(.16,1,.3,1) both; }
+@keyframes iz-wash { from { --iz-r: 0%; } to { --iz-r: 100%; } }
+
+/* SVG layer holding gallows trunk, canopy, draped chains, hooked blades & gravity */
+.iz-svg { z-index: 1; width: 100%; height: 100%; overflow: hidden; }
+.kira-panel.iz-open .iz-svg { opacity: 1; }
+
+/* braided gallows cord / twisted spinal trunk */
+.iz-trunk {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+}
+.kira-panel.iz-open .iz-trunk {
+  animation: iz-trunk-grow 1.6s cubic-bezier(.2,.8,.25,1) .1s both;
+}
+@keyframes iz-trunk-grow { to { stroke-dashoffset: 0; } }
+
+/* sprawling executioner canopy / gallows tree crown */
+.iz-canopy {
+  opacity: 0;
+  transform-origin: center top;
+}
+.kira-panel.iz-open .iz-canopy {
+  animation: iz-canopy-in 1.3s cubic-bezier(.16,1,.3,1) .35s both,
+             iz-canopy-breathe 4.5s ease-in-out 1.5s infinite alternate;
+}
+@keyframes iz-canopy-in {
+  from { opacity: 0; transform: translateY(-16px) scale(.88); }
+  to   { opacity: .95; transform: translateY(0) scale(1); }
+}
+@keyframes iz-canopy-breathe {
+  0%   { filter: drop-shadow(0 0 8px rgba(100,116,139,.4)); }
+  100% { filter: drop-shadow(0 0 18px rgba(71,85,105,.7)) drop-shadow(0 0 35px rgba(30,41,59,.8)); }
+}
+
+/* heavy draped iron chains */
+.iz-chain-group {
+  opacity: 0;
+  transform-origin: center top;
+}
+.kira-panel.iz-open .iz-chain-group {
+  animation: iz-chain-in 1.4s cubic-bezier(.15,.85,.2,1) var(--d, .4s) both,
+             iz-chain-sway var(--dur, 4.6s) ease-in-out calc(var(--d, .4s) + 1.4s) infinite alternate;
+}
+@keyframes iz-chain-in {
+  from { opacity: 0; transform: translateY(-24px) scaleY(.85); }
+  to   { opacity: .92; transform: translateY(0) scaleY(1); }
+}
+@keyframes iz-chain-sway {
+  0%   { transform: rotate(0deg); }
+  50%  { transform: rotate(0.8deg) translateX(2px); }
+  100% { transform: rotate(-0.7deg) translateX(-2px); }
+}
+
+/* individual chain links */
+.iz-link-face {
+  fill: rgba(15,23,42,0.92);
+  stroke: #94a3b8;
+  stroke-width: 1.6;
+}
+.iz-link-edge {
+  fill: #cbd5e1;
+  stroke: #475569;
+  stroke-width: 1.2;
+}
+
+/* twin hooked Wabisuke scythe blades */
+.iz-blade {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+.kira-panel.iz-open .iz-blade {
+  animation: iz-blade-emerge 1.1s cubic-bezier(.16,1,.3,1) var(--d, .5s) both;
+}
+@keyframes iz-blade-emerge {
+  from { opacity: 0; transform: translateY(22px) rotate(var(--rot-start, -10deg)); }
+  to   { opacity: .95; transform: translateY(0) rotate(var(--rot-end, 0deg)); }
+}
+
+/* razor inside-edge gleam on Wabisuke's hook */
+.iz-edge-gleam {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 2.2;
+  filter: drop-shadow(0 0 5px #e2e8f0) drop-shadow(0 0 10px rgba(148,163,184,.8));
+  animation: iz-edge-pulse 2.8s ease-in-out infinite alternate;
+}
+@keyframes iz-edge-pulse {
+  0%   { opacity: .65; }
+  100% { opacity: 1; filter: drop-shadow(0 0 8px #ffffff) drop-shadow(0 0 16px rgba(203,213,225,.9)); }
+}
+
+/* downward gravitational pressure waves (doubling weight: 2x -> 4x -> 8x) */
+.iz-grav-wave {
+  fill: none;
+  stroke-linecap: round;
+  opacity: 0;
+}
+.kira-panel.iz-open .iz-grav-wave {
+  animation: iz-grav-pulse 3.6s cubic-bezier(.1,.7,.2,1) infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes iz-grav-pulse {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scaleX(.75);
+    stroke-width: 3.5;
+  }
+  30% {
+    opacity: .75;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(35px) scaleX(1.35);
+    stroke-width: .6;
+  }
+}
+
+/* falling leaden motes / heavy crushing reiatsu */
+.iz-mote {
+  fill: #94a3b8;
+  opacity: 0;
+}
+.kira-panel.iz-open .iz-mote {
+  animation: iz-mote-sink var(--dur, 3.2s) cubic-bezier(.4,0,.2,1) infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes iz-mote-sink {
+  0%   { opacity: 0; transform: translateY(-20px) scale(1); }
+  25%  { opacity: .85; }
+  85%  { opacity: .45; }
+  100% { opacity: 0; transform: translateY(110px) scale(.6); }
+}
+
+/* authentic Cinnabar Hanko Seal with "侘助" (Wabisuke) */
+.iz-seal {
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  pointer-events: auto;
+  cursor: pointer;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform .25s cubic-bezier(.16,1,.3,1), filter .25s;
+}
+.iz-seal:hover {
+  transform: translate(-50%, -50%) scale(1.15) rotate(-3deg);
+  filter: drop-shadow(0 0 12px rgba(148,163,184,.85));
+}
+.kira-panel.iz-open .iz-seal {
+  animation: iz-seal-stamp .6s cubic-bezier(.2,.9,.3,1.3) .8s both;
+}
+@keyframes iz-seal-stamp {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(2.4) rotate(-22deg); }
+  60%  { opacity: 1; transform: translate(-50%, -50%) scale(.92) rotate(2deg); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+}
+
+/* avatar border ring: mournful steel & slate indigo conic sweep */
+.iz-ring {
+  z-index: 2;
+  position: absolute;
+  top: 96px;
+  left: 56px;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  background: conic-gradient(from var(--iz-angle), #94a3b8, #475569 35%, #1e293b 70%, #94a3b8 100%);
+  -webkit-mask: radial-gradient(closest-side, transparent 40px, #000 41px);
+          mask: radial-gradient(closest-side, transparent 40px, #000 41px);
+}
+.kira-panel.iz-open .iz-ring {
+  opacity: .95;
+  animation: iz-ring-spin 6.5s linear infinite;
+}
+@keyframes iz-ring-spin {
+  to { --iz-angle: 360deg; }
+}

@@ -72,10 +72,10 @@ def generate_obsidian_graph():
         fac = data.get("faction", "")
 
         # Hierarchical node tier sizing based on narrative power & authority
-        if char_id in ('aizen', 'ichigo', 'yhwach', 'yamamoto', 'soul_king'):
+        if char_id in ('aizen', 'ichigo', 'yhwach', 'yamamoto', 'soul_king', 'ichibei'):
             tier = 1
             node_val = 16.0
-        elif char_id in ('gin', 'tosen', 'starrk', 'baraggan', 'harribel', 'ulquiorra', 'grimmjow', 'nnoitra', 'shunsui', 'kenpachi', 'byakuya', 'urahara', 'shinji', 'ginjo', 'jugram', 'uryu', 'rukia', 'renji', 'hitsugaya', 'unohana', 'chika_shihoin', 'kinroku_izuhara', 'chigiri_shijima', 'danjiro_obana', 'furofushi_saito', 'nobutsuna_shigyo', 'batsuunsai_katori', 'entetsu_kumoi', 'furuoki_otogawa', 'uhin_zenjoji', 'saizo_sakahone', 'soi_fon', 'mayuri', 'komamura', 'ukitake', 'rose', 'kensei', 'lille_barro', 'gerard_valkyrie', 'pernida_parnkgjas', 'askin_nakk_le_vaar', 'gremmy_thoumeaux'):
+        elif char_id in ('gin', 'tosen', 'starrk', 'baraggan', 'harribel', 'ulquiorra', 'grimmjow', 'nnoitra', 'shunsui', 'kenpachi', 'byakuya', 'urahara', 'shinji', 'ginjo', 'jugram', 'uryu', 'rukia', 'renji', 'hitsugaya', 'unohana', 'chika_shihoin', 'kinroku_izuhara', 'chigiri_shijima', 'danjiro_obana', 'furofushi_saito', 'nobutsuna_shigyo', 'batsuunsai_katori', 'entetsu_kumoi', 'furuoki_otogawa', 'uhin_zenjoji', 'saizo_sakahone', 'soi_fon', 'mayuri', 'komamura', 'ukitake', 'rose', 'kensei', 'lille_barro', 'gerard_valkyrie', 'pernida_parnkgjas', 'askin_nakk_le_vaar', 'gremmy_thoumeaux', 'oetsu', 'senjumaru', 'tenjiro', 'kirio'):
             tier = 2
             node_val = 11.5
         elif char_id in ('zommari', 'szayelaporro', 'aaroniero', 'yammy', 'luppi', 'nelliel', 'wonderweiss', 'bazz_b', 'bambietta_basterbine', 'as_nodt', 'cang_du', 'quilge_opie', 'bg9', 'pepe_waccabrada', 'robert_accutrone', 'driscoll_berci', 'meninas_mcallon', 'mask_de_masculine', 'candice_catnipp', 'giselle_gewelle', 'nanana_najahkoop', 'nianzol_weizol', 'royd_lloyd', 'loyd_lloyd', 'liltotto_lamperd', 'love', 'lisa', 'hachigen', 'yoruichi', 'isshin', 'ryuken', 'orihime', 'chad', 'tsukishima', 'tatsuki', 'omaeda', 'kira', 'isane', 'momo', 'nanao', 'hisagi', 'rangiku', 'yachiru', 'nemu', 'sasakibe'):
@@ -159,6 +159,20 @@ def generate_obsidian_graph():
     <script src="kenpachi-panel.js"></script>
     <link rel="stylesheet" href="soulking-panel.css">
     <script src="soulking-panel.js"></script>
+    <link rel="stylesheet" href="nimaiya-panel.css">
+    <script src="nimaiya-panel.js"></script>
+    <link rel="stylesheet" href="senjumaru-panel.css">
+    <script src="senjumaru-panel.js"></script>
+    <link rel="stylesheet" href="tenjiro-panel.css">
+    <script src="tenjiro-panel.js"></script>
+    <link rel="stylesheet" href="kirio-panel.css">
+    <script src="kirio-panel.js"></script>
+    <link rel="stylesheet" href="sasakibe-panel.css">
+    <script src="sasakibe-panel.js"></script>
+    <link rel="stylesheet" href="kira-panel.css">
+    <script src="kira-panel.js"></script>
+    <link rel="stylesheet" href="hitsugaya-panel.css">
+    <script src="hitsugaya-panel.js"></script>
     <style>
         /* Base Reset & Pointer Cursor Defaults */
         * {{ box-sizing: border-box; }}
@@ -223,12 +237,13 @@ def generate_obsidian_graph():
         }}
         
         #sidebar-content {{
-            padding: 24px 22px 35px 22px;
+            padding: 20px 22px 35px 22px;
             height: 100%;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            z-index: 1;
+            position: relative;
+            z-index: 2;
             scrollbar-width: thin;
             scrollbar-color: rgba(212, 175, 55, 0.5) rgba(15, 15, 25, 0.4);
         }}
@@ -243,20 +258,20 @@ def generate_obsidian_graph():
             border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
         }}
 
-        #s-banner{{display:none;height:150px;margin:-6px -22px 14px;background-size:cover;background-position:center 20%;
-          -webkit-mask-image:linear-gradient(#000 60%,transparent);mask-image:linear-gradient(#000 60%,transparent)}}
+        #s-banner{{display:none;height:150px;margin:-4px -22px 14px;background-size:cover;background-position:center 20%;
+          -webkit-mask-image:linear-gradient(#000 60%,transparent);mask-image:linear-gradient(#000 60%,transparent);flex-shrink:0;}}
 
         /* Close (X) Cross Mark Button */
         #sidebar-close {{
             position: absolute;
-            top: 12px;
-            right: 14px;
+            top: 15px;
+            right: 16px;
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #fff;
-            font-size: 18px;
-            width: 32px;
-            height: 32px;
+            font-size: 17px;
+            width: 28px;
+            height: 28px;
             border-radius: 6px;
             cursor: pointer;
             display: flex;
@@ -431,11 +446,132 @@ def generate_obsidian_graph():
             pointer-events: none; z-index: 1;
         }}
 
+        /* Ōetsu Nimaiya Special Theme (God of the Sword / Sayafushi & Asauchi) */
+        #sidebar.nimaiya-theme {{
+            border: 1px solid rgba(226, 232, 240, 0.85) !important;
+            box-shadow: 0 0 38px rgba(56, 189, 248, 0.35), 0 0 80px rgba(0, 0, 0, 0.95), inset 0 0 25px rgba(245, 158, 11, 0.18) !important;
+        }}
+        #sidebar.nimaiya-theme #s-avatar {{
+            border-color: #f8fafc !important;
+            box-shadow: 0 0 22px rgba(56, 189, 248, 0.85), 0 0 14px rgba(245, 158, 11, 0.55), 0 0 0 3px rgba(0, 0, 0, 0.82) !important;
+        }}
+        #sidebar.nimaiya-theme::before {{
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.10) 0%, rgba(245, 158, 11, 0.08) 50%, rgba(10, 15, 25, 0.5) 100%);
+            pointer-events: none; z-index: 1;
+        }}
+
+        /* Senjumaru Shutara Special Theme (The Great Weave Guard / Golden Silk) */
+        #sidebar.senjumaru-theme {{
+            border: 1px solid rgba(217, 165, 74, 0.85) !important;
+            box-shadow: 0 0 35px rgba(217, 165, 74, 0.38), 0 0 75px rgba(0, 0, 0, 0.95), inset 0 0 20px rgba(240, 198, 116, 0.15) !important;
+        }}
+        #sidebar.senjumaru-theme #s-avatar {{
+            border-color: #e8bd70 !important;
+            box-shadow: 0 0 22px rgba(217, 165, 74, 0.8), 0 0 12px rgba(240, 198, 116, 0.5), 0 0 0 3px rgba(0, 0, 0, 0.8) !important;
+        }}
+        #sidebar.senjumaru-theme::before {{
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(217, 165, 74, 0.12) 0%, rgba(240, 198, 116, 0.05) 50%, rgba(15, 8, 4, 0.45) 100%);
+            pointer-events: none; z-index: 1;
+        }}
+
+        /* Tenjirō Kirinji Special Theme (The Hot Spring Demon / Healing Waters) */
+        #sidebar.tenjiro-theme {{
+            border: 1px solid rgba(45, 212, 191, 0.85) !important;
+            box-shadow: 0 0 38px rgba(45, 212, 191, 0.35), 0 0 75px rgba(0, 0, 0, 0.95), inset 0 0 24px rgba(254, 240, 138, 0.15) !important;
+        }}
+        #sidebar.tenjiro-theme #s-avatar {{
+            border-color: #a7f3d0 !important;
+            box-shadow: 0 0 22px rgba(45, 212, 191, 0.7), 0 0 12px rgba(254, 240, 138, 0.45), 0 0 0 3px rgba(0, 0, 0, 0.82) !important;
+        }}
+        #sidebar.tenjiro-theme::before {{
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(45, 212, 191, 0.10) 0%, rgba(254, 240, 138, 0.06) 50%, rgba(8, 20, 24, 0.5) 100%);
+            pointer-events: none; z-index: 1;
+        }}
+
+        /* Kirio Hikifune Special Theme (The Ruler of Grain / Gatonden Feast & Cage of Life) */
+        #sidebar.kirio-theme {{
+            border: 1px solid rgba(52, 211, 153, 0.85) !important;
+            box-shadow: 0 0 38px rgba(52, 211, 153, 0.35), 0 0 75px rgba(0, 0, 0, 0.95), inset 0 0 24px rgba(252, 211, 77, 0.16) !important;
+        }}
+        #sidebar.kirio-theme #s-avatar {{
+            border-color: #fde68a !important;
+            box-shadow: 0 0 22px rgba(52, 211, 153, 0.65), 0 0 14px rgba(252, 211, 77, 0.5), 0 0 0 3px rgba(0, 0, 0, 0.82) !important;
+        }}
+        #sidebar.kirio-theme::before {{
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(252, 211, 77, 0.10) 0%, rgba(52, 211, 153, 0.06) 50%, rgba(8, 20, 14, 0.5) 100%);
+            pointer-events: none; z-index: 1;
+        }}
+
+        /* Chōjirō Sasakibe Special Theme (Kōkō Gonryō Rikyū / Ancient Lightning Palace) */
+        #sidebar.sasakibe-theme {{
+            border: 1px solid rgba(250, 204, 21, 0.9) !important;
+            box-shadow: 0 0 38px rgba(250, 204, 21, 0.45), 0 0 80px rgba(0, 0, 0, 0.95), inset 0 0 25px rgba(234, 179, 8, 0.22) !important;
+        }}
+        #sidebar.sasakibe-theme #s-avatar {{
+            border-color: #fef08a !important;
+            box-shadow: 0 0 22px rgba(250, 204, 21, 0.9), 0 0 14px rgba(245, 158, 11, 0.65), 0 0 0 3px rgba(0, 0, 0, 0.85) !important;
+        }}
+        #sidebar.sasakibe-theme::before {{
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(250, 204, 21, 0.15) 0%, rgba(245, 158, 11, 0.06) 45%, rgba(10, 8, 2, 0.55) 100%);
+            pointer-events: none; z-index: 1;
+        }}
+
+        /* Izuru Kira Special Theme (Wabisuke / The Dead Man Standing / Gallows & Executioner Chains) */
+        #sidebar.kira-theme {{
+            border: 1px solid rgba(148, 163, 184, 0.75) !important;
+            box-shadow: 0 0 38px rgba(71, 85, 105, 0.5), 0 0 80px rgba(0, 0, 0, 0.95), inset 0 0 25px rgba(30, 41, 59, 0.35) !important;
+        }}
+        #sidebar.kira-theme #s-avatar {{
+            border-color: #cbd5e1 !important;
+            box-shadow: 0 0 22px rgba(148, 163, 184, 0.75), 0 0 14px rgba(71, 85, 105, 0.65), 0 0 0 3px rgba(0, 0, 0, 0.85) !important;
+        }}
+        #sidebar.kira-theme::before {{
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(71, 85, 105, 0.18) 0%, rgba(30, 41, 59, 0.12) 45%, rgba(10, 10, 15, 0.65) 100%);
+            pointer-events: none; z-index: 1;
+        }}
+
+        /* Tōshirō Hitsugaya Special Theme (Daiguren Hyōrinmaru / 氷輪丸) */
+        #sidebar.hitsugaya-theme {{
+            border: 1px solid rgba(56, 189, 248, 0.85) !important;
+            box-shadow: 0 0 38px rgba(56, 189, 248, 0.45), 0 0 80px rgba(0, 0, 0, 0.95), inset 0 0 25px rgba(14, 165, 233, 0.25) !important;
+        }}
+        #sidebar.hitsugaya-theme #s-avatar {{
+            border-color: #e0f2fe !important;
+            box-shadow: 0 0 22px rgba(56, 189, 248, 0.95), 0 0 14px rgba(2, 132, 199, 0.75), 0 0 0 3px rgba(0, 0, 0, 0.85) !important;
+        }}
+        #sidebar.hitsugaya-theme #sidebar-overlay {{
+            background: linear-gradient(to bottom, rgba(8, 47, 73, 0.15) 0%, rgba(2, 6, 23, 0.55) 45%, rgba(2, 6, 23, 0.85) 100%) !important;
+        }}
+        #sidebar.hitsugaya-theme #sidebar-bg {{
+            filter: blur(1.5px) brightness(0.92) saturate(1.2) !important;
+            opacity: 0.65 !important;
+            background-size: cover !important;
+            background-position: center 30% !important;
+        }}
+        #sidebar.hitsugaya-theme::before {{
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(56, 189, 248, 0.12) 0%, rgba(14, 116, 144, 0.05) 45%, rgba(2, 6, 23, 0.45) 100%);
+            pointer-events: none; z-index: 1;
+        }}
+
         /* Header & Navigation */
         .sidebar-header-line {{
             font-family: 'Cinzel', serif; color: #D4AF37; font-size: 10px; letter-spacing: 4px;
-            margin-bottom: 14px; border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 6px;
-            padding-right: 48px; display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 14px; border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 9px;
+            padding-right: 40px; display: flex; justify-content: space-between; align-items: center;
         }}
 
         .back-nav {{ display: flex; align-items: center; margin-bottom: 12px; }}
@@ -536,11 +672,13 @@ def generate_obsidian_graph():
 
         /* Path Tracing Floating Banner */
         #path-banner {{
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            position: fixed; top: 68px; left: 50%; transform: translateX(-50%);
             background: rgba(15, 15, 25, 0.95); border: 1px solid #D4AF37;
             box-shadow: 0 6px 25px rgba(212, 175, 55, 0.35); border-radius: 8px;
             padding: 10px 18px; z-index: 45; display: none; align-items: center; gap: 12px;
             backdrop-filter: blur(12px); font-size: 12px; color: #eee;
+            max-width: calc(100vw - 32px);
+            transition: left 0.38s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.38s cubic-bezier(0.16, 1, 0.3, 1);
         }}
         #path-banner.active {{ display: flex; }}
         #path-banner strong {{ color: #F59E0B; }}
@@ -580,16 +718,51 @@ def generate_obsidian_graph():
             padding: 6px 10px; background: rgba(10, 10, 16, 0.88);
             border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 30px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.75); backdrop-filter: blur(14px);
-            user-select: none;
+            user-select: none; max-width: calc(100vw - 32px);
+            overflow-x: auto; scrollbar-width: none;
+            transition: left 0.38s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.38s cubic-bezier(0.16, 1, 0.3, 1), padding 0.25s ease, gap 0.25s ease;
+        }}
+        #cluster-bar::-webkit-scrollbar {{ display: none; }}
+        body.sidebar-open #cluster-bar,
+        body.sidebar-open #path-banner {{
+            left: calc((100vw - 380px) / 2);
+            max-width: calc(100vw - 410px);
         }}
         .cluster-btn {{
             background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08);
             color: rgba(255, 255, 255, 0.7); padding: 5px 12px; border-radius: 20px;
             font-size: 11px; font-family: 'Cinzel', serif; letter-spacing: 0.8px;
-            cursor: pointer; transition: all 0.2s ease; white-space: nowrap;
+            cursor: pointer; transition: all 0.2s ease; white-space: nowrap; flex-shrink: 0;
         }}
         .cluster-btn:hover {{ background: rgba(255, 255, 255, 0.15); color: #fff; border-color: rgba(255, 255, 255, 0.25); }}
         .cluster-btn.active {{ background: rgba(212, 175, 55, 0.25); border-color: #D4AF37; color: #F5E6C8; box-shadow: 0 0 14px rgba(212, 175, 55, 0.4); }}
+        @media (max-width: 1520px) {{
+            body.sidebar-open #cluster-bar {{
+                gap: 4px;
+                padding: 5px 8px;
+            }}
+            body.sidebar-open .cluster-btn {{
+                padding: 5px 9px;
+                font-size: 10px;
+                letter-spacing: 0.5px;
+            }}
+        }}
+        @media (max-width: 768px) {{
+            #sidebar {{
+                top: auto; bottom: -120%; left: 0; right: 0; width: 100%; height: 52vh;
+                border-radius: 20px 20px 0 0;
+                transition: bottom 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+            }}
+            #sidebar.open {{ bottom: 0; right: 0; }}
+            #cluster-bar, body.sidebar-open #cluster-bar {{
+                top: 12px; left: 50%; max-width: calc(100vw - 20px);
+                gap: 4px; padding: 5px 8px;
+            }}
+            #path-banner, body.sidebar-open #path-banner {{
+                top: 58px; left: 50%; max-width: calc(100vw - 24px);
+            }}
+            #mini-legend, #node-hover-card {{ display: none !important; }}
+        }}
 
         /* Mini Legend */
         #mini-legend {{
@@ -821,15 +994,19 @@ def generate_obsidian_graph():
         const SPRITE_DATA_URI = "data:image/webp;base64,{sprite_webp_b64}";
         const SPRITE_SRC = 'Asset/sprites/characters.webp?v={sprite_version}';
 
+        let Graph = null;
+
         // Load Sprite Sheet with instant local and remote compatibility
         const spriteSheet = new Image();
         if (location.protocol !== 'file:') {{
             spriteSheet.crossOrigin = "anonymous";
         }}
         spriteSheet.onload = () => {{
-            if (typeof Graph !== 'undefined' && Graph && Graph.refresh) {{
-                Graph.refresh();
-            }}
+            try {{
+                if (Graph && Graph.refresh) {{
+                    Graph.refresh();
+                }}
+            }} catch (e) {{}}
             dismissLoader();
         }};
         spriteSheet.onerror = () => {{
@@ -915,6 +1092,13 @@ def generate_obsidian_graph():
         const ks = (typeof KisukePanel !== 'undefined' && KisukePanel.attach) ? KisukePanel.attach(sidebar) : null;
         const kp = (typeof KenpachiPanel !== 'undefined' && KenpachiPanel.attach) ? KenpachiPanel.attach(sidebar) : null;
         const sk = (typeof SoulKingPanel !== 'undefined' && SoulKingPanel.attach) ? SoulKingPanel.attach(sidebar) : null;
+        const nm = (typeof NimaiyaPanel !== 'undefined' && NimaiyaPanel.attach) ? NimaiyaPanel.attach(sidebar) : null;
+        const sj = (typeof SenjumaruPanel !== 'undefined' && SenjumaruPanel.attach) ? SenjumaruPanel.attach(sidebar) : null;
+        const tj = (typeof TenjiroPanel !== 'undefined' && TenjiroPanel.attach) ? TenjiroPanel.attach(sidebar) : null;
+        const kr = (typeof KirioPanel !== 'undefined' && KirioPanel.attach) ? KirioPanel.attach(sidebar) : null;
+        const skb = (typeof SasakibePanel !== 'undefined' && SasakibePanel.attach) ? SasakibePanel.attach(sidebar) : null;
+        const iz = (typeof KiraPanel !== 'undefined' && KiraPanel.attach) ? KiraPanel.attach(sidebar) : null;
+        const hg = (typeof HitsugayaPanel !== 'undefined' && HitsugayaPanel.attach) ? HitsugayaPanel.attach(sidebar) : null;
         const sidebarClose = document.getElementById('sidebar-close');
         const sName = document.getElementById('s-name');
         const sMeta = document.getElementById('s-meta');
@@ -953,7 +1137,14 @@ def generate_obsidian_graph():
             if (ks) ks.close();
             if (kp) kp.close();
             if (sk) sk.close();
-            sidebar.classList.remove('frost-theme', 'flame-theme', 'glass-theme', 'ichigo-theme', 'yhwach-theme', 'ichibei-theme', 'kisuke-theme', 'kenpachi-theme', 'soulking-theme');
+            if (nm) nm.close();
+            if (sj) sj.close();
+            if (tj) tj.close();
+            if (kr) kr.close();
+            if (skb) skb.close();
+            if (iz) iz.close();
+            if (hg) hg.close();
+            sidebar.classList.remove('frost-theme', 'flame-theme', 'glass-theme', 'ichigo-theme', 'yhwach-theme', 'ichibei-theme', 'kisuke-theme', 'kenpachi-theme', 'soulking-theme', 'nimaiya-theme', 'senjumaru-theme', 'tenjiro-theme', 'kirio-theme', 'sasakibe-theme', 'kira-theme', 'hitsugaya-theme');
         }}
 
         function deselectNode() {{
@@ -961,6 +1152,7 @@ def generate_obsidian_graph():
             navHistory = [];
             updateBackNav();
             sidebar.classList.remove('open');
+            document.body.classList.remove('sidebar-open');
             closeAllPanels();
             const b = document.getElementById('s-banner');
             if (b) b.style.display = 'none';
@@ -1121,6 +1313,48 @@ def generate_obsidian_graph():
                 sidebarBg.style.backgroundImage = "url('Asset/Images/Soul King.jpg')";
                 sidebarBg.style.opacity = '0.6';
                 if (sk) sk.open();
+            }} else if (node.id === 'oetsu' || node.id === 'nimaiya') {{
+                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Nimaiya Bg.jpg')"; b.style.display = 'block'; }}
+                sidebar.classList.add('nimaiya-theme');
+                sidebarBg.style.backgroundImage = "url('Asset/Images/Nimaiya Bg.jpg')";
+                sidebarBg.style.opacity = '0.6';
+                if (nm) nm.open();
+            }} else if (node.id === 'senjumaru' || node.id === 'shutara') {{
+                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Senjumaru Bg.jpg')"; b.style.display = 'block'; }}
+                sidebar.classList.add('senjumaru-theme');
+                sidebarBg.style.backgroundImage = "url('Asset/Images/Senjumaru Bg.jpg')";
+                sidebarBg.style.opacity = '0.6';
+                if (sj) sj.open();
+            }} else if (node.id === 'tenjiro' || node.id === 'kirinji') {{
+                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Tenjiro.jpg')"; b.style.display = 'block'; }}
+                sidebar.classList.add('tenjiro-theme');
+                sidebarBg.style.backgroundImage = "url('Asset/Images/Tenjiro.jpg')";
+                sidebarBg.style.opacity = '0.6';
+                if (tj) tj.open();
+            }} else if (node.id === 'kirio' || node.id === 'hikifune') {{
+                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Kirio.jpg')"; b.style.display = 'block'; }}
+                sidebar.classList.add('kirio-theme');
+                sidebarBg.style.backgroundImage = "url('Asset/Images/Kirio.jpg')";
+                sidebarBg.style.opacity = '0.6';
+                if (kr) kr.open();
+            }} else if (node.id === 'sasakibe') {{
+                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Sasakibe Bg.jpg')"; b.style.display = 'block'; }}
+                sidebar.classList.add('sasakibe-theme');
+                sidebarBg.style.backgroundImage = "url('Asset/Images/Sasakibe Bankai.jpg')";
+                sidebarBg.style.opacity = '0.65';
+                if (skb) skb.open();
+            }} else if (node.id === 'kira') {{
+                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Kira.jpg')"; b.style.display = 'block'; }}
+                sidebar.classList.add('kira-theme');
+                sidebarBg.style.backgroundImage = "url('Asset/Images/Kira Bankai.jpg')";
+                sidebarBg.style.opacity = '0.65';
+                if (iz) iz.open();
+            }} else if (node.id === 'hitsugaya') {{
+                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Hitsugaya Dragon.jpg')"; b.style.display = 'block'; }}
+                sidebar.classList.add('hitsugaya-theme');
+                sidebarBg.style.backgroundImage = "url('Asset/Images/Hitsugaya Bankai.jpg')";
+                sidebarBg.style.opacity = '0.68';
+                if (hg) hg.open();
             }} else {{
                 if (b) b.style.display = 'none';
                 if (sSprite && spriteSheet.complete && spriteSheet.naturalWidth > 0) {{
@@ -1215,6 +1449,7 @@ def generate_obsidian_graph():
 
             sActionBar.style.display = 'flex';
             sidebar.classList.add('open');
+            document.body.classList.add('sidebar-open');
             miniLegend.classList.add('hidden');
         }}
 
@@ -1247,7 +1482,9 @@ def generate_obsidian_graph():
             let fitZoom = Math.min(availW / boxW, availH / boxH);
             fitZoom = Math.max(0.65, Math.min(fitZoom, 1.8));
 
-            Graph.centerAt(node.x, node.y, 850);
+            const shiftX = isMobile ? 0 : (cardWidth / 2) / fitZoom;
+            const shiftY = isMobile ? -40 / fitZoom : 0;
+            Graph.centerAt(node.x + shiftX, node.y + shiftY, 850);
             Graph.zoom(fitZoom, 850);
         }}
 
@@ -1361,7 +1598,7 @@ def generate_obsidian_graph():
         }});
 
         // ForceGraph Engine Initialization
-        const Graph = ForceGraph()(document.getElementById('graph-container'))
+        Graph = ForceGraph()(document.getElementById('graph-container'))
             .graphData(gData)
             .nodeId('id')
             .nodeRelSize(4)
@@ -1460,7 +1697,7 @@ def generate_obsidian_graph():
                     isDimmed = !isSelected && !isConnectedToSelected;
                 }}
 
-                const isTopPillar = node.is_top || ['ichigo', 'yhwach', 'yamamoto', 'aizen', 'soul_king', 'shunsui', 'kenpachi', 'urahara', 'byakuya', 'rukia', 'gin', 'ulquiorra', 'grimmjow', 'hitsugaya'].includes(node.id);
+                const isTopPillar = node.is_top || ['ichigo', 'yhwach', 'yamamoto', 'aizen', 'soul_king', 'ichibei', 'shunsui', 'kenpachi', 'urahara', 'byakuya', 'rukia', 'gin', 'ulquiorra', 'grimmjow', 'hitsugaya', 'oetsu', 'nimaiya', 'senjumaru', 'shutara', 'tenjiro', 'kirio', 'sasakibe', 'kira'].includes(node.id);
 
                 // Responsive Level-of-Detail (LOD): Avatars render crisply at standard zoom
                 let canRenderAvatar = false;
@@ -1730,7 +1967,7 @@ def generate_obsidian_graph():
             }}
             if (clusterType === 'royal') {{
                 return n => n.race === 'Royal Guard' || n.race === 'Deity' || n.faction === 'Soul King Palace' ||
-                    ['soul_king', 'ichibei', 'nimaiya', 'tenjiro', 'senjumaru', 'kirio'].includes(n.id);
+                    ['soul_king', 'ichibei', 'nimaiya', 'oetsu', 'tenjiro', 'senjumaru', 'shutara', 'kirio'].includes(n.id);
             }}
             if (clusterType === 'karakura') {{
                 return n => {{
@@ -2077,6 +2314,21 @@ def generate_obsidian_graph():
                     node.y = Math.round(Math.sin(angle) * (R_OUTER + jitter));
                     node.vx = 0; node.vy = 0;
                 }});
+            }} else if (clusterType === 'royal') {{
+                const skNode = filteredNodes.find(n => n.id === 'soul_king');
+                if (skNode) {{ skNode.x = 0; skNode.y = 0; skNode.fx = 0; skNode.fy = 0; skNode.vx = 0; skNode.vy = 0; }}
+                const zeroOrder = ['ichibei', 'tenjiro', 'kirio', 'oetsu', 'senjumaru'];
+                const guards = zeroOrder.map(id => filteredNodes.find(n => n.id === id)).filter(Boolean);
+                const extra = filteredNodes.filter(n => n.id !== 'soul_king' && !zeroOrder.includes(n.id));
+                const ring = [...guards, ...extra];
+                const R_ROYAL = 155;
+                ring.forEach((node, i) => {{
+                    const angle = -Math.PI / 2 + (i * (2 * Math.PI / Math.max(ring.length, 1)));
+                    node.x = Math.round(Math.cos(angle) * R_ROYAL);
+                    node.y = Math.round(Math.sin(angle) * R_ROYAL);
+                    node.fx = node.x; node.fy = node.y;
+                    node.vx = 0; node.vy = 0;
+                }});
             }} else {{
                 const leader = filteredNodes.find(n => n.id === leaderId);
                 if (leader) {{ leader.x = 0; leader.y = 0; leader.fx = 0; leader.fy = 0; }}
@@ -2090,6 +2342,7 @@ def generate_obsidian_graph():
 
             if (currentNode && !validNodeIds.has(currentNode.id)) {{
                 sidebar.classList.remove('open');
+                document.body.classList.remove('sidebar-open');
                 closeAllPanels();
                 const b = document.getElementById('s-banner');
                 if (b) b.style.display = 'none';

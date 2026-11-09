@@ -1,0 +1,224 @@
+/* ==========================================================================
+   sasakibe-panel.css - Chōjirō Sasakibe ("Kōkō Gonryō Rikyū" / Lightning Palace):
+   Solemn Spirit Detached Palace: a celestial golden thunder dome in the heavens,
+   massive vertical lightning pillars streaming down, branching electric arcs,
+   an initial thunder strike flash, sparkling plasma motes, and a "厳霊" seal.
+   All lightning pillars, dome, and particles sit behind the text (z-index: 1)
+   for maximum contrast and pristine legibility.
+   ========================================================================== */
+@property --skb-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --skb-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+:where(.sasakibe-panel) { position: relative; overflow: hidden; }
+.skb-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+
+/* stormy tempest wash: dark storm sky with golden lightning dome glow at top */
+.skb-wash {
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at 50% 8%, rgba(254,240,138,.35), rgba(250,204,21,.18) 35%, rgba(14,8,2,.6) 80%, transparent 100%),
+    linear-gradient(to bottom, rgba(234,179,8,.22), rgba(161,98,7,.10) 45%, rgba(10,8,4,.6) 100%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 8%, #000 var(--skb-r), transparent calc(var(--skb-r) + 38%));
+          mask-image: radial-gradient(ellipse at 50% 8%, #000 var(--skb-r), transparent calc(var(--skb-r) + 38%));
+}
+.sasakibe-panel.skb-open .skb-wash { opacity: 1; animation: skb-wash 1.1s cubic-bezier(.16,1,.3,1) both; }
+@keyframes skb-wash { from { --skb-r: 0%; } to { --skb-r: 100%; } }
+
+/* initial blinding thunder strike flash */
+.skb-flash {
+  z-index: 7;
+  background: radial-gradient(circle at 50% 15%, #ffffff, rgba(254,240,138,.8) 35%, rgba(250,204,21,.3) 65%, transparent 90%);
+}
+.sasakibe-panel.skb-open .skb-flash {
+  animation: skb-flash-strike .55s ease-out both;
+}
+@keyframes skb-flash-strike {
+  0%   { opacity: 0; }
+  15%  { opacity: .95; }
+  35%  { opacity: .4; }
+  55%  { opacity: .8; }
+  100% { opacity: 0; }
+}
+
+/* SVG layer holding lightning dome, vertical pillars, arcs & plasma motes */
+.skb-svg { z-index: 1; width: 100%; height: 100%; overflow: hidden; }
+.sasakibe-panel.skb-open .skb-svg { opacity: 1; }
+
+/* Kōkō Gonryō Rikyū celestial thunder dome */
+.skb-dome {
+  opacity: 0;
+  transform-origin: center top;
+}
+.sasakibe-panel.skb-open .skb-dome {
+  animation: skb-dome-in .65s cubic-bezier(.16,1,.3,1) both,
+             skb-dome-pulse 2.8s ease-in-out .65s infinite alternate;
+}
+@keyframes skb-dome-in {
+  from { opacity: 0; transform: scaleY(.4); }
+  to   { opacity: 1; transform: scaleY(1); }
+}
+@keyframes skb-dome-pulse {
+  0%   { filter: drop-shadow(0 0 10px rgba(250,204,21,.6)) drop-shadow(0 0 25px rgba(254,240,138,.4)); }
+  100% { filter: drop-shadow(0 0 18px rgba(250,204,21,.9)) drop-shadow(0 0 45px rgba(254,240,138,.7)); }
+}
+
+/* vertical golden lightning pillars (Palace Columns) */
+.skb-pillar {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+}
+.sasakibe-panel.skb-open .skb-pillar {
+  animation: skb-pillar-strike var(--dur, .4s) cubic-bezier(.1,.9,.2,1) var(--d, 0s) both,
+             skb-pillar-flicker 1.8s steps(2, start) calc(var(--d, 0s) + var(--dur, .4s)) infinite;
+}
+@keyframes skb-pillar-strike {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes skb-pillar-flicker {
+  0%, 100% { opacity: .95; }
+  25%      { opacity: .72; }
+  50%      { opacity: 1; }
+  75%      { opacity: .82; }
+}
+
+/* branching zigzag lightning arcs */
+.skb-bolt {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 4px #ffffff) drop-shadow(0 0 8px rgba(250,204,21,.8));
+}
+.sasakibe-panel.skb-open .skb-bolt {
+  animation: skb-bolt-zap var(--dur, .35s) cubic-bezier(.1,.9,.1,1) var(--d, .2s) both,
+             skb-bolt-strobe 2.4s ease-in-out calc(var(--d, .2s) + var(--dur, .35s)) infinite alternate;
+}
+@keyframes skb-bolt-zap {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes skb-bolt-strobe {
+  0%   { opacity: .9; }
+  20%  { opacity: .3; }
+  40%  { opacity: 1; }
+  60%  { opacity: .45; }
+  80%  { opacity: .95; }
+  100% { opacity: .6; }
+}
+
+/* sparkling golden plasma motes / rain */
+.skb-mote {
+  fill: var(--mc, #fef08a);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.sasakibe-panel.skb-open .skb-mote {
+  animation: skb-mote-in .65s cubic-bezier(.1,.8,.3,1) var(--d, .2s) both,
+             skb-mote-drift var(--dur, 3.5s) ease-in-out calc(var(--d, .2s) + .65s) infinite alternate;
+}
+@keyframes skb-mote-in {
+  from { opacity: 0; transform: translate(0,0) scale(.1); }
+  to   { opacity: .92; transform: translate(var(--tx,0), var(--ty,0)) scale(1); }
+}
+@keyframes skb-mote-drift {
+  0%   { transform: translate(var(--tx,0), var(--ty,0)) scale(1); opacity: .7; }
+  50%  { transform: translate(var(--tx,0), calc(var(--ty,0) + 12px)) scale(1.15); opacity: 1; }
+  100% { transform: translate(var(--tx,0), calc(var(--ty,0) - 8px)) scale(.9); opacity: .5; }
+}
+
+/* Gonryōmaru rapier silhouette / lightning rod */
+.skb-sword {
+  opacity: 0;
+  transform-origin: center bottom;
+}
+.sasakibe-panel.skb-open .skb-sword {
+  animation: skb-sword-in .75s cubic-bezier(.16,1,.3,1) .25s both;
+}
+@keyframes skb-sword-in {
+  from { opacity: 0; transform: translateY(22px) scale(.85); }
+  to   { opacity: .88; transform: translateY(0) scale(1); }
+}
+
+/* Cinnabar Hanko Seal with "厳霊" (Gonryō) & Lightning Crest */
+.skb-seal {
+  z-index: 6;
+  inset: auto;
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+}
+.skb-seal svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,.75));
+}
+.sasakibe-panel.skb-open .skb-seal {
+  animation: skb-stamp .45s cubic-bezier(.18,1.4,.35,1) 1.5s both;
+}
+@keyframes skb-stamp {
+  from { opacity: 0; scale: 1.85; rotate: -15deg; }
+  to   { opacity: .94; scale: 1; rotate: -4deg; }
+}
+
+/* border: brilliant lightning white-gold & thunder amber ring */
+.skb-ring {
+  z-index: 9;
+  padding: 1.5px;
+  background: conic-gradient(from var(--skb-angle),
+    rgba(250,204,21,.15) 0 48%,
+    #eab308 64%,
+    #ffffff 75%,
+    #fef08a 82%,
+    #f59e0b 89%,
+    #facc15 95%,
+    rgba(250,204,21,.15) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity .8s ease;
+}
+.sasakibe-panel.skb-open .skb-ring {
+  opacity: 1;
+  animation: skb-spin 7.5s linear infinite;
+}
+@keyframes skb-spin { to { --skb-angle: 360deg; } }
+
+/* panel outer glow: intense high-voltage lightning aura */
+.sasakibe-panel.skb-open {
+  border-color: rgba(250,204,21,.88) !important;
+  animation: skb-thunder-glow 3.8s infinite ease-in-out;
+}
+@keyframes skb-thunder-glow {
+  0%, 100% {
+    box-shadow: 0 0 32px rgba(250,204,21,.35), inset 0 0 20px rgba(234,179,8,.18), 0 0 75px rgba(0,0,0,.92);
+  }
+  50% {
+    box-shadow: 0 0 48px rgba(254,240,138,.5), inset 0 0 28px rgba(250,204,21,.28), 0 0 75px rgba(0,0,0,.92);
+  }
+}
+
+.sasakibe-panel.skb-open #s-avatar {
+  border-color: #fef08a !important;
+  box-shadow: 0 0 22px rgba(250,204,21,.9), 0 0 14px rgba(245,158,11,.6), 0 0 0 3px rgba(0,0,0,.85) !important;
+}
+.sasakibe-panel.skb-open .char-name {
+  text-shadow: 0 0 12px rgba(250,204,21,.65), 0 0 2px #fff;
+}
+.sasakibe-panel.skb-open .scroll-fade {
+  background: linear-gradient(to top, rgba(234,179,8,.24), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sasakibe-panel.skb-open, .sasakibe-panel.skb-open .skb-ring { animation: none !important; }
+  .sasakibe-panel.skb-open .skb-pillar,
+  .sasakibe-panel.skb-open .skb-bolt,
+  .sasakibe-panel.skb-open .skb-dome,
+  .sasakibe-panel.skb-open .skb-mote,
+  .sasakibe-panel.skb-open .skb-sword,
+  .sasakibe-panel.skb-open .skb-flash,
+  .sasakibe-panel.skb-open .skb-seal { animation: none; opacity: 1; stroke-dashoffset: 0; }
+}

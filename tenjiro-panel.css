@@ -1,0 +1,221 @@
+/* ==========================================================================
+   tenjiro-panel.css - Tenjirō Kirinji ("The Hot Spring Demon" / Healing Waters):
+   Rejuvenating mineral spring water where one can heal.
+   Features a soothing thermal spring pool with undulating water waves,
+   expanding concentric healing reiatsu pulses, rising restorative thermal
+   bubbles, 4-point healing sparkles, rising steam wisps, and an authentic
+   "癒" (Heal) hot-spring hanko seal stamp.
+   All water, waves, and particles sit behind the text (z-index: 1) for
+   maximum legibility.
+   ========================================================================== */
+@property --tj-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --tj-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+:where(.tenjiro-panel) { position: relative; overflow: hidden; }
+.tj-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+
+/* healing mineral-spring wash: warm revitalizing glow soaking upward */
+.tj-wash {
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at 50% 88%, rgba(45,212,191,.28), rgba(56,189,248,.16) 42%, rgba(254,240,138,.08) 72%, transparent 92%),
+    linear-gradient(to top, rgba(13,148,136,.22), rgba(14,116,144,.12) 35%, transparent 65%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 90%, #000 var(--tj-r), transparent calc(var(--tj-r) + 38%));
+          mask-image: radial-gradient(ellipse at 50% 90%, #000 var(--tj-r), transparent calc(var(--tj-r) + 38%));
+}
+.tenjiro-panel.tj-open .tj-wash { opacity: 1; animation: tj-wash 1.4s cubic-bezier(.16,1,.3,1) both; }
+@keyframes tj-wash { from { --tj-r: 0%; } to { --tj-r: 100%; } }
+
+/* SVG layer holding water pool, healing pulses, steam & sparkles */
+.tj-svg { z-index: 1; width: 100%; height: 100%; overflow: hidden; }
+.tenjiro-panel.tj-open .tj-svg { opacity: 1; }
+
+/* healing water pool at base */
+.tj-water-layer {
+  opacity: 0;
+  transform-origin: center bottom;
+}
+.tenjiro-panel.tj-open .tj-water-layer {
+  animation: tj-water-in 1.2s cubic-bezier(.2,.8,.25,1) var(--d, 0s) both,
+             tj-water-sway var(--dur, 4.5s) ease-in-out calc(var(--d, 0s) + 1.2s) infinite alternate;
+}
+@keyframes tj-water-in {
+  from { opacity: 0; transform: translateY(18px) scaleY(.7); }
+  to   { opacity: var(--op, .75); transform: translateY(0) scaleY(1); }
+}
+@keyframes tj-water-sway {
+  0%   { transform: translateY(0) scaleY(1); }
+  50%  { transform: translateY(-4px) scaleY(1.03); }
+  100% { transform: translateY(2px) scaleY(.98); }
+}
+
+/* surface wave crest line */
+.tj-water-crest {
+  fill: none;
+  stroke: rgba(204,251,241,.65);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+}
+.tenjiro-panel.tj-open .tj-water-crest {
+  animation: tj-crest-draw 1.6s cubic-bezier(.25,.1,.25,1) var(--d, .2s) both,
+             tj-crest-shimmer 3.2s ease-in-out calc(var(--d, .2s) + 1.6s) infinite alternate;
+}
+@keyframes tj-crest-draw { to { stroke-dashoffset: 0; } }
+@keyframes tj-crest-shimmer {
+  0%   { stroke: rgba(204,251,241,.55); filter: drop-shadow(0 0 2px rgba(45,212,191,.4)); }
+  100% { stroke: rgba(254,243,199,.85); filter: drop-shadow(0 0 6px rgba(94,234,212,.7)); }
+}
+
+/* concentric healing pulses radiating from the soothing water */
+.tj-heal-pulse {
+  fill: none;
+  stroke: rgba(94,234,212,.5);
+  stroke-width: 1.4;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.tenjiro-panel.tj-open .tj-heal-pulse {
+  animation: tj-heal-expand 3.8s cubic-bezier(.1,.7,.3,1) var(--d, 0s) infinite;
+}
+@keyframes tj-heal-expand {
+  0%   { opacity: 0; transform: scale(.2); stroke: rgba(254,240,138,.75); stroke-width: 2.2; }
+  25%  { opacity: .75; stroke: rgba(45,212,191,.65); }
+  75%  { opacity: .35; }
+  100% { opacity: 0; transform: scale(1.15); stroke-width: .8; stroke: rgba(56,189,248,.15); }
+}
+
+/* rising restorative thermal bubbles */
+.tj-bubble {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.tenjiro-panel.tj-open .tj-bubble {
+  animation: tj-bubble-rise var(--dur, 3.4s) cubic-bezier(.35,.15,.25,1) var(--d, 0s) infinite;
+}
+@keyframes tj-bubble-rise {
+  0%   { opacity: 0; transform: translateY(12px) scale(.3); }
+  20%  { opacity: .85; }
+  85%  { opacity: .55; }
+  100% { opacity: 0; transform: translateY(var(--ty, -110px)) scale(1.15); }
+}
+
+/* 4-point healing sparkles / glints */
+.tj-sparkle {
+  fill: var(--sc, #fef08a);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.tenjiro-panel.tj-open .tj-sparkle {
+  animation: tj-sparkle-twinkle var(--dur, 2.6s) ease-in-out var(--d, 0s) infinite;
+}
+@keyframes tj-sparkle-twinkle {
+  0%   { opacity: 0; transform: scale(.1) rotate(0deg); }
+  45%  { opacity: .95; transform: scale(1) rotate(45deg); filter: drop-shadow(0 0 5px var(--sc, #fef08a)); }
+  75%  { opacity: .6; transform: scale(.7) rotate(90deg); }
+  100% { opacity: 0; transform: scale(.2) rotate(135deg); }
+}
+
+/* rising healing steam wisps */
+.tj-steam {
+  fill: none;
+  stroke: rgba(240,253,250,.32);
+  stroke-linecap: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1;
+}
+.tenjiro-panel.tj-open .tj-steam {
+  animation: tj-steam-draw 2s cubic-bezier(.3,0,.2,1) var(--d, .4s) both,
+             tj-steam-drift 5s ease-in-out calc(var(--d, .4s) + 2s) infinite alternate;
+}
+@keyframes tj-steam-draw { to { stroke-dashoffset: 0; } }
+@keyframes tj-steam-drift {
+  0%   { transform: translate(0, 0); opacity: .24; }
+  50%  { transform: translate(4px, -10px); opacity: .48; }
+  100% { transform: translate(-3px, -20px); opacity: .18; }
+}
+
+/* healing onsen hanko seal: "癒" (Heal) and hot-spring symbol */
+.tj-seal {
+  z-index: 6;
+  inset: auto;
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+}
+.tj-seal svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,.75));
+}
+.tenjiro-panel.tj-open .tj-seal {
+  animation: tj-stamp .45s cubic-bezier(.18,1.4,.35,1) 1.6s both;
+}
+@keyframes tj-stamp {
+  from { opacity: 0; scale: 1.85; rotate: -15deg; }
+  to   { opacity: .94; scale: 1; rotate: -4deg; }
+}
+
+/* border: revitalizing healing turquoise, mineral cyan & warm gold ring */
+.tj-ring {
+  z-index: 9;
+  padding: 1.5px;
+  background: conic-gradient(from var(--tj-angle),
+    rgba(45,212,191,.15) 0 50%,
+    #14b8a6 68%,
+    #38bdf8 76%,
+    #ffffff 83%,
+    #fde68a 89%,
+    #2dd4bf 95%,
+    rgba(45,212,191,.15) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity .8s ease;
+}
+.tenjiro-panel.tj-open .tj-ring {
+  opacity: 1;
+  animation: tj-spin 9.5s linear infinite;
+}
+@keyframes tj-spin { to { --tj-angle: 360deg; } }
+
+/* panel outer glow: soothing healing reiatsu breathing */
+.tenjiro-panel.tj-open {
+  border-color: rgba(45,212,191,.82) !important;
+  animation: tj-heal-glow 4.6s infinite ease-in-out;
+}
+@keyframes tj-heal-glow {
+  0%, 100% {
+    box-shadow: 0 0 28px rgba(45,212,191,.22), inset 0 0 16px rgba(56,189,248,.12), 0 0 70px rgba(0,0,0,.92);
+  }
+  50% {
+    box-shadow: 0 0 42px rgba(94,234,212,.38), inset 0 0 24px rgba(254,240,138,.16), 0 0 70px rgba(0,0,0,.92);
+  }
+}
+
+.tenjiro-panel.tj-open #s-avatar {
+  border-color: #a7f3d0 !important;
+  box-shadow: 0 0 20px rgba(45,212,191,.65), 0 0 10px rgba(254,240,138,.45), 0 0 0 3px rgba(0,0,0,.82) !important;
+}
+.tenjiro-panel.tj-open .char-name {
+  text-shadow: 0 0 12px rgba(45,212,191,.55), 0 0 2px #fff;
+}
+.tenjiro-panel.tj-open .scroll-fade {
+  background: linear-gradient(to top, rgba(13,148,136,.26), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tenjiro-panel.tj-open, .tenjiro-panel.tj-open .tj-ring { animation: none !important; }
+  .tenjiro-panel.tj-open .tj-water-layer,
+  .tenjiro-panel.tj-open .tj-water-crest,
+  .tenjiro-panel.tj-open .tj-heal-pulse,
+  .tenjiro-panel.tj-open .tj-bubble,
+  .tenjiro-panel.tj-open .tj-sparkle,
+  .tenjiro-panel.tj-open .tj-steam,
+  .tenjiro-panel.tj-open .tj-seal { animation: none; opacity: 1; stroke-dashoffset: 0; }
+}

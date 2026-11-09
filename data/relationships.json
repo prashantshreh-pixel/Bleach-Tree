@@ -2224,5 +2224,53 @@
     "target": "mayuri",
     "type": "Subordinate",
     "label": "Commander & Captain"
+  },
+  {
+    "source": "yamamoto",
+    "target": "unohana",
+    "type": "Division",
+    "label": "Original Gotei 13 Founders"
+  },
+  {
+    "source": "yamamoto",
+    "target": "soi_fon",
+    "type": "Subordinate",
+    "label": "Commander & Captain"
+  },
+  {
+    "source": "yamamoto",
+    "target": "gin",
+    "type": "Subordinate",
+    "label": "Commander & Captain"
+  },
+  {
+    "source": "yamamoto",
+    "target": "byakuya",
+    "type": "Subordinate",
+    "label": "Commander & Captain"
+  },
+  {
+    "source": "yamamoto",
+    "target": "komamura",
+    "type": "Subordinate",
+    "label": "Commander & Captain"
+  },
+  {
+    "source": "yamamoto",
+    "target": "tosen",
+    "type": "Subordinate",
+    "label": "Commander & Captain"
+  },
+  {
+    "source": "yamamoto",
+    "target": "hitsugaya",
+    "type": "Subordinate",
+    "label": "Commander & Captain"
+  },
+  {
+    "source": "yamamoto",
+    "target": "kenpachi",
+    "type": "Subordinate",
+    "label": "Commander & Captain"
   }
 ]
