@@ -222,12 +222,11 @@
       this.timers.forEach(clearTimeout); this.timers = [];
       this.el.classList.remove('skb-open');
     }
-    replay() { this.close(); this.open(); }
     destroy() {
       this.close(); if (this.ro) this.ro.disconnect();
       [this.wash, this.svg, this.flash, this.seal, this.ring].forEach(n => n.remove());
       this.el.classList.remove('sasakibe-panel', 'skb-open'); inst.delete(this.el);
     }
   }
-  g.SasakibePanel = { attach(el, o) { return el ? (inst.get(el) || new SKB(el, o)) : null; }, get(el) { return inst.get(el) || null; } };
+  g.SasakibePanel = { attach(el, o) { return el ? (inst.get(el) || new SKB(el, o)) : null; } };
 })(typeof window !== 'undefined' ? window : this);

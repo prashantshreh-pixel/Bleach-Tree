@@ -104,8 +104,6 @@
       this.el.animate([{ translate: '0 0' }, { translate: `${-a}px ${a * .5}px` }, { translate: `${a * .75}px ${-a * .5}px` },
         { translate: `${-a * .5}px ${a * .25}px` }, { translate: `${a * .25}px 0` }, { translate: '0 0' }], { duration: 420, easing: 'ease-out' });
     }
-    _later(fn, ms) { this.timers.push(setTimeout(() => { if (this.isOpen) fn(); }, ms)); }
-
     open() {
       if (this.isOpen) return; this.isOpen = true;
       this.el.classList.remove('ic-open'); void this.el.offsetWidth; this.el.classList.add('ic-open');
@@ -114,7 +112,8 @@
         this._measure();
         for (let i = 0; i < 26; i++) this._spawn(true);
         cancelAnimationFrame(this.raf); this.raf = requestAnimationFrame(n => this._tick(n));
-        this._shake(6); this._later(() => this._shake(7), 480);          // impact, then the crescent crossing the centre
+        this._shake(6);
+        this.timers.push(setTimeout(() => { if (this.isOpen) this._shake(7); }, 480)); // impact, then the crescent crossing the centre
       }
     }
     close() {
@@ -123,12 +122,11 @@
       this.el.classList.remove('ic-open'); cancelAnimationFrame(this.raf); this.raf = null;
       setTimeout(() => { if (!this.isOpen) this.ctx.clearRect(0, 0, this.w, this.h); }, 300);
     }
-    replay() { this.close(); this.open(); }
     destroy() {
       this.close(); if (this.ro) this.ro.disconnect();
       [this.shade, this.canvas, this.svg, this.flash, this.ring].forEach(n => n.remove());
       this.el.classList.remove('ichigo-panel', 'ic-open'); inst.delete(this.el);
     }
   }
-  g.IchigoPanel = { attach(el, o) { return el ? (inst.get(el) || new IP(el, o)) : null; }, get(el) { return inst.get(el) || null; } };
+  g.IchigoPanel = { attach(el, o) { return el ? (inst.get(el) || new IP(el, o)) : null; } };
 })(typeof window !== 'undefined' ? window : this);

@@ -12,7 +12,37 @@ Generates the complete standalone index.html with:
 import json
 import base64
 import os
-import networkx as nx
+
+TIER_1_IDS = frozenset(('aizen', 'ichigo', 'yhwach', 'yamamoto', 'soul_king', 'ichibei'))
+TIER_2_IDS = frozenset((
+    'gin', 'tosen', 'starrk', 'baraggan', 'harribel', 'ulquiorra', 'grimmjow', 'nnoitra',
+    'shunsui', 'kenpachi', 'byakuya', 'urahara', 'shinji', 'ginjo', 'jugram', 'uryu',
+    'rukia', 'renji', 'hitsugaya', 'unohana', 'chika_shihoin', 'kinroku_izuhara',
+    'chigiri_shijima', 'danjiro_obana', 'furofushi_saito', 'nobutsuna_shigyo',
+    'batsuunsai_katori', 'entetsu_kumoi', 'furuoki_otogawa', 'uhin_zenjoji', 'saizo_sakahone',
+    'soi_fon', 'mayuri', 'komamura', 'ukitake', 'rose', 'kensei', 'lille_barro',
+    'gerard_valkyrie', 'pernida_parnkgjas', 'askin_nakk_le_vaar', 'gremmy_thoumeaux',
+    'oetsu', 'senjumaru', 'tenjiro', 'kirio'
+))
+TIER_3_IDS = frozenset((
+    'zommari', 'szayelaporro', 'aaroniero', 'yammy', 'luppi', 'nelliel', 'wonderweiss',
+    'bazz_b', 'bambietta_basterbine', 'as_nodt', 'cang_du', 'quilge_opie', 'bg9',
+    'pepe_waccabrada', 'robert_accutrone', 'driscoll_berci', 'meninas_mcallon',
+    'mask_de_masculine', 'candice_catnipp', 'giselle_gewelle', 'nanana_najahkoop',
+    'nianzol_weizol', 'royd_lloyd', 'loyd_lloyd', 'liltotto_lamperd', 'love', 'lisa',
+    'hachigen', 'yoruichi', 'isshin', 'ryuken', 'orihime', 'chad', 'tsukishima', 'tatsuki',
+    'omaeda', 'kira', 'isane', 'momo', 'nanao', 'hisagi', 'rangiku', 'yachiru', 'nemu', 'sasakibe'
+))
+TIER_5_IDS = frozenset((
+    'lilynette', 'loly', 'menoly', 'roka_paramia', 'charlotte', 'abirama', 'findorr', 'poww',
+    'ggio', 'nirgge', 'shawlong', 'edrad', 'ylfordt', 'diroy', 'nakim', 'apacci', 'milarose',
+    'sunsun', 'ayon', 'tesla', 'lumina', 'medazeppi', 'pesche', 'dondochakka', 'bawabawa',
+    'demoura', 'aisslinger', 'kukkapuro', 'aldegor', 'grand_fisher', 'jinta', 'ururu', 'kon',
+    'ririn', 'noba', 'kurodo', 'keigo', 'mizuiro', 'chizuru', 'ryo', 'michiru', 'mahana',
+    'misato', 'keisuke', 'mizuho', 'ikumi', 'kaoru', 'don_kanonji', 'kagine',
+    'asguiaro_ebern', 'luders_friegen', 'berenice_gabrielli', 'jerome_guizbatt', 'guenael_lee',
+    'shaz_domino'
+))
 
 def generate_obsidian_graph():
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -24,18 +54,11 @@ def generate_obsidian_graph():
     with open(os.path.join(base_dir, "data", "relationships.json"), "r", encoding="utf-8") as f:
         rels = json.load(f)
 
-    # 2. Build network graph & compute degree centralities
-    G = nx.Graph()
-    for char_id, data in chars.items():
-        G.add_node(char_id, **data)
-    for rel in rels:
-        G.add_edge(rel["source"], rel["target"], type=rel["type"], label=rel["label"])
-
-    # 3. Ensure character sprite sheet and coordinate map are built and up-to-date
+    # 2. Ensure character sprite sheet and coordinate map are built and up-to-date
     from build_sprites import build_sprites
     sprite_meta = build_sprites()
 
-    # 4. Read sprite sheet as base64 data URI fallback for local file:// execution
+    # 3. Read sprite sheet as base64 data URI fallback for local file:// execution
     sprite_webp_path = os.path.join(asset_dir, "sprites", "characters.webp")
     sprite_version = int(os.path.getmtime(sprite_webp_path)) if os.path.exists(sprite_webp_path) else 1
     with open(sprite_webp_path, "rb") as f:
@@ -72,25 +95,21 @@ def generate_obsidian_graph():
         fac = data.get("faction", "")
 
         # Hierarchical node tier sizing based on narrative power & authority
-        if char_id in ('aizen', 'ichigo', 'yhwach', 'yamamoto', 'soul_king', 'ichibei'):
-            tier = 1
-            node_val = 16.0
-        elif char_id in ('gin', 'tosen', 'starrk', 'baraggan', 'harribel', 'ulquiorra', 'grimmjow', 'nnoitra', 'shunsui', 'kenpachi', 'byakuya', 'urahara', 'shinji', 'ginjo', 'jugram', 'uryu', 'rukia', 'renji', 'hitsugaya', 'unohana', 'chika_shihoin', 'kinroku_izuhara', 'chigiri_shijima', 'danjiro_obana', 'furofushi_saito', 'nobutsuna_shigyo', 'batsuunsai_katori', 'entetsu_kumoi', 'furuoki_otogawa', 'uhin_zenjoji', 'saizo_sakahone', 'soi_fon', 'mayuri', 'komamura', 'ukitake', 'rose', 'kensei', 'lille_barro', 'gerard_valkyrie', 'pernida_parnkgjas', 'askin_nakk_le_vaar', 'gremmy_thoumeaux', 'oetsu', 'senjumaru', 'tenjiro', 'kirio'):
-            tier = 2
-            node_val = 11.5
-        elif char_id in ('zommari', 'szayelaporro', 'aaroniero', 'yammy', 'luppi', 'nelliel', 'wonderweiss', 'bazz_b', 'bambietta_basterbine', 'as_nodt', 'cang_du', 'quilge_opie', 'bg9', 'pepe_waccabrada', 'robert_accutrone', 'driscoll_berci', 'meninas_mcallon', 'mask_de_masculine', 'candice_catnipp', 'giselle_gewelle', 'nanana_najahkoop', 'nianzol_weizol', 'royd_lloyd', 'loyd_lloyd', 'liltotto_lamperd', 'love', 'lisa', 'hachigen', 'yoruichi', 'isshin', 'ryuken', 'orihime', 'chad', 'tsukishima', 'tatsuki', 'omaeda', 'kira', 'isane', 'momo', 'nanao', 'hisagi', 'rangiku', 'yachiru', 'nemu', 'sasakibe'):
-            tier = 3
-            node_val = 8.5
-        elif 'Fracci' in fac or char_id in ('lilynette', 'loly', 'menoly', 'roka_paramia', 'charlotte', 'abirama', 'findorr', 'poww', 'ggio', 'nirgge', 'shawlong', 'edrad', 'ylfordt', 'diroy', 'nakim', 'apacci', 'milarose', 'sunsun', 'ayon', 'tesla', 'lumina', 'medazeppi', 'pesche', 'dondochakka', 'bawabawa', 'demoura', 'aisslinger', 'kukkapuro', 'aldegor', 'grand_fisher', 'jinta', 'ururu', 'kon', 'ririn', 'noba', 'kurodo', 'keigo', 'mizuiro', 'tatsuki', 'chizuru', 'ryo', 'michiru', 'mahana', 'misato', 'keisuke', 'mizuho', 'ikumi', 'kaoru', 'don_kanonji', 'kagine', 'asguiaro_ebern', 'luders_friegen', 'berenice_gabrielli', 'jerome_guizbatt', 'guenael_lee', 'shaz_domino'):
-            tier = 5
-            node_val = 3.5
+        if char_id in TIER_1_IDS:
+            tier, node_val = 1, 16.0
+        elif char_id in TIER_2_IDS:
+            tier, node_val = 2, 11.5
+        elif char_id in TIER_3_IDS:
+            tier, node_val = 3, 8.5
+        elif 'Fracci' in fac or char_id in TIER_5_IDS:
+            tier, node_val = 5, 3.5
         else:
-            tier = 4
-            node_val = 5.8
+            tier, node_val = 4, 5.8
 
+        name = data.get("name", char_id)
         graph_data["nodes"].append({
             "id": char_id,
-            "name": data.get("name", char_id),
+            "name": name,
             "race": race,
             "faction": fac or "Unknown",
             "family": data.get("family", "Unknown"),
@@ -99,8 +118,7 @@ def generate_obsidian_graph():
             "val": node_val,
             "tier": tier,
             "is_top": tier <= 2,
-            "initials": get_initials(data.get("name", char_id)),
-            "has_sprite": char_id in sprite_meta.get("sprites", {})
+            "initials": get_initials(name),
         })
 
     for rel in rels:
@@ -323,285 +341,32 @@ def generate_obsidian_graph():
             transform: scale(1.05);
         }}
 
-        /* Rukia Kuchiki Special Theme (Sode no Shirayuki Frost Aura) */
-        #sidebar.frost-theme {{
-            border: 1px solid rgba(186, 230, 253, 0.85) !important;
-            box-shadow: 0 0 35px rgba(186, 230, 253, 0.45), inset 0 0 25px rgba(255, 255, 255, 0.12) !important;
-            animation: frostPulse 3s infinite ease-in-out;
-        }}
-        @keyframes frostPulse {{
-            0%, 100% {{ box-shadow: 0 0 30px rgba(186, 230, 253, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.1); }}
-            50% {{ box-shadow: 0 0 45px rgba(186, 230, 253, 0.65), inset 0 0 30px rgba(255, 255, 255, 0.25); }}
-        }}
-        #sidebar.frost-theme #s-avatar {{
-            border-color: #BAE6FD !important;
-            box-shadow: 0 0 25px rgba(186, 230, 253, 0.85) !important;
-        }}
-        #sidebar.frost-theme::before {{
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(186, 230, 253, 0.12) 0%, rgba(147, 197, 253, 0.05) 50%, rgba(10, 15, 30, 0.2) 100%);
-            pointer-events: none; z-index: 1;
-        }}
+        /* Shared Character Theme Variables & Overrides */
+        #sidebar[class*="-theme"] {{ border: 1px solid var(--tb) !important; box-shadow: var(--ts) !important; }}
+        #sidebar[class*="-theme"] #s-avatar {{ border-color: var(--ab) !important; box-shadow: var(--as) !important; }}
+        #sidebar[class*="-theme"]::before {{ content: ''; position: absolute; inset: 0; background: var(--tg); pointer-events: none; z-index: 1; }}
+        @keyframes frostPulse {{ 0%, 100% {{ box-shadow: 0 0 30px rgba(186,230,253,.4), inset 0 0 20px rgba(255,255,255,.1); }} 50% {{ box-shadow: 0 0 45px rgba(186,230,253,.65), inset 0 0 30px rgba(255,255,255,.25); }} }}
+        @keyframes flamePulse {{ 0%, 100% {{ box-shadow: 0 0 30px rgba(255,120,40,.4), inset 0 0 20px rgba(255,190,120,.1); }} 50% {{ box-shadow: 0 0 45px rgba(255,130,50,.65), inset 0 0 30px rgba(255,190,120,.25); }} }}
+        @keyframes glassPulse {{ 0%, 100% {{ box-shadow: 0 0 30px rgba(167,139,250,.4), inset 0 0 20px rgba(255,255,255,.1); }} 50% {{ box-shadow: 0 0 45px rgba(167,139,250,.65), inset 0 0 30px rgba(255,255,255,.25); }} }}
 
-        /* Yamamoto Genryusai Special Theme (Ryujin Jakka Flame Aura) */
-        #sidebar.flame-theme {{
-            border: 1px solid rgba(255, 150, 60, 0.85) !important;
-            box-shadow: 0 0 35px rgba(255, 120, 40, 0.45), inset 0 0 25px rgba(255, 200, 100, 0.12) !important;
-            animation: flamePulse 3s infinite ease-in-out;
-        }}
-        @keyframes flamePulse {{
-            0%, 100% {{ box-shadow: 0 0 30px rgba(255, 120, 40, 0.4), inset 0 0 20px rgba(255, 190, 120, 0.1); }}
-            50% {{ box-shadow: 0 0 45px rgba(255, 130, 50, 0.65), inset 0 0 30px rgba(255, 190, 120, 0.25); }}
-        }}
-        #sidebar.flame-theme #s-avatar {{
-            border-color: #ffb066 !important;
-            box-shadow: 0 0 25px rgba(255, 130, 50, 0.85) !important;
-        }}
-        #sidebar.flame-theme::before {{
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 130, 40, 0.12) 0%, rgba(255, 80, 20, 0.05) 50%, rgba(30, 10, 5, 0.2) 100%);
-            pointer-events: none; z-index: 1;
-        }}
-
-        /* Sosuke Aizen Special Theme (Kyoka Suigetsu Shatter Illusion Aura) */
-        #sidebar.glass-theme {{
-            border: 1px solid rgba(205, 195, 255, 0.85) !important;
-            box-shadow: 0 0 35px rgba(167, 139, 250, 0.45), inset 0 0 25px rgba(255, 255, 255, 0.12) !important;
-            animation: glassPulse 3s infinite ease-in-out;
-        }}
-        @keyframes glassPulse {{
-            0%, 100% {{ box-shadow: 0 0 30px rgba(167, 139, 250, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.1); }}
-            50% {{ box-shadow: 0 0 45px rgba(167, 139, 250, 0.65), inset 0 0 30px rgba(255, 255, 255, 0.25); }}
-        }}
-        #sidebar.glass-theme #s-avatar {{
-            border-color: #d8ccff !important;
-            box-shadow: 0 0 25px rgba(167, 139, 250, 0.85) !important;
-        }}
-        #sidebar.glass-theme::before {{
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(167, 139, 250, 0.12) 0%, rgba(190, 170, 255, 0.05) 50%, rgba(20, 10, 35, 0.2) 100%);
-            pointer-events: none; z-index: 1;
-        }}
-
-        /* Ichigo Kurosaki Special Theme (Getsuga Tensho Aura) */
-        #sidebar.ichigo-theme {{
-            border: 1px solid #ff3b30 !important;
-            box-shadow: 0 0 35px rgba(255, 20, 10, 0.45), 0 0 70px rgba(0, 0, 0, 0.9), inset 0 0 25px rgba(255, 20, 10, 0.16) !important;
-        }}
-        #sidebar.ichigo-theme #s-avatar {{
-            border-color: #ff5a4d !important;
-            box-shadow: 0 0 22px rgba(255, 40, 30, 0.9), 0 0 0 3px rgba(0, 0, 0, 0.75) !important;
-        }}
-        #sidebar.ichigo-theme::before {{
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 30, 20, 0.12) 0%, rgba(200, 10, 10, 0.05) 50%, rgba(10, 0, 5, 0.3) 100%);
-            pointer-events: none; z-index: 1;
-        }}
-
-        /* Yhwach Special Theme (The Almighty / Reishi Void Aura) */
-        #sidebar.yhwach-theme {{
-            border: 1px solid rgba(215, 230, 255, 0.85) !important;
-            box-shadow: 0 0 35px rgba(170, 205, 255, 0.35), 0 0 90px rgba(0, 0, 0, 0.95), inset 0 0 30px rgba(0, 0, 0, 0.6) !important;
-        }}
-        #sidebar.yhwach-theme #s-avatar {{
-            border-color: #dbe9ff !important;
-            box-shadow: 0 0 24px rgba(170, 205, 255, 0.85), 0 0 0 3px rgba(0, 0, 0, 0.8) !important;
-        }}
-        #sidebar.yhwach-theme::before {{
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(190, 215, 255, 0.10) 0%, rgba(120, 160, 255, 0.04) 50%, rgba(5, 5, 12, 0.4) 100%);
-            pointer-events: none; z-index: 1;
-        }}
-
-        /* Ichibei Hyosube Special Theme (Ichimonji Sumi-e Black Ink Aura) */
-        #sidebar.ichibei-theme {{
-            border: 1px solid rgba(236, 230, 214, 0.85) !important;
-            box-shadow: 0 0 35px rgba(200, 194, 180, 0.35), 0 0 80px rgba(0, 0, 0, 0.95), inset 0 0 30px rgba(0, 0, 0, 0.7) !important;
-        }}
-        #sidebar.ichibei-theme #s-avatar {{
-            border-color: #ece6d6 !important;
-            box-shadow: 0 0 24px rgba(236, 230, 214, 0.85), 0 0 0 3px rgba(0, 0, 0, 0.8) !important;
-        }}
-        #sidebar.ichibei-theme::before {{
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(236, 230, 214, 0.08) 0%, rgba(10, 10, 12, 0.5) 100%);
-            pointer-events: none; z-index: 1;
-        }}
-
-        /* Kisuke Urahara Special Theme (Benihime / Kannonbiraki Seam Aura) */
-        #sidebar.kisuke-theme {{
-            border: 1px solid rgba(255, 74, 95, 0.85) !important;
-            box-shadow: 0 0 35px rgba(255, 74, 95, 0.45), 0 0 70px rgba(0, 0, 0, 0.9), inset 0 0 25px rgba(255, 74, 95, 0.16) !important;
-        }}
-        #sidebar.kisuke-theme #s-avatar {{
-            border-color: #ff6b7d !important;
-            box-shadow: 0 0 22px rgba(255, 74, 95, 0.9), 0 0 0 3px rgba(0, 0, 0, 0.75) !important;
-        }}
-        #sidebar.kisuke-theme::before {{
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 74, 95, 0.10) 0%, rgba(243, 232, 207, 0.04) 50%, rgba(20, 4, 8, 0.4) 100%);
-            pointer-events: none; z-index: 1;
-        }}
-
-        /* Kenpachi Zaraki Special Theme (Nozarashi Spiritual Pressure Aura) */
-        #sidebar.kenpachi-theme {{
-            border: 1px solid rgba(225, 29, 72, 0.85) !important;
-            box-shadow: 0 0 35px rgba(190, 18, 60, 0.45), 0 0 75px rgba(0, 0, 0, 0.95), inset 0 0 25px rgba(250, 204, 21, 0.16) !important;
-        }}
-        #sidebar.kenpachi-theme #s-avatar {{
-            border-color: #facc15 !important;
-            box-shadow: 0 0 22px rgba(225, 29, 72, 0.85), 0 0 10px rgba(250, 204, 21, 0.55), 0 0 0 3px rgba(0, 0, 0, 0.8) !important;
-        }}
-        #sidebar.kenpachi-theme::before {{
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(190, 18, 60, 0.12) 0%, rgba(250, 204, 21, 0.05) 50%, rgba(15, 2, 4, 0.4) 100%);
-            pointer-events: none; z-index: 1;
-        }}
-
-        /* Soul King Special Theme (Primordial Linchpin Divine Aura) */
-        #sidebar.soulking-theme {{
-            border: 1px solid rgba(255, 226, 150, 0.85) !important;
-            box-shadow: 0 0 35px rgba(255, 224, 138, 0.35), 0 0 85px rgba(10, 10, 20, 0.95), inset 0 0 25px rgba(157, 132, 255, 0.15) !important;
-        }}
-        #sidebar.soulking-theme #s-avatar {{
-            border-color: #fff1c4 !important;
-            box-shadow: 0 0 22px rgba(255, 232, 170, 0.85), 0 0 44px rgba(157, 132, 255, 0.45), 0 0 0 3px rgba(0, 0, 0, 0.8) !important;
-        }}
-        #sidebar.soulking-theme::before {{
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 226, 150, 0.10) 0%, rgba(157, 132, 255, 0.06) 50%, rgba(10, 8, 20, 0.5) 100%);
-            pointer-events: none; z-index: 1;
-        }}
-
-        /* Ōetsu Nimaiya Special Theme (God of the Sword / Sayafushi & Asauchi) */
-        #sidebar.nimaiya-theme {{
-            border: 1px solid rgba(226, 232, 240, 0.85) !important;
-            box-shadow: 0 0 38px rgba(56, 189, 248, 0.35), 0 0 80px rgba(0, 0, 0, 0.95), inset 0 0 25px rgba(245, 158, 11, 0.18) !important;
-        }}
-        #sidebar.nimaiya-theme #s-avatar {{
-            border-color: #f8fafc !important;
-            box-shadow: 0 0 22px rgba(56, 189, 248, 0.85), 0 0 14px rgba(245, 158, 11, 0.55), 0 0 0 3px rgba(0, 0, 0, 0.82) !important;
-        }}
-        #sidebar.nimaiya-theme::before {{
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.10) 0%, rgba(245, 158, 11, 0.08) 50%, rgba(10, 15, 25, 0.5) 100%);
-            pointer-events: none; z-index: 1;
-        }}
-
-        /* Senjumaru Shutara Special Theme (The Great Weave Guard / Golden Silk) */
-        #sidebar.senjumaru-theme {{
-            border: 1px solid rgba(217, 165, 74, 0.85) !important;
-            box-shadow: 0 0 35px rgba(217, 165, 74, 0.38), 0 0 75px rgba(0, 0, 0, 0.95), inset 0 0 20px rgba(240, 198, 116, 0.15) !important;
-        }}
-        #sidebar.senjumaru-theme #s-avatar {{
-            border-color: #e8bd70 !important;
-            box-shadow: 0 0 22px rgba(217, 165, 74, 0.8), 0 0 12px rgba(240, 198, 116, 0.5), 0 0 0 3px rgba(0, 0, 0, 0.8) !important;
-        }}
-        #sidebar.senjumaru-theme::before {{
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(217, 165, 74, 0.12) 0%, rgba(240, 198, 116, 0.05) 50%, rgba(15, 8, 4, 0.45) 100%);
-            pointer-events: none; z-index: 1;
-        }}
-
-        /* Tenjirō Kirinji Special Theme (The Hot Spring Demon / Healing Waters) */
-        #sidebar.tenjiro-theme {{
-            border: 1px solid rgba(45, 212, 191, 0.85) !important;
-            box-shadow: 0 0 38px rgba(45, 212, 191, 0.35), 0 0 75px rgba(0, 0, 0, 0.95), inset 0 0 24px rgba(254, 240, 138, 0.15) !important;
-        }}
-        #sidebar.tenjiro-theme #s-avatar {{
-            border-color: #a7f3d0 !important;
-            box-shadow: 0 0 22px rgba(45, 212, 191, 0.7), 0 0 12px rgba(254, 240, 138, 0.45), 0 0 0 3px rgba(0, 0, 0, 0.82) !important;
-        }}
-        #sidebar.tenjiro-theme::before {{
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(45, 212, 191, 0.10) 0%, rgba(254, 240, 138, 0.06) 50%, rgba(8, 20, 24, 0.5) 100%);
-            pointer-events: none; z-index: 1;
-        }}
-
-        /* Kirio Hikifune Special Theme (The Ruler of Grain / Gatonden Feast & Cage of Life) */
-        #sidebar.kirio-theme {{
-            border: 1px solid rgba(52, 211, 153, 0.85) !important;
-            box-shadow: 0 0 38px rgba(52, 211, 153, 0.35), 0 0 75px rgba(0, 0, 0, 0.95), inset 0 0 24px rgba(252, 211, 77, 0.16) !important;
-        }}
-        #sidebar.kirio-theme #s-avatar {{
-            border-color: #fde68a !important;
-            box-shadow: 0 0 22px rgba(52, 211, 153, 0.65), 0 0 14px rgba(252, 211, 77, 0.5), 0 0 0 3px rgba(0, 0, 0, 0.82) !important;
-        }}
-        #sidebar.kirio-theme::before {{
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(252, 211, 77, 0.10) 0%, rgba(52, 211, 153, 0.06) 50%, rgba(8, 20, 14, 0.5) 100%);
-            pointer-events: none; z-index: 1;
-        }}
-
-        /* Chōjirō Sasakibe Special Theme (Kōkō Gonryō Rikyū / Ancient Lightning Palace) */
-        #sidebar.sasakibe-theme {{
-            border: 1px solid rgba(250, 204, 21, 0.9) !important;
-            box-shadow: 0 0 38px rgba(250, 204, 21, 0.45), 0 0 80px rgba(0, 0, 0, 0.95), inset 0 0 25px rgba(234, 179, 8, 0.22) !important;
-        }}
-        #sidebar.sasakibe-theme #s-avatar {{
-            border-color: #fef08a !important;
-            box-shadow: 0 0 22px rgba(250, 204, 21, 0.9), 0 0 14px rgba(245, 158, 11, 0.65), 0 0 0 3px rgba(0, 0, 0, 0.85) !important;
-        }}
-        #sidebar.sasakibe-theme::before {{
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(180deg, rgba(250, 204, 21, 0.15) 0%, rgba(245, 158, 11, 0.06) 45%, rgba(10, 8, 2, 0.55) 100%);
-            pointer-events: none; z-index: 1;
-        }}
-
-        /* Izuru Kira Special Theme (Wabisuke / The Dead Man Standing / Gallows & Executioner Chains) */
-        #sidebar.kira-theme {{
-            border: 1px solid rgba(148, 163, 184, 0.75) !important;
-            box-shadow: 0 0 38px rgba(71, 85, 105, 0.5), 0 0 80px rgba(0, 0, 0, 0.95), inset 0 0 25px rgba(30, 41, 59, 0.35) !important;
-        }}
-        #sidebar.kira-theme #s-avatar {{
-            border-color: #cbd5e1 !important;
-            box-shadow: 0 0 22px rgba(148, 163, 184, 0.75), 0 0 14px rgba(71, 85, 105, 0.65), 0 0 0 3px rgba(0, 0, 0, 0.85) !important;
-        }}
-        #sidebar.kira-theme::before {{
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(180deg, rgba(71, 85, 105, 0.18) 0%, rgba(30, 41, 59, 0.12) 45%, rgba(10, 10, 15, 0.65) 100%);
-            pointer-events: none; z-index: 1;
-        }}
-
-        /* Tōshirō Hitsugaya Special Theme (Daiguren Hyōrinmaru / 氷輪丸) */
-        #sidebar.hitsugaya-theme {{
-            border: 1px solid rgba(56, 189, 248, 0.85) !important;
-            box-shadow: 0 0 38px rgba(56, 189, 248, 0.45), 0 0 80px rgba(0, 0, 0, 0.95), inset 0 0 25px rgba(14, 165, 233, 0.25) !important;
-        }}
-        #sidebar.hitsugaya-theme #s-avatar {{
-            border-color: #e0f2fe !important;
-            box-shadow: 0 0 22px rgba(56, 189, 248, 0.95), 0 0 14px rgba(2, 132, 199, 0.75), 0 0 0 3px rgba(0, 0, 0, 0.85) !important;
-        }}
-        #sidebar.hitsugaya-theme #sidebar-overlay {{
-            background: linear-gradient(to bottom, rgba(8, 47, 73, 0.15) 0%, rgba(2, 6, 23, 0.55) 45%, rgba(2, 6, 23, 0.85) 100%) !important;
-        }}
-        #sidebar.hitsugaya-theme #sidebar-bg {{
-            filter: blur(1.5px) brightness(0.92) saturate(1.2) !important;
-            opacity: 0.65 !important;
-            background-size: cover !important;
-            background-position: center 30% !important;
-        }}
-        #sidebar.hitsugaya-theme::before {{
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(180deg, rgba(56, 189, 248, 0.12) 0%, rgba(14, 116, 144, 0.05) 45%, rgba(2, 6, 23, 0.45) 100%);
-            pointer-events: none; z-index: 1;
-        }}
+        #sidebar.frost-theme {{ --tb: rgba(186,230,253,.85); --ts: 0 0 35px rgba(186,230,253,.45), inset 0 0 25px rgba(255,255,255,.12); --ab: #BAE6FD; --as: 0 0 25px rgba(186,230,253,.85); --tg: linear-gradient(135deg, rgba(186,230,253,.12) 0%, rgba(147,197,253,.05) 50%, rgba(10,15,30,.2) 100%); animation: frostPulse 3s infinite ease-in-out; }}
+        #sidebar.flame-theme {{ --tb: rgba(255,150,60,.85); --ts: 0 0 35px rgba(255,120,40,.45), inset 0 0 25px rgba(255,200,100,.12); --ab: #ffb066; --as: 0 0 25px rgba(255,130,50,.85); --tg: linear-gradient(135deg, rgba(255,130,40,.12) 0%, rgba(255,80,20,.05) 50%, rgba(30,10,5,.2) 100%); animation: flamePulse 3s infinite ease-in-out; }}
+        #sidebar.glass-theme {{ --tb: rgba(205,195,255,.85); --ts: 0 0 35px rgba(167,139,250,.45), inset 0 0 25px rgba(255,255,255,.12); --ab: #d8ccff; --as: 0 0 25px rgba(167,139,250,.85); --tg: linear-gradient(135deg, rgba(167,139,250,.12) 0%, rgba(190,170,255,.05) 50%, rgba(20,10,35,.2) 100%); animation: glassPulse 3s infinite ease-in-out; }}
+        #sidebar.ichigo-theme {{ --tb: #ff3b30; --ts: 0 0 35px rgba(255,20,10,.45), 0 0 70px rgba(0,0,0,.9), inset 0 0 25px rgba(255,20,10,.16); --ab: #ff5a4d; --as: 0 0 22px rgba(255,40,30,.9), 0 0 0 3px rgba(0,0,0,.75); --tg: linear-gradient(135deg, rgba(255,30,20,.12) 0%, rgba(200,10,10,.05) 50%, rgba(10,0,5,.3) 100%); }}
+        #sidebar.yhwach-theme {{ --tb: rgba(215,230,255,.85); --ts: 0 0 35px rgba(170,205,255,.35), 0 0 90px rgba(0,0,0,.95), inset 0 0 30px rgba(0,0,0,.6); --ab: #dbe9ff; --as: 0 0 24px rgba(170,205,255,.85), 0 0 0 3px rgba(0,0,0,.8); --tg: linear-gradient(135deg, rgba(190,215,255,.10) 0%, rgba(120,160,255,.04) 50%, rgba(5,5,12,.4) 100%); }}
+        #sidebar.ichibei-theme {{ --tb: rgba(236,230,214,.85); --ts: 0 0 35px rgba(200,194,180,.35), 0 0 80px rgba(0,0,0,.95), inset 0 0 30px rgba(0,0,0,.7); --ab: #ece6d6; --as: 0 0 24px rgba(236,230,214,.85), 0 0 0 3px rgba(0,0,0,.8); --tg: linear-gradient(135deg, rgba(236,230,214,.08) 0%, rgba(10,10,12,.5) 100%); }}
+        #sidebar.kisuke-theme {{ --tb: rgba(255,74,95,.85); --ts: 0 0 35px rgba(255,74,95,.45), 0 0 70px rgba(0,0,0,.9), inset 0 0 25px rgba(255,74,95,.16); --ab: #ff6b7d; --as: 0 0 22px rgba(255,74,95,.9), 0 0 0 3px rgba(0,0,0,.75); --tg: linear-gradient(135deg, rgba(255,74,95,.10) 0%, rgba(243,232,207,.04) 50%, rgba(20,4,8,.4) 100%); }}
+        #sidebar.kenpachi-theme {{ --tb: rgba(225,29,72,.85); --ts: 0 0 35px rgba(190,18,60,.45), 0 0 75px rgba(0,0,0,.95), inset 0 0 25px rgba(250,204,21,.16); --ab: #facc15; --as: 0 0 22px rgba(225,29,72,.85), 0 0 10px rgba(250,204,21,.55), 0 0 0 3px rgba(0,0,0,.8); --tg: linear-gradient(135deg, rgba(190,18,60,.12) 0%, rgba(250,204,21,.05) 50%, rgba(15,2,4,.4) 100%); }}
+        #sidebar.soulking-theme {{ --tb: rgba(255,226,150,.85); --ts: 0 0 35px rgba(255,224,138,.35), 0 0 85px rgba(10,10,20,.95), inset 0 0 25px rgba(157,132,255,.15); --ab: #fff1c4; --as: 0 0 22px rgba(255,232,170,.85), 0 0 44px rgba(157,132,255,.45), 0 0 0 3px rgba(0,0,0,.8); --tg: linear-gradient(135deg, rgba(255,226,150,.10) 0%, rgba(157,132,255,.06) 50%, rgba(10,8,20,.5) 100%); }}
+        #sidebar.nimaiya-theme {{ --tb: rgba(226,232,240,.85); --ts: 0 0 38px rgba(56,189,248,.35), 0 0 80px rgba(0,0,0,.95), inset 0 0 25px rgba(245,158,11,.18); --ab: #f8fafc; --as: 0 0 22px rgba(56,189,248,.85), 0 0 14px rgba(245,158,11,.55), 0 0 0 3px rgba(0,0,0,.82); --tg: linear-gradient(135deg, rgba(56,189,248,.10) 0%, rgba(245,158,11,.08) 50%, rgba(10,15,25,.5) 100%); }}
+        #sidebar.senjumaru-theme {{ --tb: rgba(217,165,74,.85); --ts: 0 0 35px rgba(217,165,74,.38), 0 0 75px rgba(0,0,0,.95), inset 0 0 20px rgba(240,198,116,.15); --ab: #e8bd70; --as: 0 0 22px rgba(217,165,74,.8), 0 0 12px rgba(240,198,116,.5), 0 0 0 3px rgba(0,0,0,.8); --tg: linear-gradient(135deg, rgba(217,165,74,.12) 0%, rgba(240,198,116,.05) 50%, rgba(15,8,4,.45) 100%); }}
+        #sidebar.tenjiro-theme {{ --tb: rgba(45,212,191,.85); --ts: 0 0 38px rgba(45,212,191,.35), 0 0 75px rgba(0,0,0,.95), inset 0 0 24px rgba(254,240,138,.15); --ab: #a7f3d0; --as: 0 0 22px rgba(45,212,191,.7), 0 0 12px rgba(254,240,138,.45), 0 0 0 3px rgba(0,0,0,.82); --tg: linear-gradient(135deg, rgba(45,212,191,.10) 0%, rgba(254,240,138,.06) 50%, rgba(8,20,24,.5) 100%); }}
+        #sidebar.kirio-theme {{ --tb: rgba(52,211,153,.85); --ts: 0 0 38px rgba(52,211,153,.35), 0 0 75px rgba(0,0,0,.95), inset 0 0 24px rgba(252,211,77,.16); --ab: #fde68a; --as: 0 0 22px rgba(52,211,153,.65), 0 0 14px rgba(252,211,77,.5), 0 0 0 3px rgba(0,0,0,.82); --tg: linear-gradient(135deg, rgba(252,211,77,.10) 0%, rgba(52,211,153,.06) 50%, rgba(8,20,14,.5) 100%); }}
+        #sidebar.sasakibe-theme {{ --tb: rgba(250,204,21,.9); --ts: 0 0 38px rgba(250,204,21,.45), 0 0 80px rgba(0,0,0,.95), inset 0 0 25px rgba(234,179,8,.22); --ab: #fef08a; --as: 0 0 22px rgba(250,204,21,.9), 0 0 14px rgba(245,158,11,.65), 0 0 0 3px rgba(0,0,0,.85); --tg: linear-gradient(180deg, rgba(250,204,21,.15) 0%, rgba(245,158,11,.06) 45%, rgba(10,8,2,.55) 100%); }}
+        #sidebar.kira-theme {{ --tb: rgba(148,163,184,.75); --ts: 0 0 38px rgba(71,85,105,.5), 0 0 80px rgba(0,0,0,.95), inset 0 0 25px rgba(30,41,59,.35); --ab: #cbd5e1; --as: 0 0 22px rgba(148,163,184,.75), 0 0 14px rgba(71,85,105,.65), 0 0 0 3px rgba(0,0,0,.85); --tg: linear-gradient(180deg, rgba(71,85,105,.18) 0%, rgba(30,41,59,.12) 45%, rgba(10,10,15,.65) 100%); }}
+        #sidebar.hitsugaya-theme {{ --tb: rgba(56,189,248,.85); --ts: 0 0 38px rgba(56,189,248,.45), 0 0 80px rgba(0,0,0,.95), inset 0 0 25px rgba(14,165,233,.25); --ab: #e0f2fe; --as: 0 0 22px rgba(56,189,248,.95), 0 0 14px rgba(2,132,199,.75), 0 0 0 3px rgba(0,0,0,.85); --tg: linear-gradient(180deg, rgba(56,189,248,.12) 0%, rgba(14,116,144,.05) 45%, rgba(2,6,23,.45) 100%); }}
+        #sidebar.hitsugaya-theme #sidebar-overlay {{ background: linear-gradient(to bottom, rgba(8,47,73,.15) 0%, rgba(2,6,23,.55) 45%, rgba(2,6,23,.85) 100%) !important; }}
+        #sidebar.hitsugaya-theme #sidebar-bg {{ filter: blur(1.5px) brightness(0.92) saturate(1.2) !important; opacity: 0.65 !important; background-size: cover !important; background-position: center 30% !important; }}
 
         /* Header & Navigation */
         .sidebar-header-line {{
@@ -929,7 +694,7 @@ def generate_obsidian_graph():
 
                 <!-- OVERVIEW PANE -->
                 <div id="pane-overview" class="tab-pane active">
-                    <div id="s-intel-fields" style="font-size: 12px; margin-bottom: 18px; color: rgba(255,255,255,0.7); line-height: 1.7;">
+                    <div style="font-size: 12px; margin-bottom: 18px; color: rgba(255,255,255,0.7); line-height: 1.7;">
                         <div><strong style="color:#888; display:inline-block; width:95px;">RACE</strong> <span id="s-field-race" style="color:#fff;"></span></div>
                         <div><strong style="color:#888; display:inline-block; width:95px;">AFFILIATION</strong> <span id="s-field-affil" style="color:#fff;"></span></div>
                         <div><strong style="color:#888; display:inline-block; width:95px;">FAMILY/CLAN</strong> <span id="s-field-family" style="color:#fff;"></span></div>
@@ -938,12 +703,11 @@ def generate_obsidian_graph():
                     
                     <div class="char-desc" id="s-desc"></div>
                     
-                    <div class="action-bar" id="s-action-bar">
+                    <div class="action-bar">
                         <button class="action-btn" id="trace-path-btn" style="width:100%; justify-content:center;">
                             <span>&#x1F4CD;</span> TRACE CONNECTION PATH
                         </button>
                     </div>
-                    <div id="s-overview-bottom" style="display:none;"></div>
                 </div>
 
                 <!-- RELATIONS PANE -->
@@ -1007,7 +771,6 @@ def generate_obsidian_graph():
         const SPRITE_MAP = {sprite_map_json};
         const SPRITE_META = {sprite_meta_json};
         const SPRITE_DATA_URI = "data:image/webp;base64,{sprite_webp_b64}";
-        const SPRITE_SRC = 'Asset/sprites/characters.webp?v={sprite_version}';
 
         let Graph = null;
 
@@ -1017,33 +780,34 @@ def generate_obsidian_graph():
             spriteSheet.crossOrigin = "anonymous";
         }}
         spriteSheet.onload = () => {{
-            try {{
-                if (Graph && Graph.refresh) {{
-                    Graph.refresh();
-                }}
-            }} catch (e) {{}}
+            try {{ if (Graph && Graph.refresh) Graph.refresh(); }} catch (e) {{}}
             dismissLoader();
         }};
         spriteSheet.onerror = () => {{
-            if (spriteSheet.src !== SPRITE_DATA_URI) {{
-                spriteSheet.src = SPRITE_DATA_URI;
-            }}
+            if (spriteSheet.src !== SPRITE_DATA_URI) spriteSheet.src = SPRITE_DATA_URI;
         }};
-        // Use data URI directly on local file protocol for zero-latency local testing
-        if (location.protocol === 'file:') {{
-            spriteSheet.src = SPRITE_DATA_URI;
-        }} else {{
-            spriteSheet.src = SPRITE_SRC;
-        }}
+        spriteSheet.src = (location.protocol === 'file:') ? SPRITE_DATA_URI : 'Asset/sprites/characters.webp?v={sprite_version}';
 
-        // Graph State
+        // Graph State & O(1) Lookup Helpers
         let gData = {{
             nodes: RAW_GRAPH.nodes.map(n => Object.assign({{}}, n)),
             links: RAW_GRAPH.links.map(l => Object.assign({{}}, l))
         }};
+        let nodeById = new Map();
+        function rebuildNodeMap() {{
+            nodeById = new Map(gData.nodes.map(n => [n.id, n]));
+        }}
+        rebuildNodeMap();
+
+        function linkIds(l) {{
+            return [
+                typeof l.source === 'object' ? l.source.id : l.source,
+                typeof l.target === 'object' ? l.target.id : l.target
+            ];
+        }}
 
         // Pin Ichigo in the center on initial load
-        const initIchigo = gData.nodes.find(n => n.id === 'ichigo');
+        const initIchigo = nodeById.get('ichigo');
         if (initIchigo) {{
             initIchigo.x = 0; initIchigo.y = 0; initIchigo.fx = 0; initIchigo.fy = 0;
         }}
@@ -1096,42 +860,65 @@ def generate_obsidian_graph():
             return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }}
 
-        // HTML Elements
+        // HTML Elements & Panel Registry
         const sidebar = document.getElementById('sidebar');
-        const fp = (typeof FrostPanel !== 'undefined' && FrostPanel.attach) ? FrostPanel.attach(sidebar, {{ particles: 30, snow: true }}) : null;
-        const fl = (typeof FlamePanel !== 'undefined' && FlamePanel.attach) ? FlamePanel.attach(sidebar, {{ embers: 45 }}) : null;
-        const gl = (typeof GlassPanel !== 'undefined' && GlassPanel.attach) ? GlassPanel.attach(sidebar, {{ impact: [0.7, 0.3] }}) : null;
-        const ic = (typeof IchigoPanel !== 'undefined' && IchigoPanel.attach) ? IchigoPanel.attach(sidebar) : null;
-        const yh = (typeof YhwachPanel !== 'undefined' && YhwachPanel.attach) ? YhwachPanel.attach(sidebar) : null;
-        const ib = (typeof IchibeiPanel !== 'undefined' && IchibeiPanel.attach) ? IchibeiPanel.attach(sidebar) : null;
-        const ks = (typeof KisukePanel !== 'undefined' && KisukePanel.attach) ? KisukePanel.attach(sidebar) : null;
-        const kp = (typeof KenpachiPanel !== 'undefined' && KenpachiPanel.attach) ? KenpachiPanel.attach(sidebar) : null;
-        const sk = (typeof SoulKingPanel !== 'undefined' && SoulKingPanel.attach) ? SoulKingPanel.attach(sidebar) : null;
-        const nm = (typeof NimaiyaPanel !== 'undefined' && NimaiyaPanel.attach) ? NimaiyaPanel.attach(sidebar) : null;
-        const sj = (typeof SenjumaruPanel !== 'undefined' && SenjumaruPanel.attach) ? SenjumaruPanel.attach(sidebar) : null;
-        const tj = (typeof TenjiroPanel !== 'undefined' && TenjiroPanel.attach) ? TenjiroPanel.attach(sidebar) : null;
-        const kr = (typeof KirioPanel !== 'undefined' && KirioPanel.attach) ? KirioPanel.attach(sidebar) : null;
-        const skb = (typeof SasakibePanel !== 'undefined' && SasakibePanel.attach) ? SasakibePanel.attach(sidebar) : null;
-        const iz = (typeof KiraPanel !== 'undefined' && KiraPanel.attach) ? KiraPanel.attach(sidebar) : null;
-        const hg = (typeof HitsugayaPanel !== 'undefined' && HitsugayaPanel.attach) ? HitsugayaPanel.attach(sidebar) : null;
-        const sf = (typeof SoifonPanel !== 'undefined' && SoifonPanel.attach) ? SoifonPanel.attach(sidebar) : null;
-        const om = (typeof OmaedaPanel !== 'undefined' && OmaedaPanel.attach) ? OmaedaPanel.attach(sidebar) : null;
-        const gn = (typeof GinPanel !== 'undefined' && GinPanel.attach) ? GinPanel.attach(sidebar) : null;
-        const un = (typeof UnohanaPanel !== 'undefined' && UnohanaPanel.attach) ? UnohanaPanel.attach(sidebar) : null;
-        const is = (typeof IsanePanel !== 'undefined' && IsanePanel.attach) ? IsanePanel.attach(sidebar) : null;
-        const mm = (typeof MomoPanel !== 'undefined' && MomoPanel.attach) ? MomoPanel.attach(sidebar) : null;
-        const bk = (typeof ByakuyaPanel !== 'undefined' && ByakuyaPanel.attach) ? ByakuyaPanel.attach(sidebar) : null;
-        const rj = (typeof RenjiPanel !== 'undefined' && RenjiPanel.attach) ? RenjiPanel.attach(sidebar) : null;
-        const km = (typeof KomamuraPanel !== 'undefined' && KomamuraPanel.attach) ? KomamuraPanel.attach(sidebar) : null;
-        const sh = (typeof ShunsuiPanel !== 'undefined' && ShunsuiPanel.attach) ? ShunsuiPanel.attach(sidebar) : null;
-        const nn = (typeof NanaoPanel !== 'undefined' && NanaoPanel.attach) ? NanaoPanel.attach(sidebar) : null;
-        const ts = (typeof TosenPanel !== 'undefined' && TosenPanel.attach) ? TosenPanel.attach(sidebar) : null;
-        const hs = (typeof HisagiPanel !== 'undefined' && HisagiPanel.attach) ? HisagiPanel.attach(sidebar) : null;
-        const rg = (typeof RangikuPanel !== 'undefined' && RangikuPanel.attach) ? RangikuPanel.attach(sidebar) : null;
-        const yc = (typeof YachiruPanel !== 'undefined' && YachiruPanel.attach) ? YachiruPanel.attach(sidebar) : null;
-        const my = (typeof MayuriPanel !== 'undefined' && MayuriPanel.attach) ? MayuriPanel.attach(sidebar) : null;
-        const nu = (typeof NemuPanel !== 'undefined' && NemuPanel.attach) ? NemuPanel.attach(sidebar) : null;
-        const uk = (typeof UkitakePanel !== 'undefined' && UkitakePanel.attach) ? UkitakePanel.attach(sidebar) : null;
+        const PANEL_CONFIG = {{
+            rukia:      {{ api: 'FrostPanel',     opts: {{ particles: 30, snow: true }}, theme: 'frost-theme',     banner: 'Asset/Images/Rukia.jpg',           bg: 'Asset/Images/Rukia.jpg',            op: '0.6' }},
+            yamamoto:   {{ api: 'FlamePanel',     opts: {{ embers: 45 }},                theme: 'flame-theme',     banner: 'Asset/Images/Yamamoto.jpg',        bg: 'Asset/Images/Yamamoto.jpg',         op: '0.6' }},
+            aizen:      {{ api: 'GlassPanel',     opts: {{ impact: [0.7, 0.3] }},        theme: 'glass-theme',     banner: 'Asset/Images/Aizen.jpg',           bg: 'Asset/Images/Aizen.jpg',            op: '0.6' }},
+            ichigo:     {{ api: 'IchigoPanel',    theme: 'ichigo-theme',    banner: 'Asset/Images/Ichigo.jpg',           bg: 'Asset/Images/Ichigo.jpg',           op: '0.6' }},
+            yhwach:     {{ api: 'YhwachPanel',    theme: 'yhwach-theme',    banner: 'Asset/Images/Yhwach.jpg',           bg: 'Asset/Images/Yhwach.jpg',           op: '0.6' }},
+            ichibei:    {{ api: 'IchibeiPanel',   theme: 'ichibei-theme',   banner: 'Asset/Images/Ichibei.jpg',          bg: 'Asset/Images/Ichibei.jpg',          op: '0.6' }},
+            urahara:    {{ api: 'KisukePanel',    theme: 'kisuke-theme',    banner: 'Asset/Images/Kisuke.jpg',           bg: 'Asset/Images/Kisuke.jpg',           op: '0.6' }},
+            kenpachi:   {{ api: 'KenpachiPanel',  theme: 'kenpachi-theme',  banner: 'Asset/Images/Kenpachi.jpg',         bg: 'Asset/Images/Kenpachi.jpg',         op: '0.6' }},
+            soul_king:  {{ api: 'SoulKingPanel',  theme: 'soulking-theme',  banner: 'Asset/Images/Soul King.jpg',        bg: 'Asset/Images/Soul King.jpg',        op: '0.6' }},
+            oetsu:      {{ api: 'NimaiyaPanel',   theme: 'nimaiya-theme',   banner: 'Asset/Images/Nimaiya Bg.jpg',       bg: 'Asset/Images/Nimaiya Bg.jpg',       op: '0.6' }},
+            senjumaru:  {{ api: 'SenjumaruPanel', theme: 'senjumaru-theme', banner: 'Asset/Images/Senjumaru Bg.jpg',     bg: 'Asset/Images/Senjumaru Bg.jpg',     op: '0.6' }},
+            tenjiro:    {{ api: 'TenjiroPanel',   theme: 'tenjiro-theme',   banner: 'Asset/Images/Tenjiro.jpg',          bg: 'Asset/Images/Tenjiro.jpg',          op: '0.6' }},
+            kirio:      {{ api: 'KirioPanel',     theme: 'kirio-theme',     banner: 'Asset/Images/Kirio.jpg',            bg: 'Asset/Images/Kirio.jpg',            op: '0.6' }},
+            sasakibe:   {{ api: 'SasakibePanel',  theme: 'sasakibe-theme',  banner: 'Asset/Images/Sasakibe Bg.jpg',      bg: 'Asset/Images/Sasakibe Bankai.jpg',  op: '0.65' }},
+            kira:       {{ api: 'KiraPanel',      theme: 'kira-theme',      banner: 'Asset/Images/Kira.jpg',             bg: 'Asset/Images/Kira Bankai.jpg',      op: '0.65' }},
+            hitsugaya:  {{ api: 'HitsugayaPanel', theme: 'hitsugaya-theme', banner: 'Asset/Images/Hitsugaya Dragon.jpg', bg: 'Asset/Images/Hitsugaya Bankai.jpg', op: '0.68' }},
+            soi_fon:    {{ api: 'SoifonPanel' }},
+            omaeda:     {{ api: 'OmaedaPanel' }},
+            gin:        {{ api: 'GinPanel' }},
+            unohana:    {{ api: 'UnohanaPanel' }},
+            isane:      {{ api: 'IsanePanel' }},
+            momo:       {{ api: 'MomoPanel' }},
+            byakuya:    {{ api: 'ByakuyaPanel' }},
+            renji:      {{ api: 'RenjiPanel' }},
+            komamura:   {{ api: 'KomamuraPanel' }},
+            shunsui:    {{ api: 'ShunsuiPanel' }},
+            nanao:      {{ api: 'NanaoPanel' }},
+            tosen:      {{ api: 'TosenPanel' }},
+            hisagi:     {{ api: 'HisagiPanel' }},
+            rangiku:    {{ api: 'RangikuPanel' }},
+            yachiru:    {{ api: 'YachiruPanel' }},
+            mayuri:     {{ api: 'MayuriPanel' }},
+            nemu:       {{ api: 'NemuPanel' }},
+            ukitake:    {{ api: 'UkitakePanel' }}
+        }};
+        PANEL_CONFIG.kisuke = PANEL_CONFIG.urahara;
+        PANEL_CONFIG.zaraki = PANEL_CONFIG.kenpachi;
+        PANEL_CONFIG.soulking = PANEL_CONFIG.soul_king;
+        PANEL_CONFIG.nimaiya = PANEL_CONFIG.oetsu;
+        PANEL_CONFIG.shutara = PANEL_CONFIG.senjumaru;
+        PANEL_CONFIG.kirinji = PANEL_CONFIG.tenjiro;
+        PANEL_CONFIG.hikifune = PANEL_CONFIG.kirio;
+
+        const panelCache = {{}};
+        let activePanel = null;
+        let activeTheme = null;
+
+        function getPanelInstance(cfg) {{
+            if (!cfg || !cfg.api) return null;
+            if (!panelCache[cfg.api]) {{
+                const mod = window[cfg.api];
+                if (mod && mod.attach) panelCache[cfg.api] = mod.attach(sidebar, cfg.opts);
+            }}
+            return panelCache[cfg.api] || null;
+        }}
+
         const sidebarClose = document.getElementById('sidebar-close');
         const sName = document.getElementById('s-name');
         const sMeta = document.getElementById('s-meta');
@@ -1139,7 +926,6 @@ def generate_obsidian_graph():
         const connSection = document.getElementById('conn-section');
         const sConnections = document.getElementById('s-connections');
         const connCount = document.getElementById('conn-count');
-        const sActionBar = document.getElementById('s-action-bar');
         const tracePathBtn = document.getElementById('trace-path-btn');
         const pathBanner = document.getElementById('path-banner');
         const pathBannerText = document.getElementById('path-banner-text');
@@ -1161,41 +947,8 @@ def generate_obsidian_graph():
         }});
 
         function closeAllPanels() {{
-            if (fp) fp.close();
-            if (fl) fl.close();
-            if (gl) gl.close();
-            if (ic) ic.close();
-            if (yh) yh.close();
-            if (ib) ib.close();
-            if (ks) ks.close();
-            if (kp) kp.close();
-            if (sk) sk.close();
-            if (nm) nm.close();
-            if (sj) sj.close();
-            if (tj) tj.close();
-            if (kr) kr.close();
-            if (skb) skb.close();
-            if (iz) iz.close();
-            if (hg) hg.close();
-            if (sf) sf.close();
-            if (om) om.close();
-            if (gn) gn.close();
-            if (un) un.close();
-            if (is) is.close();
-            if (mm) mm.close();
-            if (bk) bk.close();
-            if (rj) rj.close();
-            if (km) km.close();
-            if (sh) sh.close();
-            if (nn) nn.close();
-            if (ts) ts.close();
-            if (hs) hs.close();
-            if (rg) rg.close();
-            if (yc) yc.close();
-            if (my) my.close();
-            if (nu) nu.close();
-            if (uk) uk.close();
-            sidebar.classList.remove('frost-theme', 'flame-theme', 'glass-theme', 'ichigo-theme', 'yhwach-theme', 'ichibei-theme', 'kisuke-theme', 'kenpachi-theme', 'soulking-theme', 'nimaiya-theme', 'senjumaru-theme', 'tenjiro-theme', 'kirio-theme', 'sasakibe-theme', 'kira-theme', 'hitsugaya-theme');
+            if (activePanel) {{ activePanel.close(); activePanel = null; }}
+            if (activeTheme) {{ sidebar.classList.remove(activeTheme); activeTheme = null; }}
         }}
 
         function deselectNode() {{
@@ -1207,8 +960,6 @@ def generate_obsidian_graph():
             closeAllPanels();
             const b = document.getElementById('s-banner');
             if (b) b.style.display = 'none';
-            const ovBottom = document.getElementById('s-overview-bottom');
-            if (ovBottom) {{ ovBottom.innerHTML = ''; ovBottom.style.display = 'none'; }}
             miniLegend.classList.remove('hidden');
             clearPathFinding();
             document.body.style.cursor = 'default';
@@ -1258,7 +1009,7 @@ def generate_obsidian_graph():
 
             let html = '<div class="conn-list">';
             filteredConns.forEach(c => {{
-                const targetNode = gData.nodes.find(n => n.id === c.targetId) || {{ name: c.targetId, race: 'Unknown', color: '#888' }};
+                const targetNode = nodeById.get(c.targetId) || {{ name: c.targetId, race: 'Unknown', color: '#888' }};
                 const catObj = getRelCategory(c.type);
                 html += '<div class="conn-card" style="border-left-color:' + catObj.color + '" data-target-id="' + c.targetId + '">' +
                     '<div class="conn-card-info">' +
@@ -1273,8 +1024,7 @@ def generate_obsidian_graph():
 
             sConnections.querySelectorAll('.conn-card').forEach(card => {{
                 card.addEventListener('click', () => {{
-                    const targetId = card.dataset.targetId;
-                    const targetNode = gData.nodes.find(n => n.id === targetId);
+                    const targetNode = nodeById.get(card.dataset.targetId);
                     if (targetNode) selectNode(targetNode, true);
                 }});
             }});
@@ -1301,145 +1051,52 @@ def generate_obsidian_graph():
             }}
         }}
 
+        function applyAvatarStyle(el, node, size, spriteShadow, fallbackShadow) {{
+            const s = SPRITE_MAP[node.id];
+            el.style.borderColor = node.color;
+            if (s && spriteSheet.complete && spriteSheet.naturalWidth > 0) {{
+                el.innerText = '';
+                el.style.backgroundImage = 'url(' + spriteSheet.src + ')';
+                const scale = size / s.w;
+                el.style.backgroundSize = (SPRITE_META.sheetWidth * scale) + 'px ' + (SPRITE_META.sheetHeight * scale) + 'px';
+                el.style.backgroundPosition = '-' + (s.x * scale) + 'px -' + (s.y * scale) + 'px';
+                el.style.boxShadow = spriteShadow;
+            }} else {{
+                el.style.backgroundImage = 'none';
+                el.style.backgroundColor = '#0F1318';
+                el.style.boxShadow = fallbackShadow;
+                el.innerText = node.initials || '??';
+                el.style.color = node.color;
+            }}
+        }}
+
         function openSidebar(node) {{
             const sidebarBg = document.getElementById('sidebar-bg');
             const sAvatar = document.getElementById('s-avatar');
             const sSprite = SPRITE_MAP[node.id];
 
-            // Custom Backgrounds & Ability Themes
             closeAllPanels();
             const b = document.getElementById('s-banner');
+            const cfg = PANEL_CONFIG[node.id];
 
-            if (node.id === 'rukia') {{
-                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Rukia.jpg')"; b.style.display = 'block'; }}
-                sidebar.classList.add('frost-theme');
-                sidebarBg.style.backgroundImage = "url('Asset/Images/Rukia.jpg')";
-                sidebarBg.style.opacity = '0.6';
-                if (fp) fp.open();
-            }} else if (node.id === 'yamamoto') {{
-                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Yamamoto.jpg')"; b.style.display = 'block'; }}
-                sidebar.classList.add('flame-theme');
-                sidebarBg.style.backgroundImage = "url('Asset/Images/Yamamoto.jpg')";
-                sidebarBg.style.opacity = '0.6';
-                if (fl) fl.open();
-            }} else if (node.id === 'aizen') {{
-                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Aizen.jpg')"; b.style.display = 'block'; }}
-                sidebar.classList.add('glass-theme');
-                sidebarBg.style.backgroundImage = "url('Asset/Images/Aizen.jpg')";
-                sidebarBg.style.opacity = '0.6';
-                if (gl) gl.open();
-            }} else if (node.id === 'ichigo') {{
-                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Ichigo.jpg')"; b.style.display = 'block'; }}
-                sidebar.classList.add('ichigo-theme');
-                sidebarBg.style.backgroundImage = "url('Asset/Images/Ichigo.jpg')";
-                sidebarBg.style.opacity = '0.6';
-                if (ic) ic.open();
-            }} else if (node.id === 'yhwach') {{
-                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Yhwach.jpg')"; b.style.display = 'block'; }}
-                sidebar.classList.add('yhwach-theme');
-                sidebarBg.style.backgroundImage = "url('Asset/Images/Yhwach.jpg')";
-                sidebarBg.style.opacity = '0.6';
-                if (yh) yh.open();
-            }} else if (node.id === 'ichibei') {{
-                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Ichibei.jpg')"; b.style.display = 'block'; }}
-                sidebar.classList.add('ichibei-theme');
-                sidebarBg.style.backgroundImage = "url('Asset/Images/Ichibei.jpg')";
-                sidebarBg.style.opacity = '0.6';
-                if (ib) ib.open();
-            }} else if (node.id === 'urahara' || node.id === 'kisuke') {{
-                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Kisuke.jpg')"; b.style.display = 'block'; }}
-                sidebar.classList.add('kisuke-theme');
-                sidebarBg.style.backgroundImage = "url('Asset/Images/Kisuke.jpg')";
-                sidebarBg.style.opacity = '0.6';
-                if (ks) ks.open();
-            }} else if (node.id === 'kenpachi' || node.id === 'zaraki') {{
-                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Kenpachi.jpg')"; b.style.display = 'block'; }}
-                sidebar.classList.add('kenpachi-theme');
-                sidebarBg.style.backgroundImage = "url('Asset/Images/Kenpachi.jpg')";
-                sidebarBg.style.opacity = '0.6';
-                if (kp) kp.open();
-            }} else if (node.id === 'soul_king' || node.id === 'soulking') {{
-                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Soul King.jpg')"; b.style.display = 'block'; }}
-                sidebar.classList.add('soulking-theme');
-                sidebarBg.style.backgroundImage = "url('Asset/Images/Soul King.jpg')";
-                sidebarBg.style.opacity = '0.6';
-                if (sk) sk.open();
-            }} else if (node.id === 'oetsu' || node.id === 'nimaiya') {{
-                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Nimaiya Bg.jpg')"; b.style.display = 'block'; }}
-                sidebar.classList.add('nimaiya-theme');
-                sidebarBg.style.backgroundImage = "url('Asset/Images/Nimaiya Bg.jpg')";
-                sidebarBg.style.opacity = '0.6';
-                if (nm) nm.open();
-            }} else if (node.id === 'senjumaru' || node.id === 'shutara') {{
-                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Senjumaru Bg.jpg')"; b.style.display = 'block'; }}
-                sidebar.classList.add('senjumaru-theme');
-                sidebarBg.style.backgroundImage = "url('Asset/Images/Senjumaru Bg.jpg')";
-                sidebarBg.style.opacity = '0.6';
-                if (sj) sj.open();
-            }} else if (node.id === 'tenjiro' || node.id === 'kirinji') {{
-                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Tenjiro.jpg')"; b.style.display = 'block'; }}
-                sidebar.classList.add('tenjiro-theme');
-                sidebarBg.style.backgroundImage = "url('Asset/Images/Tenjiro.jpg')";
-                sidebarBg.style.opacity = '0.6';
-                if (tj) tj.open();
-            }} else if (node.id === 'kirio' || node.id === 'hikifune') {{
-                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Kirio.jpg')"; b.style.display = 'block'; }}
-                sidebar.classList.add('kirio-theme');
-                sidebarBg.style.backgroundImage = "url('Asset/Images/Kirio.jpg')";
-                sidebarBg.style.opacity = '0.6';
-                if (kr) kr.open();
-            }} else if (node.id === 'sasakibe') {{
-                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Sasakibe Bg.jpg')"; b.style.display = 'block'; }}
-                sidebar.classList.add('sasakibe-theme');
-                sidebarBg.style.backgroundImage = "url('Asset/Images/Sasakibe Bankai.jpg')";
-                sidebarBg.style.opacity = '0.65';
-                if (skb) skb.open();
-            }} else if (node.id === 'kira') {{
-                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Kira.jpg')"; b.style.display = 'block'; }}
-                sidebar.classList.add('kira-theme');
-                sidebarBg.style.backgroundImage = "url('Asset/Images/Kira Bankai.jpg')";
-                sidebarBg.style.opacity = '0.65';
-                if (iz) iz.open();
-            }} else if (node.id === 'hitsugaya') {{
-                if (b) {{ b.style.backgroundImage = "url('Asset/Images/Hitsugaya Dragon.jpg')"; b.style.display = 'block'; }}
-                sidebar.classList.add('hitsugaya-theme');
-                sidebarBg.style.backgroundImage = "url('Asset/Images/Hitsugaya Bankai.jpg')";
-                sidebarBg.style.opacity = '0.68';
-                if (hg) hg.open();
+            if (cfg && cfg.banner) {{
+                if (b) {{ b.style.backgroundImage = "url('" + cfg.banner + "')"; b.style.display = 'block'; }}
+                if (cfg.theme) {{ sidebar.classList.add(cfg.theme); activeTheme = cfg.theme; }}
+                sidebarBg.style.backgroundImage = "url('" + (cfg.bg || cfg.banner) + "')";
+                sidebarBg.style.opacity = cfg.op || '0.6';
             }} else {{
                 if (b) b.style.display = 'none';
-                if (sSprite && spriteSheet.complete && spriteSheet.naturalWidth > 0) {{
-                    const avatarDataUrl = getCharacterAvatarUrl(node.id, 384);
-                    if (avatarDataUrl) {{
-                        sidebarBg.style.backgroundImage = 'url(' + avatarDataUrl + ')';
-                        sidebarBg.style.opacity = '0.38';
-                    }} else {{
-                        sidebarBg.style.backgroundImage = 'radial-gradient(circle at 85% 15%, ' + node.color + '33, transparent 65%)';
-                        sidebarBg.style.opacity = '1';
-                    }}
+                const avatarDataUrl = (sSprite && spriteSheet.complete && spriteSheet.naturalWidth > 0) ? getCharacterAvatarUrl(node.id, 384) : null;
+                if (avatarDataUrl) {{
+                    sidebarBg.style.backgroundImage = 'url(' + avatarDataUrl + ')';
+                    sidebarBg.style.opacity = '0.38';
                 }} else {{
-                    sidebarBg.style.backgroundImage = 'radial-gradient(circle at 85% 15%, ' + node.color + '22, transparent 65%)';
+                    sidebarBg.style.backgroundImage = 'radial-gradient(circle at 85% 15%, ' + node.color + (sSprite ? '33' : '22') + ', transparent 65%)';
                     sidebarBg.style.opacity = '1';
                 }}
             }}
 
-            if (sSprite && spriteSheet.complete && spriteSheet.naturalWidth > 0) {{
-                sAvatar.innerText = '';
-                sAvatar.style.backgroundImage = 'url(' + spriteSheet.src + ')';
-                const avatarSize = 64;
-                const scale = avatarSize / sSprite.w;
-                sAvatar.style.backgroundSize = (SPRITE_META.sheetWidth * scale) + 'px ' + (SPRITE_META.sheetHeight * scale) + 'px';
-                sAvatar.style.backgroundPosition = '-' + (sSprite.x * scale) + 'px -' + (sSprite.y * scale) + 'px';
-                sAvatar.style.borderColor = node.color;
-                sAvatar.style.boxShadow = '0 0 20px ' + node.color + '55';
-            }} else {{
-                sAvatar.style.backgroundImage = 'none';
-                sAvatar.style.backgroundColor = '#0F1318';
-                sAvatar.style.borderColor = node.color;
-                sAvatar.style.boxShadow = '0 0 16px ' + node.color + '44';
-                sAvatar.innerText = node.initials || '??';
-                sAvatar.style.color = node.color;
-            }}
+            applyAvatarStyle(sAvatar, node, 64, '0 0 20px ' + node.color + '55', '0 0 16px ' + node.color + '44');
 
             if (node.id === 'ulquiorra') {{
                 sName.innerHTML = escapeHtml(node.name) + ' <img class="char-name-gif ulquiorra-name-gif" src="Asset/GIF/Ulquiorra.gif" alt="Ulquiorra" />';
@@ -1453,13 +1110,11 @@ def generate_obsidian_graph():
             document.getElementById('s-placeholder').style.display = 'none';
             document.getElementById('dossier-dynamic').style.display = 'block';
             
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
             document.querySelector('.tab-btn[data-target="pane-overview"]').classList.add('active');
             document.getElementById('pane-overview').classList.add('active');
 
-            const intelFields = document.getElementById('s-intel-fields');
-            intelFields.style.display = 'block';
             document.getElementById('s-field-race').innerText = node.race || 'CLASSIFIED';
             document.getElementById('s-field-affil').innerText = node.faction || 'UNKNOWN';
             document.getElementById('s-field-family').innerText = node.family || 'NONE';
@@ -1467,12 +1122,6 @@ def generate_obsidian_graph():
             const tiers = {{ 1: 'SPECIAL WAR POTENTIAL', 2: 'CAPTAIN CLASS', 3: 'LIEUTENANT CLASS', 4: 'STANDARD' }};
             document.getElementById('s-field-tier').innerText = tiers[node.tier || 4] || 'UNMEASURED';
             sDesc.innerText = node.desc || 'No intelligence data available on this subject.';
-
-            const ovBottom = document.getElementById('s-overview-bottom');
-            if (ovBottom) {{
-                ovBottom.innerHTML = '';
-                ovBottom.style.display = 'none';
-            }}
 
             const tlItems = document.querySelectorAll('.tl-item');
             const descLower = (node.desc || '').toLowerCase();
@@ -1493,63 +1142,23 @@ def generate_obsidian_graph():
                 connSection.style.display = 'none';
             }}
 
-            sActionBar.style.display = 'flex';
             sidebar.classList.add('open');
             document.body.classList.add('sidebar-open');
             miniLegend.classList.add('hidden');
-            if (sf) {{ if (node.id === 'soi_fon') sf.open(); else sf.close(); }}
-            if (om) {{ if (node.id === 'omaeda') om.open(); else om.close(); }}
-            if (gn) {{ if (node.id === 'gin') gn.open(); else gn.close(); }}
-            if (un) {{ if (node.id === 'unohana') un.open(); else un.close(); }}
-            if (is) {{ if (node.id === 'isane') is.open(); else is.close(); }}
-            if (mm) {{ if (node.id === 'momo') mm.open(); else mm.close(); }}
-            if (bk) {{ if (node.id === 'byakuya') bk.open(); else bk.close(); }}
-            if (rj) {{ if (node.id === 'renji') rj.open(); else rj.close(); }}
-            if (km) {{ if (node.id === 'komamura') km.open(); else km.close(); }}
-            if (sh) {{ if (node.id === 'shunsui') sh.open(); else sh.close(); }}
-            if (nn) {{ if (node.id === 'nanao') nn.open(); else nn.close(); }}
-            if (ts) {{ if (node.id === 'tosen') ts.open(); else ts.close(); }}
-            if (hs) {{ if (node.id === 'hisagi') hs.open(); else hs.close(); }}
-            if (rg) {{ if (node.id === 'rangiku') rg.open(); else rg.close(); }}
-            if (yc) {{ if (node.id === 'yachiru') yc.open(); else yc.close(); }}
-            if (my) {{ if (node.id === 'mayuri') my.open(); else my.close(); }}
-            if (nu) {{ if (node.id === 'nemu') nu.open(); else nu.close(); }}
-            if (uk) {{ if (node.id === 'ukitake') uk.open(); else uk.close(); }}
+            const panel = getPanelInstance(cfg);
+            if (panel) {{ activePanel = panel; panel.open(); }}
         }}
 
-        // Dynamic Camera Framing
-        function focusOnNodeAndNeighbors(node) {{
-            const nbrIds = Array.from(neighbors[node.id] || []);
-            const nbrNodes = nbrIds.map(id => gData.nodes.find(n => n.id === id)).filter(Boolean);
-            const all = [node, ...nbrNodes];
-
-            let minX = node.x, maxX = node.x, minY = node.y, maxY = node.y;
-            all.forEach(n => {{
+        function getBounds(nodes) {{
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            nodes.forEach(n => {{
+                if (n.x === undefined || n.y === undefined) return;
                 if (n.x < minX) minX = n.x;
                 if (n.x > maxX) maxX = n.x;
                 if (n.y < minY) minY = n.y;
                 if (n.y > maxY) maxY = n.y;
             }});
-
-            const padding = 130;
-            const boxW = Math.max(maxX - minX + padding * 2, 280);
-            const boxH = Math.max(maxY - minY + padding * 2, 280);
-
-            const screenW = window.innerWidth;
-            const screenH = window.innerHeight;
-            const isMobile = screenW <= 768;
-            
-            const cardWidth = isMobile ? 0 : 390;
-            const availW = Math.max(screenW - cardWidth - 60, screenW * 0.5);
-            const availH = isMobile ? Math.max(screenH * 0.5 - 60, 200) : Math.max(screenH - 120, 320);
-
-            let fitZoom = Math.min(availW / boxW, availH / boxH);
-            fitZoom = Math.max(0.65, Math.min(fitZoom, 1.8));
-
-            const shiftX = isMobile ? 0 : (cardWidth / 2) / fitZoom;
-            const shiftY = isMobile ? -40 / fitZoom : 0;
-            Graph.centerAt(node.x + shiftX, node.y + shiftY, 850);
-            Graph.zoom(fitZoom, 850);
+            return isFinite(minX) ? {{ minX, maxX, minY, maxY }} : null;
         }}
 
         function selectNode(node, pushHistory = true) {{
@@ -1560,7 +1169,8 @@ def generate_obsidian_graph():
             currentNode = node;
             updateBackNav();
             openSidebar(node);
-            focusOnNodeAndNeighbors(node);
+            const nbrNodes = Array.from(neighbors[node.id] || []).map(id => nodeById.get(id)).filter(Boolean);
+            fitGraphToScreen(850, {{ nodes: [node, ...nbrNodes], centerNode: node }});
             history.replaceState(null, '', '#' + encodeURIComponent(node.id));
         }}
 
@@ -1589,16 +1199,6 @@ def generate_obsidian_graph():
             return null;
         }}
 
-        function startPathFinding(fromNode) {{
-            pathFindingFrom = fromNode;
-            highlightedPathNodes.clear();
-            highlightedPathLinks.clear();
-            pathBannerText.innerHTML = 'Tracing path from <strong>' + escapeHtml(fromNode.name) + '</strong> &rarr; Click any character';
-            pathCancelBtn.innerText = 'Cancel';
-            pathBanner.classList.add('active');
-            tracePathBtn.classList.add('active');
-        }}
-
         function executePathFinding(targetNode) {{
             if (!pathFindingFrom) return;
             const path = findShortestPath(pathFindingFrom.id, targetNode.id);
@@ -1606,8 +1206,7 @@ def generate_obsidian_graph():
                 highlightedPathNodes = new Set(path);
                 highlightedPathLinks = new Set();
                 for (let i = 0; i < path.length - 1; i++) {{
-                    const a = path[i];
-                    const b = path[i + 1];
+                    const a = path[i], b = path[i + 1];
                     highlightedPathLinks.add(a + '--' + b);
                     highlightedPathLinks.add(b + '--' + a);
                 }}
@@ -1617,20 +1216,7 @@ def generate_obsidian_graph():
                 pathBannerText.innerHTML = 'Connection Path (' + degrees + ' degree' + (degrees > 1 ? 's' : '') + '): <strong>' + pathNames + '</strong>';
                 pathCancelBtn.innerText = 'Clear Path';
 
-                const pathNodesList = path.map(id => gData.nodes.find(n => n.id === id)).filter(Boolean);
-                let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-                pathNodesList.forEach(n => {{
-                    if (n.x < minX) minX = n.x;
-                    if (n.x > maxX) maxX = n.x;
-                    if (n.y < minY) minY = n.y;
-                    if (n.y > maxY) maxY = n.y;
-                }});
-                const pMobile = window.innerWidth <= 768;
-                const pSidebarOffset = pMobile ? 20 : 450;
-                const pCenterShift = pMobile ? 0 : 150;
-                const pZoom = Math.min((window.innerWidth - pSidebarOffset) / Math.max(maxX - minX + 220, 250), (window.innerHeight - 150) / Math.max(maxY - minY + 220, 250));
-                Graph.centerAt((minX + maxX) / 2 + pCenterShift / pZoom, (minY + maxY) / 2, 850);
-                Graph.zoom(Math.max(0.65, Math.min(pZoom, 1.6)), 850);
+                fitGraphToScreen(850, {{ nodes: path.map(id => nodeById.get(id)).filter(Boolean), isPath: true }});
             }} else {{
                 pathBannerText.innerHTML = 'No connection path found between <strong>' + escapeHtml(pathFindingFrom.name) + '</strong> and <strong>' + escapeHtml(targetNode.name) + '</strong>';
                 pathCancelBtn.innerText = 'Dismiss';
@@ -1648,18 +1234,27 @@ def generate_obsidian_graph():
         }}
 
         tracePathBtn.addEventListener('click', () => {{
-            if (currentNode) {{
-                if (pathFindingFrom || highlightedPathNodes.size > 0) {{
-                    clearPathFinding();
-                }} else {{
-                    startPathFinding(currentNode);
-                }}
+            if (!currentNode) return;
+            if (pathFindingFrom || highlightedPathNodes.size > 0) {{
+                clearPathFinding();
+            }} else {{
+                pathFindingFrom = currentNode;
+                highlightedPathNodes.clear();
+                highlightedPathLinks.clear();
+                pathBannerText.innerHTML = 'Tracing path from <strong>' + escapeHtml(currentNode.name) + '</strong> &rarr; Click any character';
+                pathCancelBtn.innerText = 'Cancel';
+                pathBanner.classList.add('active');
+                tracePathBtn.classList.add('active');
             }}
         }});
 
-        pathCancelBtn.addEventListener('click', () => {{
-            clearPathFinding();
-        }});
+        pathCancelBtn.addEventListener('click', clearPathFinding);
+
+        function isFactionLink(sid, tid) {{
+            const s = nodeById.get(sid), t = nodeById.get(tid);
+            const ok = n => n && (n.race === activeFactionFilter || n.faction === activeFactionFilter);
+            return ok(s) && ok(t);
+        }}
 
         // ForceGraph Engine Initialization
         Graph = ForceGraph()(document.getElementById('graph-container'))
@@ -1669,62 +1264,32 @@ def generate_obsidian_graph():
             .backgroundColor('rgba(10, 10, 15, 0.45)')
             .linkCurvature(0.2)
             .linkWidth(link => {{
-                const sid = typeof link.source === 'object' ? link.source.id : link.source;
-                const tid = typeof link.target === 'object' ? link.target.id : link.target;
+                const [sid, tid] = linkIds(link);
                 if (highlightedPathLinks.size > 0) return highlightedPathLinks.has(sid + '--' + tid) ? 3.2 : 0.35;
                 if (hoverNode) return (sid === hoverNode.id || tid === hoverNode.id) ? 2.5 : 0.35;
                 if (currentNode) return (sid === currentNode.id || tid === currentNode.id) ? 2.5 : 0.35;
-                
-                if (activeFactionFilter) {{
-                    const sNode = typeof link.source === 'object' ? link.source : gData.nodes.find(n => n.id === sid);
-                    const tNode = typeof link.target === 'object' ? link.target : gData.nodes.find(n => n.id === tid);
-                    const sMatch = sNode && (sNode.race === activeFactionFilter || sNode.faction === activeFactionFilter);
-                    const tMatch = tNode && (tNode.race === activeFactionFilter || tNode.faction === activeFactionFilter);
-                    if (sMatch && tMatch) return 1.5;
-                    return 0.2;
-                }}
-                
+                if (activeFactionFilter) return isFactionLink(sid, tid) ? 1.5 : 0.2;
                 return 0.8;
             }})
             .linkColor(link => {{
-                const sid = typeof link.source === 'object' ? link.source.id : link.source;
-                const tid = typeof link.target === 'object' ? link.target.id : link.target;
-                if (highlightedPathLinks.size > 0) {{
-                    return highlightedPathLinks.has(sid + '--' + tid) ? '#F59E0B' : 'rgba(255,255,255,0.025)';
-                }}
-                if (hoverNode) {{
-                    return (sid === hoverNode.id || tid === hoverNode.id) ? 'rgba(255,255,255,1.0)' : 'rgba(255,255,255,0.025)';
-                }}
-                if (currentNode) {{
-                    return (sid === currentNode.id || tid === currentNode.id) ? 'rgba(245,158,11,1.0)' : 'rgba(255,255,255,0.025)';
-                }}
-
-                if (activeFactionFilter) {{
-                    const sNode = typeof link.source === 'object' ? link.source : gData.nodes.find(n => n.id === sid);
-                    const tNode = typeof link.target === 'object' ? link.target : gData.nodes.find(n => n.id === tid);
-                    const sMatch = sNode && (sNode.race === activeFactionFilter || sNode.faction === activeFactionFilter);
-                    const tMatch = tNode && (tNode.race === activeFactionFilter || tNode.faction === activeFactionFilter);
-                    if (sMatch && tMatch) return 'rgba(255,255,255,0.6)';
-                    return 'rgba(255,255,255,0.025)';
-                }}
-
+                const [sid, tid] = linkIds(link);
+                if (highlightedPathLinks.size > 0) return highlightedPathLinks.has(sid + '--' + tid) ? '#F59E0B' : 'rgba(255,255,255,0.025)';
+                if (hoverNode) return (sid === hoverNode.id || tid === hoverNode.id) ? 'rgba(255,255,255,1.0)' : 'rgba(255,255,255,0.025)';
+                if (currentNode) return (sid === currentNode.id || tid === currentNode.id) ? 'rgba(245,158,11,1.0)' : 'rgba(255,255,255,0.025)';
+                if (activeFactionFilter) return isFactionLink(sid, tid) ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.025)';
                 return 'rgba(255,255,255,0.15)';
             }})
             .linkLineDash(link => {{
                 const cat = getRelCategory(link.type || 'Other').name;
-                if (cat === 'Family') return null;
                 if (cat === 'Rival') return [2, 4];
                 if (cat === 'Military' || cat === 'Organization') return [5, 5];
                 if (cat === 'Allies') return [1, 2];
                 return null;
             }})
             .linkDirectionalParticles(link => {{
-                const sid = typeof link.source === 'object' ? link.source.id : link.source;
-                const tid = typeof link.target === 'object' ? link.target.id : link.target;
-                if (highlightedPathLinks.size > 0 && highlightedPathLinks.has(sid + '--' + tid)) {{
-                    return 4;
-                }}
-                return 0;
+                if (!highlightedPathLinks.size) return 0;
+                const [sid, tid] = linkIds(link);
+                return highlightedPathLinks.has(sid + '--' + tid) ? 4 : 0;
             }})
             .linkDirectionalParticleSpeed(0.008)
             .linkDirectionalParticleWidth(2.5)
@@ -1906,34 +1471,11 @@ def generate_obsidian_graph():
 
                 const hoverCard = document.getElementById('node-hover-card');
                 if (node) {{
-                    const hoverAvatar = document.getElementById('hover-avatar');
-                    const hoverName = document.getElementById('hover-name');
-                    const hoverMeta = document.getElementById('hover-meta');
-                    const hoverConns = document.getElementById('hover-conns');
-                    const sSprite = SPRITE_MAP[node.id];
-
-                    if (sSprite && spriteSheet.complete && spriteSheet.naturalWidth > 0) {{
-                        hoverAvatar.innerText = '';
-                        hoverAvatar.style.backgroundImage = 'url(' + spriteSheet.src + ')';
-                        const avatarSize = 44;
-                        const scale = avatarSize / sSprite.w;
-                        hoverAvatar.style.backgroundSize = (SPRITE_META.sheetWidth * scale) + 'px ' + (SPRITE_META.sheetHeight * scale) + 'px';
-                        hoverAvatar.style.backgroundPosition = '-' + (sSprite.x * scale) + 'px -' + (sSprite.y * scale) + 'px';
-                        hoverAvatar.style.borderColor = node.color;
-                        hoverAvatar.style.boxShadow = '0 0 16px ' + node.color + '77';
-                    }} else {{
-                        hoverAvatar.style.backgroundImage = 'none';
-                        hoverAvatar.style.backgroundColor = '#0F1318';
-                        hoverAvatar.style.borderColor = node.color;
-                        hoverAvatar.style.boxShadow = '0 0 12px ' + node.color + '44';
-                        hoverAvatar.innerText = node.initials || '??';
-                        hoverAvatar.style.color = node.color;
-                    }}
-
-                    hoverName.innerText = node.name;
-                    hoverMeta.innerText = node.race + ' • ' + node.faction;
+                    applyAvatarStyle(document.getElementById('hover-avatar'), node, 44, '0 0 16px ' + node.color + '77', '0 0 12px ' + node.color + '44');
+                    document.getElementById('hover-name').innerText = node.name;
+                    document.getElementById('hover-meta').innerText = node.race + ' • ' + node.faction;
                     const cCount = (nodeConnections[node.id] || []).length;
-                    hoverConns.innerText = cCount + (cCount === 1 ? ' CONNECTION' : ' CONNECTIONS');
+                    document.getElementById('hover-conns').innerText = cCount + (cCount === 1 ? ' CONNECTION' : ' CONNECTIONS');
 
                     const coords = Graph.graph2ScreenCoords(node.x, node.y);
                     hoverCard.style.left = coords.x + 'px';
@@ -1966,8 +1508,7 @@ def generate_obsidian_graph():
         Graph.cooldownTicks(95);
         Graph.d3Force('charge').strength(-160).distanceMax(480);
         Graph.d3Force('link').distance(link => {{
-            const sid = typeof link.source === 'object' ? link.source.id : link.source;
-            const tid = typeof link.target === 'object' ? link.target.id : link.target;
+            const [sid, tid] = linkIds(link);
             if ((sid === 'aizen' && (tid === 'gin' || tid === 'tosen')) || (tid === 'aizen' && (sid === 'gin' || sid === 'tosen'))) return 52;
             const ESPADA_IDS = new Set(['starrk', 'baraggan', 'harribel', 'ulquiorra', 'nnoitra', 'grimmjow', 'zommari', 'szayelaporro', 'aaroniero', 'yammy']);
             if ((sid === 'aizen' && ESPADA_IDS.has(tid)) || (tid === 'aizen' && ESPADA_IDS.has(sid))) return 145;
@@ -1998,17 +1539,6 @@ def generate_obsidian_graph():
                 fitGraphToScreen(200);
             }}
         }});
-
-        // Faction Leaders Map
-        const FACTION_LEADERS = {{
-            'all':         'ichigo',
-            'gotei':       'yamamoto',
-            'wandenreich': 'yhwach',
-            'arrancar':    'aizen',
-            'royal':       'soul_king',
-            'karakura':    'ichigo',
-            'original':    'yamamoto'
-        }};
 
         function getFactionFilter(clusterType) {{
             if (clusterType === 'all') return () => true;
@@ -2050,79 +1580,64 @@ def generate_obsidian_graph():
             return () => true;
         }}
 
-        let currentCluster = 'all';
+        function fitGraphToScreen(duration = 600, opts = null) {{
+            const nodes = (opts && opts.nodes) || ((gData.nodes && gData.nodes.length) ? gData.nodes : RAW_GRAPH.nodes);
+            const b = getBounds(nodes);
+            if (!b) return;
+            const sw = window.innerWidth, sh = window.innerHeight, mob = sw <= 768;
+            if (opts && opts.centerNode) {{
+                const pad = 130, boxW = Math.max(b.maxX - b.minX + pad * 2, 280), boxH = Math.max(b.maxY - b.minY + pad * 2, 280);
+                const cardW = mob ? 0 : 390;
+                const zoom = Math.max(0.65, Math.min(Math.max(sw - cardW - 60, sw * 0.5) / boxW, (mob ? Math.max(sh * 0.5 - 60, 200) : Math.max(sh - 120, 320)) / boxH, 1.8));
+                Graph.centerAt(opts.centerNode.x + (mob ? 0 : (cardW / 2) / zoom), opts.centerNode.y + (mob ? -40 / zoom : 0), duration);
+                Graph.zoom(zoom, duration);
+            }} else if (opts && opts.isPath) {{
+                const zoom = Math.max(0.65, Math.min((sw - (mob ? 20 : 450)) / Math.max(b.maxX - b.minX + 220, 250), (sh - 150) / Math.max(b.maxY - b.minY + 220, 250), 1.6));
+                Graph.centerAt((b.minX + b.maxX) / 2 + (mob ? 0 : 150) / zoom, (b.minY + b.maxY) / 2, duration);
+                Graph.zoom(zoom, duration);
+            }} else {{
+                const pt = mob ? 65 : 75, pb = mob ? 85 : 65, pl = mob ? 25 : 45, pr = mob ? 25 : (sidebar.classList.contains('open') ? 380 : 55);
+                const m = mob ? 40 : 50;
+                const zoom = Math.max(0.15, Math.min(Math.max(sw - pl - pr, 200) / Math.max(b.maxX - b.minX + m * 2, 100), Math.max(sh - pt - pb, 200) / Math.max(b.maxY - b.minY + m * 2, 100), mob ? 0.95 : 1.6));
+                Graph.centerAt((b.minX + b.maxX) / 2 - ((pl - pr) / 2) / zoom, (b.minY + b.maxY) / 2 - ((pt - pb) / 2) / zoom, duration);
+                Graph.zoom(zoom, duration);
+            }}
+        }}
 
-        function fitGraphToScreen(duration = 600) {{
-            const nodes = (gData && gData.nodes && gData.nodes.length > 0) ? gData.nodes : RAW_GRAPH.nodes;
-            if (!nodes || nodes.length === 0) return;
+        function pinAt(node, x, y, pin = true) {{
+            if (!node) return;
+            node.x = x; node.y = y; node.vx = 0; node.vy = 0;
+            if (pin) {{ node.fx = x; node.fy = y; }}
+        }}
 
-            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-            nodes.forEach(n => {{
-                if (n.x === undefined || n.y === undefined) return;
-                if (n.x < minX) minX = n.x;
-                if (n.x > maxX) maxX = n.x;
-                if (n.y < minY) minY = n.y;
-                if (n.y > maxY) maxY = n.y;
+        function placeRing(nodes, radius, startAngle = -Math.PI / 2, pin = true, stepAngle = null, cx = 0, cy = 0) {{
+            const step = stepAngle !== null ? stepAngle : (2 * Math.PI / Math.max(nodes.length, 1));
+            nodes.forEach((node, i) => {{
+                const a = startAngle + i * step;
+                pinAt(node, cx + Math.round(Math.cos(a) * radius), cy + Math.round(Math.sin(a) * radius), pin);
             }});
-
-            if (!isFinite(minX)) return;
-
-            const isMobile = window.innerWidth <= 768;
-            const padTop = isMobile ? 65 : 75;
-            const padBottom = isMobile ? 85 : 65;
-            const padLeft = isMobile ? 25 : 45;
-            const padRight = isMobile ? 25 : (sidebar && sidebar.classList.contains('open') ? 380 : 55);
-
-            const availW = Math.max(window.innerWidth - padLeft - padRight, 200);
-            const availH = Math.max(window.innerHeight - padTop - padBottom, 200);
-
-            const margin = isMobile ? 40 : 50;
-            const boxW = Math.max(maxX - minX + margin * 2, 100);
-            const boxH = Math.max(maxY - minY + margin * 2, 100);
-
-            const targetZoom = Math.min(availW / boxW, availH / boxH);
-            const clampedZoom = Math.max(0.15, Math.min(targetZoom, isMobile ? 0.95 : 1.6));
-
-            const boxCenterX = (minX + maxX) / 2;
-            const boxCenterY = (minY + maxY) / 2;
-
-            const centerShiftX = ((padLeft - padRight) / 2) / clampedZoom;
-            const centerShiftY = ((padTop - padBottom) / 2) / clampedZoom;
-
-            Graph.centerAt(boxCenterX - centerShiftX, boxCenterY - centerShiftY, duration);
-            Graph.zoom(clampedZoom, duration);
         }}
 
         function jumpToCluster(clusterType) {{
-            currentCluster = clusterType;
             document.querySelectorAll('.cluster-btn').forEach(btn => {{
                 btn.classList.toggle('active', btn.dataset.cluster === clusterType);
             }});
 
+            const CLUSTER_BGS = {{
+                arrancar:    ["url('Asset/Background/weikomundo.jpg')", '0.55'],
+                original:    ["url('Asset/Background/Original 13.png')", '0.60'],
+                royal:       ["url('Asset/Background/Soul Palace.jpg')", '0.55'],
+                wandenreich: ["url('Asset/Background/Quency base.jpg')", '0.55']
+            }};
             const dynamicBg = document.getElementById('dynamic-bg');
             if (dynamicBg) {{
-                if (clusterType === 'arrancar') {{
-                    dynamicBg.style.backgroundImage = "url('Asset/Background/weikomundo.jpg')";
-                    dynamicBg.style.opacity = '0.55';
-                }} else if (clusterType === 'original') {{
-                    dynamicBg.style.backgroundImage = "url('Asset/Background/Original 13.png')";
-                    dynamicBg.style.opacity = '0.60';
-                }} else if (clusterType === 'royal') {{
-                    dynamicBg.style.backgroundImage = "url('Asset/Background/Soul Palace.jpg')";
-                    dynamicBg.style.opacity = '0.55';
-                }} else if (clusterType === 'wandenreich') {{
-                    dynamicBg.style.backgroundImage = "url('Asset/Background/Quency base.jpg')";
-                    dynamicBg.style.opacity = '0.55';
-                }} else {{
-                    dynamicBg.style.opacity = '0';
-                }}
+                const bg = CLUSTER_BGS[clusterType];
+                if (bg) {{ dynamicBg.style.backgroundImage = bg[0]; dynamicBg.style.opacity = bg[1]; }}
+                else {{ dynamicBg.style.opacity = '0'; }}
             }}
 
-            const filterFn = getFactionFilter(clusterType);
-            const leaderId = FACTION_LEADERS[clusterType] || 'ichigo';
-
-            const filteredNodes = RAW_GRAPH.nodes.filter(filterFn).map(n => {{
-                const existing = gData.nodes.find(en => en.id === n.id);
+            const filteredNodes = RAW_GRAPH.nodes.filter(getFactionFilter(clusterType)).map(n => {{
+                const existing = nodeById.get(n.id);
                 const clone = Object.assign({{}}, n);
                 if (existing) {{
                     clone.x = existing.x; clone.y = existing.y;
@@ -2131,280 +1646,136 @@ def generate_obsidian_graph():
                 delete clone.fx; delete clone.fy;
                 return clone;
             }});
+            const byId = new Map(filteredNodes.map(n => [n.id, n]));
 
-            const validNodeIds = new Set(filteredNodes.map(n => n.id));
+            const filteredLinks = RAW_GRAPH.links.map(l => {{
+                const [sid, tid] = linkIds(l);
+                return (byId.has(sid) && byId.has(tid)) ? {{ source: sid, target: tid, type: l.type, label: l.label }} : null;
+            }}).filter(Boolean);
 
-            const filteredLinks = RAW_GRAPH.links.filter(l => {{
-                const sid = typeof l.source === 'object' ? l.source.id : l.source;
-                const tid = typeof l.target === 'object' ? l.target.id : l.target;
-                return validNodeIds.has(sid) && validNodeIds.has(tid);
-            }}).map(l => ({{
-                source: typeof l.source === 'object' ? l.source.id : l.source,
-                target: typeof l.target === 'object' ? l.target.id : l.target,
-                type: l.type, label: l.label
-            }}));
-
-            // Specialized cluster geometric layouts
             if (clusterType === 'arrancar') {{
-                // Pin Aizen at center
-                const aizen = filteredNodes.find(n => n.id === 'aizen');
-                if (aizen) {{ aizen.x = 0; aizen.y = 0; aizen.fx = 0; aizen.fy = 0; }}
+                pinAt(byId.get('aizen'), 0, 0);
+                pinAt(byId.get('gin'), -36, -52);
+                pinAt(byId.get('tosen'), 36, -52);
 
-                // Gin & Tosen flanking Aizen
-                const gin = filteredNodes.find(n => n.id === 'gin');
-                if (gin) {{ gin.x = -36; gin.y = -52; gin.fx = -36; gin.fy = -52; }}
-                const tosen = filteredNodes.find(n => n.id === 'tosen');
-                if (tosen) {{ tosen.x = 36; tosen.y = -52; tosen.fx = 36; tosen.fy = -52; }}
-
-                // 10 Espada in anticlockwise rank ring
                 const ESPADA_ORDER = ['starrk', 'baraggan', 'harribel', 'ulquiorra', 'nnoitra', 'grimmjow', 'zommari', 'szayelaporro', 'aaroniero', 'yammy'];
-                const R_ESPADA = 145;
                 const espCoords = {{}};
                 ESPADA_ORDER.forEach((id, idx) => {{
-                    const angle = -Math.PI / 2 - (idx * (2 * Math.PI / ESPADA_ORDER.length));
-                    const ex = Math.round(Math.cos(angle) * R_ESPADA);
-                    const ey = Math.round(Math.sin(angle) * R_ESPADA);
-                    espCoords[id] = {{ x: ex, y: ey, angle: angle }};
-                    const node = filteredNodes.find(n => n.id === id);
-                    if (node) {{
-                        node.x = ex; node.y = ey; node.fx = ex; node.fy = ey; node.vx = 0; node.vy = 0;
-                    }}
+                    const angle = -Math.PI / 2 - idx * (2 * Math.PI / ESPADA_ORDER.length);
+                    const ex = Math.round(Math.cos(angle) * 145), ey = Math.round(Math.sin(angle) * 145);
+                    espCoords[id] = {{ angle }};
+                    pinAt(byId.get(id), ex, ey);
                 }});
 
-                // Fracción radial offsets
                 const fracMasterMap = {{
-                    'lilynette': 'starrk',
-                    'charlotte': 'baraggan', 'findorr': 'baraggan', 'ggio': 'baraggan',
-                    'poww': 'baraggan', 'abirama': 'baraggan', 'nirgge': 'baraggan', 'ikomikidomoe': 'baraggan',
-                    'sunsun': 'harribel', 'milarose': 'harribel', 'apacci': 'harribel', 'ayon': 'harribel',
-                    'tesla': 'nnoitra', 'nelliel': 'nnoitra', 'pesche': 'nnoitra', 'dondochakka': 'nnoitra', 'bawabawa': 'nnoitra',
-                    'shawlong': 'grimmjow', 'edrad': 'grimmjow', 'ylfordt': 'grimmjow', 'diroy': 'grimmjow', 'nakim': 'grimmjow', 'luppi': 'grimmjow',
-                    'lumina': 'szayelaporro', 'medazeppi': 'szayelaporro', 'roka_paramia': 'szayelaporro',
-                    'kukkapuro': 'yammy', 'aldegor': 'ulquiorra'
+                    lilynette: 'starrk', charlotte: 'baraggan', findorr: 'baraggan', ggio: 'baraggan',
+                    poww: 'baraggan', abirama: 'baraggan', nirgge: 'baraggan', ikomikidomoe: 'baraggan',
+                    sunsun: 'harribel', milarose: 'harribel', apacci: 'harribel', ayon: 'harribel',
+                    tesla: 'nnoitra', nelliel: 'nnoitra', pesche: 'nnoitra', dondochakka: 'nnoitra', bawabawa: 'nnoitra',
+                    shawlong: 'grimmjow', edrad: 'grimmjow', ylfordt: 'grimmjow', diroy: 'grimmjow', nakim: 'grimmjow', luppi: 'grimmjow',
+                    lumina: 'szayelaporro', medazeppi: 'szayelaporro', roka_paramia: 'szayelaporro',
+                    kukkapuro: 'yammy', aldegor: 'ulquiorra'
                 }};
-
                 const masterChildCounts = {{}};
+                const espSet = new Set(['aizen', 'gin', 'tosen', ...ESPADA_ORDER]);
+                const privaron = ['dordoni', 'cirucci', 'gantenbainne'];
+                const exequias = ['rudbornn', 'aisslinger', 'demoura'];
+                const lolymen = ['loly', 'menoly'];
                 filteredNodes.forEach(node => {{
-                    if (node.id === 'aizen' || node.id === 'gin' || node.id === 'tosen' || ESPADA_ORDER.includes(node.id)) return;
+                    if (espSet.has(node.id)) return;
                     const masterId = fracMasterMap[node.id];
+                    let ang, dist;
                     if (masterId && espCoords[masterId]) {{
-                        const m = espCoords[masterId];
-                        masterChildCounts[masterId] = (masterChildCounts[masterId] || 0) + 1;
-                        const count = masterChildCounts[masterId];
-                        const spreadAngle = m.angle + (count % 2 === 1 ? 1 : -1) * Math.ceil(count / 2) * 0.18;
-                        const dist = (node.id === 'ikomikidomoe' ? 275 : 250);
-                        node.x = Math.round(Math.cos(spreadAngle) * dist);
-                        node.y = Math.round(Math.sin(spreadAngle) * dist);
-                        node.vx = 0; node.vy = 0;
-                    }} else if (['dordoni', 'cirucci', 'gantenbainne'].includes(node.id)) {{
-                        const pIdx = ['dordoni', 'cirucci', 'gantenbainne'].indexOf(node.id);
-                        const pAngle = 0.08 + pIdx * 0.22;
-                        node.x = Math.round(Math.cos(pAngle) * 265);
-                        node.y = Math.round(Math.sin(pAngle) * 265);
-                        node.vx = 0; node.vy = 0;
-                    }} else if (['rudbornn', 'aisslinger', 'demoura'].includes(node.id)) {{
-                        const eIdx = ['rudbornn', 'aisslinger', 'demoura'].indexOf(node.id);
-                        const eAngle = Math.PI * 0.45 + (eIdx - 1) * 0.2;
-                        node.x = Math.round(Math.cos(eAngle) * 265);
-                        node.y = Math.round(Math.sin(eAngle) * 265);
-                        node.vx = 0; node.vy = 0;
-                    }} else if (['loly', 'menoly'].includes(node.id)) {{
-                        const lIdx = ['loly', 'menoly'].indexOf(node.id);
-                        const lAngle = -Math.PI * 0.75 + (lIdx === 0 ? -0.15 : 0.15);
-                        node.x = Math.round(Math.cos(lAngle) * 235);
-                        node.y = Math.round(Math.sin(lAngle) * 235);
-                        node.vx = 0; node.vy = 0;
+                        const cnt = (masterChildCounts[masterId] = (masterChildCounts[masterId] || 0) + 1);
+                        ang = espCoords[masterId].angle + (cnt % 2 ? 1 : -1) * Math.ceil(cnt / 2) * 0.18;
+                        dist = node.id === 'ikomikidomoe' ? 275 : 250;
+                    }} else if (privaron.includes(node.id)) {{
+                        ang = 0.08 + privaron.indexOf(node.id) * 0.22; dist = 265;
+                    }} else if (exequias.includes(node.id)) {{
+                        ang = Math.PI * 0.45 + (exequias.indexOf(node.id) - 1) * 0.2; dist = 265;
+                    }} else if (lolymen.includes(node.id)) {{
+                        ang = -Math.PI * 0.75 + (lolymen.indexOf(node.id) === 0 ? -0.15 : 0.15); dist = 235;
                     }} else {{
-                        const randAngle = Math.random() * Math.PI * 2;
-                        node.x = Math.round(Math.cos(randAngle) * 255);
-                        node.y = Math.round(Math.sin(randAngle) * 255);
-                        node.vx = 0; node.vy = 0;
+                        ang = Math.random() * Math.PI * 2; dist = 255;
                     }}
+                    pinAt(node, Math.round(Math.cos(ang) * dist), Math.round(Math.sin(ang) * dist), false);
                 }});
             }} else if (clusterType === 'gotei') {{
-                // Yamamoto pinned at Center
-                const yama = filteredNodes.find(n => n.id === 'yamamoto');
-                if (yama) {{ yama.x = 0; yama.y = 0; yama.fx = 0; yama.fy = 0; yama.vx = 0; yama.vy = 0; }}
-                
+                pinAt(byId.get('yamamoto'), 0, 0);
+                pinAt(byId.get('sasakibe'), 0, -85);
                 const SQUADS = [
-                    {{ cap: 'soi_fon',   subs: ['omaeda'] }},
-                    {{ cap: 'gin',       subs: ['kira'] }},
-                    {{ cap: 'unohana',   subs: ['isane'] }},
-                    {{ cap: 'aizen',     subs: ['momo'] }},
-                    {{ cap: 'byakuya',   subs: ['renji', 'rukia'] }},
-                    {{ cap: 'komamura',  subs: [] }},
-                    {{ cap: 'shunsui',   subs: ['nanao'] }},
-                    {{ cap: 'tosen',     subs: ['hisagi'] }},
-                    {{ cap: 'hitsugaya', subs: ['rangiku'] }},
-                    {{ cap: 'kenpachi',  subs: ['yachiru'] }},
-                    {{ cap: 'mayuri',    subs: ['nemu'] }},
-                    {{ cap: 'ukitake',   subs: [] }}
+                    {{ cap: 'soi_fon', subs: ['omaeda'] }}, {{ cap: 'gin', subs: ['kira'] }},
+                    {{ cap: 'unohana', subs: ['isane'] }}, {{ cap: 'aizen', subs: ['momo'] }},
+                    {{ cap: 'byakuya', subs: ['renji', 'rukia'] }}, {{ cap: 'komamura', subs: [] }},
+                    {{ cap: 'shunsui', subs: ['nanao'] }}, {{ cap: 'tosen', subs: ['hisagi'] }},
+                    {{ cap: 'hitsugaya', subs: ['rangiku'] }}, {{ cap: 'kenpachi', subs: ['yachiru'] }},
+                    {{ cap: 'mayuri', subs: ['nemu'] }}, {{ cap: 'ukitake', subs: [] }}
                 ];
-                
-                const R_CAPTAINS = 220;
-                const R_SUBS = 100;
-                let placedIds = new Set(['yamamoto', 'sasakibe']);
-                
-                const sasakibe = filteredNodes.find(n => n.id === 'sasakibe');
-                if (sasakibe) {{
-                    sasakibe.x = 0; sasakibe.y = -85;
-                    sasakibe.fx = 0; sasakibe.fy = -85;
-                    sasakibe.vx = 0; sasakibe.vy = 0;
-                }}
-                
+                const placedIds = new Set(['yamamoto', 'sasakibe']);
                 SQUADS.forEach((squad, i) => {{
-                    const capNode = filteredNodes.find(n => n.id === squad.cap);
-                    const angle = -Math.PI / 2 - (i * (2 * Math.PI / SQUADS.length));
-                    if (capNode) {{
-                        capNode.x = Math.round(Math.cos(angle) * R_CAPTAINS);
-                        capNode.y = Math.round(Math.sin(angle) * R_CAPTAINS);
-                        capNode.fx = capNode.x; capNode.fy = capNode.y;
-                        capNode.vx = 0; capNode.vy = 0;
-                        placedIds.add(capNode.id);
-                        
-                        const subNodes = filteredNodes.filter(n => squad.subs.includes(n.id));
-                        subNodes.forEach((subNode, j) => {{
-                            const subAngle = angle + (j - (subNodes.length - 1)/2) * 0.4;
-                            subNode.x = capNode.x + Math.round(Math.cos(subAngle) * R_SUBS);
-                            subNode.y = capNode.y + Math.round(Math.sin(subAngle) * R_SUBS);
-                            subNode.fx = subNode.x; subNode.fy = subNode.y;
-                            subNode.vx = 0; subNode.vy = 0;
-                            placedIds.add(subNode.id);
-                        }});
-                    }}
+                    const cap = byId.get(squad.cap);
+                    if (!cap) return;
+                    const angle = -Math.PI / 2 - i * (2 * Math.PI / SQUADS.length);
+                    pinAt(cap, Math.round(Math.cos(angle) * 220), Math.round(Math.sin(angle) * 220));
+                    placedIds.add(cap.id);
+                    const subs = squad.subs.map(id => byId.get(id)).filter(Boolean);
+                    subs.forEach((sub, j) => {{
+                        const subAngle = angle + (j - (subs.length - 1) / 2) * 0.4;
+                        pinAt(sub, cap.x + Math.round(Math.cos(subAngle) * 100), cap.y + Math.round(Math.sin(subAngle) * 100));
+                        placedIds.add(sub.id);
+                    }});
                 }});
-                
-                const otherNodes = filteredNodes.filter(n => !placedIds.has(n.id));
-                const R_OUTER = 380;
-                otherNodes.forEach((node, i) => {{
-                    const angle = -Math.PI / 2 + (i * (2 * Math.PI / Math.max(otherNodes.length, 1)));
-                    node.x = Math.round(Math.cos(angle) * R_OUTER);
-                    node.y = Math.round(Math.sin(angle) * R_OUTER);
-                    node.vx = 0; node.vy = 0;
-                }});
+                placeRing(filteredNodes.filter(n => !placedIds.has(n.id)), 380, -Math.PI / 2, false);
             }} else if (clusterType === 'wandenreich') {{
-                const yhwach = filteredNodes.find(n => n.id === 'yhwach');
-                if (yhwach) {{ yhwach.x = 0; yhwach.y = 0; yhwach.fx = 0; yhwach.fy = 0; yhwach.vx = 0; yhwach.vy = 0; }}
-                
+                pinAt(byId.get('yhwach'), 0, 0);
                 const rightHands = ['jugram', 'uryu'];
-                rightHands.forEach((id, i) => {{
-                    const node = filteredNodes.find(n => n.id === id);
-                    if (node) {{
-                        const angle = i === 0 ? Math.PI : 0;
-                        node.x = Math.round(Math.cos(angle) * 120);
-                        node.y = Math.round(Math.sin(angle) * 120);
-                        node.fx = node.x; node.fy = node.y; node.vx = 0; node.vy = 0;
-                    }}
-                }});
-
-                const elites = filteredNodes.filter(n => n.val === 11.5 && n.id !== 'yhwach' && !rightHands.includes(n.id));
-                elites.forEach((node, i) => {{
-                    const angle = -Math.PI / 2 + (i * (2 * Math.PI / elites.length));
-                    node.x = Math.round(Math.cos(angle) * 260);
-                    node.y = Math.round(Math.sin(angle) * 260);
-                    node.fx = node.x; node.fy = node.y; node.vx = 0; node.vy = 0;
-                }});
-
-                const standard = filteredNodes.filter(n => n.val === 8.5);
-                standard.forEach((node, i) => {{
-                    const angle = -Math.PI / 2 + (i * (2 * Math.PI / standard.length));
-                    node.x = Math.round(Math.cos(angle) * 440);
-                    node.y = Math.round(Math.sin(angle) * 440);
-                    node.fx = node.x; node.fy = node.y; node.vx = 0; node.vy = 0;
-                }});
-
-                const minor = filteredNodes.filter(n => n.val < 8.5);
-                minor.forEach((node, i) => {{
-                    const angle = -Math.PI / 2 + (i * (2 * Math.PI / Math.max(minor.length, 1)));
-                    node.x = Math.round(Math.cos(angle) * 620);
-                    node.y = Math.round(Math.sin(angle) * 620);
-                    node.fx = node.x; node.fy = node.y; node.vx = 0; node.vy = 0;
-                }});
+                pinAt(byId.get('jugram'), -120, 0);
+                pinAt(byId.get('uryu'), 120, 0);
+                placeRing(filteredNodes.filter(n => n.val === 11.5 && n.id !== 'yhwach' && !rightHands.includes(n.id)), 260);
+                placeRing(filteredNodes.filter(n => n.val === 8.5), 440);
+                placeRing(filteredNodes.filter(n => n.val < 8.5), 620);
             }} else if (clusterType === 'original') {{
-                const yama = filteredNodes.find(n => n.id === 'yamamoto');
-                if (yama) {{ yama.x = 0; yama.y = 0; yama.fx = 0; yama.fy = 0; yama.vx = 0; yama.vy = 0; }}
-                
-                const captains = filteredNodes.filter(n => n.id !== 'yamamoto');
-                const R = 180;
-                captains.forEach((node, i) => {{
-                    const angle = -Math.PI / 2 + (i * (2 * Math.PI / Math.max(captains.length, 1)));
-                    node.x = Math.round(Math.cos(angle) * R);
-                    node.y = Math.round(Math.sin(angle) * R);
-                    node.fx = node.x; node.fy = node.y;
-                    node.vx = 0; node.vy = 0;
-                }});
+                pinAt(byId.get('yamamoto'), 0, 0);
+                placeRing(filteredNodes.filter(n => n.id !== 'yamamoto'), 180);
             }} else if (clusterType === 'karakura') {{
-                const VISORED_IDS      = ['shinji', 'hiyori', 'love', 'rose', 'kensei', 'mashiro', 'lisa', 'hachigen'];
-                const URAHARA_SHOP_IDS = ['urahara', 'yoruichi', 'tessai', 'jinta', 'ururu'];
-                const FULLBRINGER_IDS  = ['ginjo', 'tsukishima', 'riruka', 'yukio', 'jackie', 'moe', 'giriko', 'chad', 'aura_michibane'];
-
-                const ichigo = filteredNodes.find(n => n.id === 'ichigo');
-                if (ichigo) {{ ichigo.x = 0; ichigo.y = 0; ichigo.fx = 0; ichigo.fy = 0; ichigo.vx = 0; ichigo.vy = 0; }}
-
-                const urahara = filteredNodes.find(n => n.id === 'urahara');
-                if (urahara) {{ urahara.x = -130; urahara.y = -60; urahara.fx = -130; urahara.fy = -60; }}
-                const shopNodes = filteredNodes.filter(n => URAHARA_SHOP_IDS.includes(n.id) && n.id !== 'urahara');
-                shopNodes.forEach((node, i) => {{
-                    const angle = Math.PI * 0.75 + (i * (Math.PI / Math.max(shopNodes.length, 1)));
-                    node.x = -130 + Math.cos(angle) * 75; node.y = -60 + Math.sin(angle) * 75;
-                    node.vx = 0; node.vy = 0;
-                }});
-
-                const shinji = filteredNodes.find(n => n.id === 'shinji');
-                if (shinji) {{ shinji.x = 130; shinji.y = -60; shinji.fx = 130; shinji.fy = -60; }}
+                const VISORED_IDS = ['shinji', 'hiyori', 'love', 'rose', 'kensei', 'mashiro', 'lisa', 'hachigen'];
+                const SHOP_IDS = ['urahara', 'yoruichi', 'tessai', 'jinta', 'ururu'];
+                const FB_IDS = ['ginjo', 'tsukishima', 'riruka', 'yukio', 'jackie', 'moe', 'giriko', 'chad', 'aura_michibane'];
+                pinAt(byId.get('ichigo'), 0, 0);
+                pinAt(byId.get('urahara'), -130, -60);
+                pinAt(byId.get('shinji'), 130, -60);
+                pinAt(byId.get('ginjo'), 0, 150);
+                const shopNodes = filteredNodes.filter(n => SHOP_IDS.includes(n.id) && n.id !== 'urahara');
+                placeRing(shopNodes, 75, Math.PI * 0.75, false, Math.PI / Math.max(shopNodes.length, 1), -130, -60);
                 const visNodes = filteredNodes.filter(n => VISORED_IDS.includes(n.id) && n.id !== 'shinji');
-                visNodes.forEach((node, i) => {{
-                    const angle = -Math.PI * 0.25 + (i * (Math.PI / Math.max(visNodes.length, 1)));
-                    node.x = 130 + Math.cos(angle) * 85; node.y = -60 + Math.sin(angle) * 85;
-                    node.vx = 0; node.vy = 0;
-                }});
-
-                const ginjo = filteredNodes.find(n => n.id === 'ginjo');
-                if (ginjo) {{ ginjo.x = 0; ginjo.y = 150; ginjo.fx = 0; ginjo.fy = 150; }}
-                const fbNodes = filteredNodes.filter(n => FULLBRINGER_IDS.includes(n.id) && n.id !== 'ginjo');
-                fbNodes.forEach((node, i) => {{
-                    const angle = Math.PI * 0.1 + (i * (Math.PI * 0.8 / Math.max(fbNodes.length, 1)));
-                    node.x = 0 + Math.cos(angle) * 90; node.y = 150 + Math.sin(angle) * 90;
-                    node.vx = 0; node.vy = 0;
-                }});
-
-                const PLACED_IDS = new Set(['ichigo', ...VISORED_IDS, ...URAHARA_SHOP_IDS, ...FULLBRINGER_IDS]);
-                const humanNodes = filteredNodes.filter(n => !PLACED_IDS.has(n.id));
-                const R_OUTER = 250;
-                humanNodes.forEach((node, i) => {{
-                    const angle = -Math.PI / 2 + (i * (2 * Math.PI / Math.max(humanNodes.length, 1)));
-                    const jitter = (i % 2 === 0) ? 25 : -25;
-                    node.x = Math.round(Math.cos(angle) * (R_OUTER + jitter));
-                    node.y = Math.round(Math.sin(angle) * (R_OUTER + jitter));
-                    node.vx = 0; node.vy = 0;
+                placeRing(visNodes, 85, -Math.PI * 0.25, false, Math.PI / Math.max(visNodes.length, 1), 130, -60);
+                const fbNodes = filteredNodes.filter(n => FB_IDS.includes(n.id) && n.id !== 'ginjo');
+                placeRing(fbNodes, 90, Math.PI * 0.1, false, Math.PI * 0.8 / Math.max(fbNodes.length, 1), 0, 150);
+                const placed = new Set(['ichigo', ...VISORED_IDS, ...SHOP_IDS, ...FB_IDS]);
+                filteredNodes.filter(n => !placed.has(n.id)).forEach((node, i, arr) => {{
+                    const angle = -Math.PI / 2 + i * (2 * Math.PI / Math.max(arr.length, 1));
+                    const r = 250 + (i % 2 === 0 ? 25 : -25);
+                    pinAt(node, Math.round(Math.cos(angle) * r), Math.round(Math.sin(angle) * r), false);
                 }});
             }} else if (clusterType === 'royal') {{
-                const skNode = filteredNodes.find(n => n.id === 'soul_king');
-                if (skNode) {{ skNode.x = 0; skNode.y = 0; skNode.fx = 0; skNode.fy = 0; skNode.vx = 0; skNode.vy = 0; }}
+                pinAt(byId.get('soul_king'), 0, 0);
                 const zeroOrder = ['ichibei', 'tenjiro', 'kirio', 'oetsu', 'senjumaru'];
-                const guards = zeroOrder.map(id => filteredNodes.find(n => n.id === id)).filter(Boolean);
+                const guards = zeroOrder.map(id => byId.get(id)).filter(Boolean);
                 const extra = filteredNodes.filter(n => n.id !== 'soul_king' && !zeroOrder.includes(n.id));
-                const ring = [...guards, ...extra];
-                const R_ROYAL = 155;
-                ring.forEach((node, i) => {{
-                    const angle = -Math.PI / 2 + (i * (2 * Math.PI / Math.max(ring.length, 1)));
-                    node.x = Math.round(Math.cos(angle) * R_ROYAL);
-                    node.y = Math.round(Math.sin(angle) * R_ROYAL);
-                    node.fx = node.x; node.fy = node.y;
-                    node.vx = 0; node.vy = 0;
-                }});
+                placeRing([...guards, ...extra], 155);
             }} else {{
-                const leader = filteredNodes.find(n => n.id === leaderId);
+                const leader = byId.get('ichigo');
                 if (leader) {{ leader.x = 0; leader.y = 0; leader.fx = 0; leader.fy = 0; }}
             }}
 
             gData.nodes = filteredNodes;
             gData.links = filteredLinks;
+            rebuildNodeMap();
             Graph.graphData({{ nodes: filteredNodes, links: filteredLinks }});
             Graph.d3ReheatSimulation();
-            setTimeout(() => {{ fitGraphToScreen(700); }}, 400);
+            setTimeout(() => fitGraphToScreen(700), 400);
 
-            if (currentNode && !validNodeIds.has(currentNode.id)) {{
+            if (currentNode && !byId.has(currentNode.id)) {{
                 sidebar.classList.remove('open');
                 document.body.classList.remove('sidebar-open');
                 closeAllPanels();
@@ -2413,9 +1784,7 @@ def generate_obsidian_graph():
                 miniLegend.classList.remove('hidden');
                 currentNode = null;
             }}
-            if (pathFindingFrom && !validNodeIds.has(pathFindingFrom.id)) {{
-                clearPathFinding();
-            }}
+            if (pathFindingFrom && !byId.has(pathFindingFrom.id)) clearPathFinding();
         }}
 
         document.querySelectorAll('.cluster-btn').forEach(btn => {{
@@ -2425,15 +1794,10 @@ def generate_obsidian_graph():
         document.querySelectorAll('.faction-filter').forEach(el => {{
             el.addEventListener('click', () => {{
                 const fac = el.dataset.faction;
-                if (activeFactionFilter === fac) {{
-                    activeFactionFilter = null;
-                    el.style.border = 'none';
-                    el.style.background = 'transparent';
-                }} else {{
-                    activeFactionFilter = fac;
-                    document.querySelectorAll('.faction-filter').forEach(f => {{
-                        f.style.border = 'none'; f.style.background = 'transparent';
-                    }});
+                const toggleOff = activeFactionFilter === fac;
+                activeFactionFilter = toggleOff ? null : fac;
+                document.querySelectorAll('.faction-filter').forEach(f => {{ f.style.border = 'none'; f.style.background = 'transparent'; }});
+                if (!toggleOff) {{
                     el.style.border = '1px solid rgba(255,255,255,0.4)';
                     el.style.background = 'rgba(255,255,255,0.1)';
                     el.style.borderRadius = '4px';
@@ -2441,76 +1805,58 @@ def generate_obsidian_graph():
             }});
         }});
 
-        // Keyboard Shortcuts (Ctrl+K search, Esc close)
-        document.addEventListener('keydown', e => {{
-            if (e.target && e.target.id === 'search-input') return;
-
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {{
-                e.preventDefault();
-                if (searchOverlay.classList.contains('open')) {{
-                    closeSearch();
-                }} else {{
-                    openSearch();
-                }}
-            }}
-            if (e.key === 'Escape') {{
-                if (searchOverlay.classList.contains('open')) {{
-                    closeSearch();
-                }} else if (currentNode || highlightedPathNodes.size > 0) {{
-                    deselectNode();
-                }}
-            }}
-        }});
-
         // Quick Search (Ctrl+K)
         const searchOverlay = document.getElementById('search-overlay');
         const searchInput = document.getElementById('search-input');
         const searchResults = document.getElementById('search-results');
         let activeIdx = -1;
+        let searchMatches = [];
 
-        function openSearch() {{
-            searchOverlay.classList.add('open');
+        function toggleSearch(open) {{
+            searchOverlay.classList.toggle('open', open);
             searchInput.value = '';
             searchResults.innerHTML = '';
+            searchMatches = [];
             activeIdx = -1;
-            setTimeout(() => searchInput.focus(), 50);
+            if (open) setTimeout(() => searchInput.focus(), 50);
         }}
 
-        function closeSearch() {{
-            searchOverlay.classList.remove('open');
-            searchInput.value = '';
-            searchResults.innerHTML = '';
-            activeIdx = -1;
-        }}
+        document.addEventListener('keydown', e => {{
+            if (e.target && e.target.id === 'search-input') return;
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {{
+                e.preventDefault();
+                toggleSearch(!searchOverlay.classList.contains('open'));
+            }} else if (e.key === 'Escape') {{
+                if (searchOverlay.classList.contains('open')) toggleSearch(false);
+                else if (currentNode || highlightedPathNodes.size > 0) deselectNode();
+            }}
+        }});
 
-        function navigateToNode(node) {{
-            closeSearch();
-            let activeNode = gData.nodes.find(n => n.id === node.id);
-            if (!activeNode) {{
+        function selectOrFocusNode(id) {{
+            let node = nodeById.get(id);
+            if (!node) {{
                 jumpToCluster('all');
-                activeNode = gData.nodes.find(n => n.id === node.id) || node;
+                node = nodeById.get(id);
             }}
-            if (pathFindingFrom) {{
-                executePathFinding(activeNode);
-            }} else {{
-                selectNode(activeNode, true);
-            }}
+            if (!node) return null;
+            if (pathFindingFrom) executePathFinding(node);
+            else selectNode(node, true);
+            return node;
         }}
 
         function renderResults(query) {{
-            if (!query) {{ searchResults.innerHTML = ''; activeIdx = -1; return; }}
+            if (!query) {{ searchResults.innerHTML = ''; searchMatches = []; activeIdx = -1; return; }}
             const q = query.toLowerCase().trim();
+            searchMatches = RAW_GRAPH.nodes.filter(n => n.name.toLowerCase().includes(q) || n.faction.toLowerCase().includes(q) || n.race.toLowerCase().includes(q)).slice(0, 12);
 
-            let matches = RAW_GRAPH.nodes.filter(n => n.name.toLowerCase().includes(q) || n.faction.toLowerCase().includes(q) || n.race.toLowerCase().includes(q)).slice(0, 12);
-
-            if (matches.length === 0) {{
+            if (!searchMatches.length) {{
                 activeIdx = -1;
                 searchResults.innerHTML = '<div style="padding:16px 20px;font-size:12px;color:#888;text-align:center;line-height:1.6;">No character matching query.<br><span style="font-size:10px;color:#555;">Try searching another name or faction.</span></div>';
                 return;
             }}
 
             activeIdx = 0;
-            searchResults.innerHTML = matches.map((n, i) =>
+            searchResults.innerHTML = searchMatches.map((n, i) =>
                 '<div class="search-result' + (i === 0 ? ' active' : '') + '" data-idx="' + i + '">' +
                 '<span class="dot" style="background:' + n.color + ';box-shadow:0 0 4px ' + n.color + '"></span>' +
                 '<span class="sr-name">' + escapeHtml(n.name) + '</span>' +
@@ -2519,53 +1865,41 @@ def generate_obsidian_graph():
             ).join('');
 
             searchResults.querySelectorAll('.search-result').forEach((el, i) => {{
-                el.addEventListener('click', () => navigateToNode(matches[i]));
+                el.addEventListener('click', () => {{ toggleSearch(false); selectOrFocusNode(searchMatches[i].id); }});
             }});
         }}
 
-        searchInput.addEventListener('input', e => {{
-            renderResults(e.target.value);
-        }});
+        searchInput.addEventListener('input', e => renderResults(e.target.value));
 
         searchInput.addEventListener('keydown', e => {{
             const items = searchResults.querySelectorAll('.search-result');
-            if (e.key === 'ArrowDown') {{
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {{
                 e.preventDefault();
-                activeIdx = Math.min(activeIdx + 1, items.length - 1);
-                items.forEach((el, i) => el.classList.toggle('active', i === activeIdx));
-                if (items[activeIdx]) items[activeIdx].scrollIntoView({{ block: 'nearest' }});
-            }} else if (e.key === 'ArrowUp') {{
-                e.preventDefault();
-                activeIdx = Math.max(activeIdx - 1, 0);
+                activeIdx = e.key === 'ArrowDown' ? Math.min(activeIdx + 1, items.length - 1) : Math.max(activeIdx - 1, 0);
                 items.forEach((el, i) => el.classList.toggle('active', i === activeIdx));
                 if (items[activeIdx]) items[activeIdx].scrollIntoView({{ block: 'nearest' }});
             }} else if (e.key === 'Enter') {{
                 e.preventDefault();
-                const q = searchInput.value.toLowerCase().trim();
-                let matches = RAW_GRAPH.nodes.filter(n => n.name.toLowerCase().includes(q) || n.faction.toLowerCase().includes(q) || n.race.toLowerCase().includes(q)).slice(0, 12);
-                if (matches[activeIdx]) navigateToNode(matches[activeIdx]);
+                const hit = searchMatches[activeIdx];
+                if (hit) {{ toggleSearch(false); selectOrFocusNode(hit.id); }}
             }} else if (e.key === 'Escape') {{
-                closeSearch();
+                toggleSearch(false);
             }}
         }});
 
-        searchOverlay.addEventListener('click', e => {{
-            if (e.target === searchOverlay) closeSearch();
-        }});
+        searchOverlay.addEventListener('click', e => {{ if (e.target === searchOverlay) toggleSearch(false); }});
 
         // URL Hash Deep Linking
         window.addEventListener('load', () => {{
             setTimeout(() => {{
                 if (window.location.hash) {{
                     const targetId = decodeURIComponent(window.location.hash.substring(1));
-                    let targetNode = gData.nodes.find(n => n.id === targetId);
+                    let targetNode = nodeById.get(targetId);
                     if (!targetNode) {{
                         jumpToCluster('all');
-                        targetNode = gData.nodes.find(n => n.id === targetId);
+                        targetNode = nodeById.get(targetId);
                     }}
-                    if (targetNode) {{
-                        selectNode(targetNode, false);
-                    }}
+                    if (targetNode) selectNode(targetNode, false);
                 }}
             }}, 250);
         }});

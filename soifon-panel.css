@@ -1,7 +1,7 @@
 /* ==========================================================================
-   soifon-panel.css - Soi Fon (Suzumebachi / Hōmonka Double-Strike & Shunkō)
-   Two-strike butterfly-hornet crest (Nigeki Kessatsu), Shunpo speed-lines,
-   and crackling emerald-gold Shunkō wind filaments.
+   soifon-panel.css - Soi Fon (Jakuhō Raikōben — Bankai Hornet Markings)
+   Bold obsidian-and-gold Bankai warhead hornet stripe markings, etched
+   Suzumebachi crest emblem, segmented Bankai lock-on reticle & golden blast.
    ========================================================================== */
 @property --sf-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
 @property --sf-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
@@ -9,22 +9,22 @@
 :where(.soifon-panel) { position: relative; overflow: hidden; }
 .sf-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
 
-/* Onmitsukidō obsidian, hornet gold & Shunkō wind wash (behind content) */
+/* Onmitsukidō obsidian, hornet amber-gold & explosive Bankai wash (behind content) */
 .sf-wash {
   z-index: 1;
   background:
-    radial-gradient(ellipse at var(--sf-ix, 62%) var(--sf-iy, 34%), rgba(250, 204, 21, 0.22), rgba(234, 179, 8, 0.10) 34%, rgba(24, 24, 27, 0.56) 76%, transparent 100%),
-    linear-gradient(to bottom, rgba(52, 211, 153, 0.08) 0%, rgba(24, 24, 27, 0.22) 52%, rgba(9, 9, 11, 0.64) 100%);
-  -webkit-mask-image: radial-gradient(ellipse at var(--sf-ix, 62%) var(--sf-iy, 34%), #000 var(--sf-r), transparent calc(var(--sf-r) + 32%));
-          mask-image: radial-gradient(ellipse at var(--sf-ix, 62%) var(--sf-iy, 34%), #000 var(--sf-r), transparent calc(var(--sf-r) + 32%));
+    radial-gradient(ellipse at var(--sf-ix, 50%) var(--sf-iy, 46%), rgba(250, 204, 21, 0.26), rgba(245, 158, 11, 0.14) 36%, rgba(18, 16, 12, 0.72) 78%, transparent 100%),
+    linear-gradient(to bottom, rgba(250, 204, 21, 0.08) 0%, rgba(20, 18, 14, 0.30) 50%, rgba(9, 9, 11, 0.76) 100%);
+  -webkit-mask-image: radial-gradient(ellipse at var(--sf-ix, 50%) var(--sf-iy, 46%), #000 var(--sf-r), transparent calc(var(--sf-r) + 32%));
+          mask-image: radial-gradient(ellipse at var(--sf-ix, 50%) var(--sf-iy, 46%), #000 var(--sf-r), transparent calc(var(--sf-r) + 32%));
 }
 .soifon-panel.sf-open .sf-wash {
   opacity: 1;
-  animation: sf-wash-in 1.15s cubic-bezier(.16, 1, .3, 1) both;
+  animation: sf-wash-in 1.2s cubic-bezier(.16, 1, .3, 1) both;
 }
 @keyframes sf-wash-in { from { --sf-r: 0%; } to { --sf-r: 100%; } }
 
-/* Canvas: Hōmonka double-strike, hornet shock rings, Shunpo streaks */
+/* Canvas: Jakuhō Raikōben hornet markings, Bankai lock-on reticle & blast rings */
 .sf-canvas {
   z-index: 1;
   width: 100%;
@@ -33,36 +33,33 @@
 }
 .soifon-panel.sf-open .sf-canvas { opacity: 1; }
 
-/* Double-sting radial flash (1st sting ~0.18s, 2nd lethal sting ~0.72s) */
+/* Explosive Jakuhō Raikōben Bankai detonation flash */
 .sf-flash {
   z-index: 6;
-  background: radial-gradient(circle at var(--sf-ix, 62%) var(--sf-iy, 34%), rgba(254, 249, 195, 0.60), rgba(250, 204, 21, 0.26) 14%, transparent 38%);
-  transform-origin: var(--sf-ix, 62%) var(--sf-iy, 34%);
+  background: radial-gradient(circle at var(--sf-ix, 50%) var(--sf-iy, 46%), rgba(255, 253, 230, 0.68), rgba(250, 204, 21, 0.30) 20%, rgba(245, 158, 11, 0.14) 40%, transparent 60%);
+  transform-origin: var(--sf-ix, 50%) var(--sf-iy, 46%);
 }
 .soifon-panel.sf-open .sf-flash {
-  animation: sf-double-sting 1.35s ease-out both;
+  animation: sf-bankai-blast 1.35s ease-out 0.52s both;
 }
-@keyframes sf-double-sting {
-  0%   { opacity: 0; transform: scale(0.5); }
-  12%  { opacity: 0.65; transform: scale(1.0); }
-  36%  { opacity: 0; transform: scale(1.25); }
-  48%  { opacity: 0; transform: scale(0.55); }
-  58%  { opacity: 0.85; transform: scale(1.12); }
-  100% { opacity: 0; transform: scale(1.55); }
+@keyframes sf-bankai-blast {
+  0%   { opacity: 0; transform: scale(0.45); }
+  18%  { opacity: 0.88; transform: scale(1.08); }
+  100% { opacity: 0; transform: scale(1.62); }
 }
 
-/* Rotating hornet-gold & Shunkō-emerald border glint (6s) */
+/* Rotating hornet-gold & obsidian-amber border glint (6s) */
 .sf-ring {
   z-index: 7;
   padding: 1.5px;
   background: conic-gradient(from var(--sf-angle),
-    rgba(250, 204, 21, 0.14) 0 46%,
-    #eab308 66%, #fef9c3 77%, #34d399 88%,
+    rgba(250, 204, 21, 0.14) 0 44%,
+    #18181b 56%, #eab308 66%, #fef9c3 76%, #f97316 86%, #34d399 94%,
     rgba(250, 204, 21, 0.14) 100%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
           mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
-  transition: opacity 0.5s ease;
+  transition: opacity 0.55s ease;
 }
 .soifon-panel.sf-open .sf-ring {
   opacity: 1;
@@ -72,22 +69,22 @@
 
 /* Existing sidebar hooks */
 .soifon-panel.sf-open {
-  border-color: rgba(250, 204, 21, 0.88) !important;
+  border-color: rgba(250, 204, 21, 0.90) !important;
   animation: sf-pulse 3s infinite ease-in-out;
 }
 @keyframes sf-pulse {
-  0%, 100% { box-shadow: 0 0 30px rgba(250, 204, 21, 0.36), inset 0 0 20px rgba(52, 211, 153, 0.08); }
-  50%      { box-shadow: 0 0 46px rgba(250, 204, 21, 0.62), inset 0 0 30px rgba(250, 204, 21, 0.22); }
+  0%, 100% { box-shadow: 0 0 30px rgba(250, 204, 21, 0.38), inset 0 0 22px rgba(245, 158, 11, 0.12); }
+  50%      { box-shadow: 0 0 48px rgba(250, 204, 21, 0.66), inset 0 0 32px rgba(254, 240, 138, 0.22); }
 }
 .soifon-panel.sf-open #s-avatar {
   border-color: #fde047 !important;
-  box-shadow: 0 0 24px rgba(250, 204, 21, 0.9), 0 0 10px rgba(52, 211, 153, 0.55), 0 0 0 3px rgba(18, 18, 22, 0.88) !important;
+  box-shadow: 0 0 24px rgba(250, 204, 21, 0.92), 0 0 12px rgba(249, 115, 22, 0.55), 0 0 0 3px rgba(18, 18, 22, 0.90) !important;
 }
 .soifon-panel.sf-open .char-name {
-  text-shadow: 0 0 12px rgba(250, 204, 21, 0.75), 0 0 22px rgba(52, 211, 153, 0.35);
+  text-shadow: 0 0 12px rgba(250, 204, 21, 0.80), 0 0 22px rgba(245, 158, 11, 0.45);
 }
 .soifon-panel.sf-open .scroll-fade {
-  background: linear-gradient(to top, rgba(66, 52, 8, 0.42), transparent);
+  background: linear-gradient(to top, rgba(66, 48, 8, 0.48), transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {

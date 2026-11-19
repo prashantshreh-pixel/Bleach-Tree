@@ -19,22 +19,22 @@
       this._build(); inst.set(el, this);
     }
     _div(c) { const n = document.createElement('div'); n.className = 'ks-layer ' + c; n.setAttribute('aria-hidden', 'true'); return n; }
-    _svg(c) {
-      const s = document.createElementNS(NS, 'svg');
-      s.setAttribute('class', 'ks-layer ' + c);
-      s.setAttribute('aria-hidden', 'true');
-      s.setAttribute('preserveAspectRatio', 'none');
-      return s;
-    }
 
     _build() {
       const el = this.el; el.classList.add('kisuke-panel');
       let anchor = null; try { anchor = el.querySelector(':scope > ' + this.o.anchor); } catch (e) {}
       const ref = anchor || el.firstChild;
+      const mkSvg = c => {
+        const s = document.createElementNS(NS, 'svg');
+        s.setAttribute('class', 'ks-layer ' + c);
+        s.setAttribute('aria-hidden', 'true');
+        s.setAttribute('preserveAspectRatio', 'none');
+        return s;
+      };
       this.cloth = this._div('ks-cloth');
-      this.back = this._svg('ks-back');
+      this.back = mkSvg('ks-back');
       [this.cloth, this.back].forEach(n => el.insertBefore(n, ref)); // behind text
-      this.front = this._svg('ks-front');
+      this.front = mkSvg('ks-front');
       this.ring = this._div('ks-ring');
       [this.front, this.ring].forEach(n => el.appendChild(n)); // over text
       this._measure();
@@ -55,7 +55,6 @@
       const nx = -uy, ny = ux;                   // unit normal perpendicular to cut
 
       const span = Math.hypot(w, h) * 1.15;
-      const halfSpan = span * 0.5;
       const trackW = this.o.trackWidth;
 
       // 1. Cut Edges & Gap (The diagonal tear)
@@ -83,26 +82,20 @@
         `<path class="ks-seam" d="${P(midSeam)}"/>`;
 
       // 2. Railway Track Ties (Sleepers + Lattice X-Braces + Rivet Spikes)
-      const tieStep = (span * 0.88) / N;
-      const tiesTop = [], tiesBot = [];
-      let tiesSvg = '', rivetsSvg = '', latticeSvg = '';
+      let tiesSvg = '', rivetsSvg = '', latticeSvg = '', lastPt = null;
 
       for (let i = 0; i <= N; i++) {
         const s = (i / N - 0.5) * (span * 0.88);
         const px = cx + ux * s, py = cy + uy * s;
         const pt = [px + nx * trackW, py + ny * trackW];
         const pb = [px - nx * trackW, py - ny * trackW];
-        tiesTop.push(pt); tiesBot.push(pb);
+        if (i === N) lastPt = pt;
 
         const d = (T0 + (i / N) * TS).toFixed(2);
-        // Perpendicular Railway Sleeper Rung
         tiesSvg += `<path class="ks-tie" pathLength="1" style="--d:${d}s" d="M${f(pt[0])} ${f(pt[1])}L${f(pb[0])} ${f(pb[1])}"/>`;
-
-        // Rivet / Spike at each rail-tie anchor
         rivetsSvg += `<circle class="ks-rivet" cx="${f(pt[0])}" cy="${f(pt[1])}" r="2" style="--d:${d}s"/>` +
                      `<circle class="ks-rivet" cx="${f(pb[0])}" cy="${f(pb[1])}" r="2" style="--d:${d}s"/>`;
 
-        // Lattice X-bracing between track ties (railroad truss)
         if (i < N) {
           const nextS = ((i + 1) / N - 0.5) * (span * 0.88);
           const nextPx = cx + ux * nextS, nextPy = cy + uy * nextS;
@@ -115,14 +108,12 @@
       }
 
       // Knot and trailing thread at the end of the track
-      const lastPt = tiesTop[N];
       const knotSvg =
         `<circle class="ks-knot" cx="${f(lastPt[0])}" cy="${f(lastPt[1])}" r="4"/>` +
         `<path class="ks-tail" pathLength="1" d="M${f(lastPt[0])} ${f(lastPt[1])}Q${f(lastPt[0] + 12)} ${f(lastPt[1] + 18)} ${f(lastPt[0] + 4)} ${f(lastPt[1] + 42)}"/>` +
         `<path class="ks-tail" pathLength="1" d="M${f(lastPt[0])} ${f(lastPt[1])}Q${f(lastPt[0] - 14)} ${f(lastPt[1] + 14)} ${f(lastPt[0] - 20)} ${f(lastPt[1] + 32)}"/>`;
 
       // Needle styled with Benihime's golden-cream suture
-      const needleAngleDeg = (th * 180 / Math.PI).toFixed(1);
       const needleSvg =
         `<g class="ks-needle">` +
         `<path d="M-26 0L24 -1.6L30 0L24 1.6Z" fill="#F4F6FA"/>` +
@@ -160,31 +151,22 @@
       ], { duration: 360, easing: 'cubic-bezier(0.2, 0.8, 0.3, 1)' });
     }
 
-    _runNeedle() {
-      if (this.rm || !this.needle || !this.needle.animate) return;
-      const p = this.pts, n = p.length, kf = [];
-      for (let i = 0; i < n; i++) {
-        const offset = i / (n - 1);
-        kf.push({
-          transform: `translate(${p[i].x.toFixed(1)}px, ${p[i].y.toFixed(1)}px) rotate(${p[i].angle.toFixed(1)}deg)`,
-          opacity: (i === 0 || i === n - 1) ? 0 : 1,
-          offset
-        });
-      }
-      this.anim = this.needle.animate(kf, {
-        delay: T0 * 1000,
-        duration: TS * 1000,
-        easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
-        fill: 'both'
-      });
-    }
-
     open() {
       if (this.isOpen) return; this.isOpen = true;
       this.el.classList.remove('ks-open'); void this.el.offsetWidth; this.el.classList.add('ks-open');
       this._measure();
       this._shake(6);
-      this._runNeedle();
+      if (!this.rm && this.needle && this.needle.animate) {
+        const p = this.pts, n = p.length;
+        const kf = p.map((pt, i) => ({
+          transform: `translate(${pt.x.toFixed(1)}px, ${pt.y.toFixed(1)}px) rotate(${pt.angle.toFixed(1)}deg)`,
+          opacity: (i === 0 || i === n - 1) ? 0 : 1,
+          offset: i / (n - 1)
+        }));
+        this.anim = this.needle.animate(kf, {
+          delay: T0 * 1000, duration: TS * 1000, easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)', fill: 'both'
+        });
+      }
       this.timers.push(setTimeout(() => { if (this.isOpen) this._shake(3.5); }, (T0 + TS) * 1000));
     }
     close() {
@@ -193,12 +175,11 @@
       this.el.classList.remove('ks-open');
       if (this.anim) { this.anim.cancel(); this.anim = null; }
     }
-    replay() { this.close(); this.open(); }
     destroy() {
       this.close(); if (this.ro) this.ro.disconnect();
       [this.cloth, this.back, this.front, this.ring].forEach(n => n.remove());
       this.el.classList.remove('kisuke-panel', 'ks-open'); inst.delete(this.el);
     }
   }
-  g.KisukePanel = { attach(el, o) { return el ? (inst.get(el) || new KP(el, o)) : null; }, get(el) { return inst.get(el) || null; } };
+  g.KisukePanel = { attach(el, o) { return el ? (inst.get(el) || new KP(el, o)) : null; } };
 })(typeof window !== 'undefined' ? window : this);

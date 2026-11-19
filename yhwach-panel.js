@@ -143,12 +143,11 @@
       this.el.classList.remove('yh-open'); cancelAnimationFrame(this.raf); this.raf = null;
       setTimeout(() => { if (!this.isOpen) this.ctx.clearRect(0, 0, this.w, this.h); }, 300);
     }
-    replay() { this.close(); this.open(); }
     destroy() {
       this.close(); if (this.ro) this.ro.disconnect();
       [this.canvas, this.flash, this.halo, this.ring].forEach(n => n.remove());
       this.el.classList.remove('yhwach-panel', 'yh-open'); inst.delete(this.el);
     }
   }
-  g.YhwachPanel = { attach(el, o) { return el ? (inst.get(el) || new YP(el, o)) : null; }, get(el) { return inst.get(el) || null; } };
+  g.YhwachPanel = { attach(el, o) { return el ? (inst.get(el) || new YP(el, o)) : null; } };
 })(typeof window !== 'undefined' ? window : this);

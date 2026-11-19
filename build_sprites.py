@@ -2,7 +2,6 @@
 import os
 import json
 import math
-import shutil
 from PIL import Image
 
 def build_sprites():
@@ -27,44 +26,46 @@ def build_sprites():
         nfkd = unicodedata.normalize('NFKD', text)
         return ''.join(c for c in nfkd if not unicodedata.combining(c)).lower()
 
+    by_key = {}
+    for sdir in search_dirs:
+        if not os.path.exists(sdir):
+            continue
+        for fname in os.listdir(sdir):
+            base, ext = os.path.splitext(fname)
+            if ext.lower() not in ('.jpg', '.jpeg', '.png', '.webp'):
+                continue
+            fpath = os.path.join(sdir, fname)
+            mtime = os.path.getmtime(fpath)
+            for key in (base.lower(), strip_accents(base)):
+                if key not in by_key or mtime > by_key[key][1]:
+                    by_key[key] = (fpath, mtime)
+
     found_images = {}
     for char_id, data in chars.items():
         name = data.get('name', '')
-        cands = set([
-            char_id.lower(),
-            char_id.lower().replace('_', ' '),
-            char_id.lower().replace('_', '-'),
+        name_lower = name.lower()
+        name_norm = strip_accents(name)
+        cid_lower = char_id.lower()
+        cands = {
+            cid_lower,
+            cid_lower.replace('_', ' '),
+            cid_lower.replace('_', '-'),
             strip_accents(char_id),
-            name.lower(),
-            name.lower().replace(' ', '_'),
-            name.lower().replace(' ', '-'),
-            strip_accents(name),
-            strip_accents(name).replace(' ', '_'),
-            strip_accents(name).replace(' ', '-')
-        ])
+            name_lower,
+            name_lower.replace(' ', '_'),
+            name_lower.replace(' ', '-'),
+            name_norm,
+            name_norm.replace(' ', '_'),
+            name_norm.replace(' ', '-'),
+        }
         for p in name.split():
             if len(p) > 2:
                 cands.add(p.lower())
                 cands.add(strip_accents(p))
 
-        found_file = None
-        found_mtime = -1
-        for sdir in search_dirs:
-            if not os.path.exists(sdir):
-                continue
-            for fname in os.listdir(sdir):
-                base, ext = os.path.splitext(fname)
-                if ext.lower() in ['.jpg', '.jpeg', '.png', '.webp']:
-                    base_clean = base.lower()
-                    base_norm = strip_accents(base)
-                    if base_clean in cands or base_norm in cands:
-                        fpath = os.path.join(sdir, fname)
-                        mtime = os.path.getmtime(fpath)
-                        if found_file is None or mtime > found_mtime:
-                            found_file = fpath
-                            found_mtime = mtime
-        if found_file:
-            found_images[char_id] = found_file
+        best = max((by_key[c] for c in cands if c in by_key), key=lambda x: x[1], default=None)
+        if best:
+            found_images[char_id] = best[0]
 
     print(f"[SPRITE BUILDER] Discovered {len(found_images)} character portrait(s): {list(found_images.keys())}")
 
@@ -149,11 +150,6 @@ def build_sprites():
 
     with open(cache_file, 'w', encoding='utf-8') as cf:
         json.dump(current_sig, cf)
-
-    mirror_dir = os.path.join(base_dir, 'assets', 'sprites')
-    os.makedirs(mirror_dir, exist_ok=True)
-    shutil.copy2(out_webp, os.path.join(mirror_dir, 'characters.webp'))
-    shutil.copy2(out_json, os.path.join(mirror_dir, 'characters-map.json'))
 
     print(f"[SPRITE BUILDER] Sprite sheet exported: {out_webp} ({os.path.getsize(out_webp)} bytes)")
     print(f"[SPRITE BUILDER] Sprite map exported: {out_json}")

@@ -87,12 +87,11 @@
       this.timers.forEach(clearTimeout); this.timers = [];
       this.el.classList.remove('ib-open');
     }
-    replay() { this.close(); this.open(); }
     destroy() {
       this.close(); if (this.ro) this.ro.disconnect();
       [this.wash, this.svg, this.seal, this.ring].forEach(n => n.remove());
       this.el.classList.remove('ichibei-panel', 'ib-open'); inst.delete(this.el);
     }
   }
-  g.IchibeiPanel = { attach(el, o) { return el ? (inst.get(el) || new IB(el, o)) : null; }, get(el) { return inst.get(el) || null; } };
+  g.IchibeiPanel = { attach(el, o) { return el ? (inst.get(el) || new IB(el, o)) : null; } };
 })(typeof window !== 'undefined' ? window : this);

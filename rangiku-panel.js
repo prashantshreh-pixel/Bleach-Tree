@@ -42,7 +42,7 @@
       this.o = Object.assign({}, DEFAULTS, opts);
       this.isOpen = false;
       this.w = 0; this.h = 0; this.dpr = 1;
-      this.rafId = null; this.timers = [];
+      this.rafId = null;
       this.simTime = 0; this.lastTime = 0; this.rm = false;
       this.fogBanks = []; this.specks = []; this.slashes = [];
       this.puffSprites = [];
@@ -363,14 +363,8 @@
       this.rafId = requestAnimationFrame(this._tick);
     }
 
-    _stopLoop() {
-      if (this.rafId !== null) { cancelAnimationFrame(this.rafId); this.rafId = null; }
-      this.timers.forEach(id => clearTimeout(id));
-      this.timers = [];
-    }
-
     open() {
-      this._stopLoop();
+      if (this.rafId !== null) { cancelAnimationFrame(this.rafId); this.rafId = null; }
       this.rm = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
       this.isOpen = true;
       this.el.classList.remove('rg-open');
@@ -388,16 +382,10 @@
 
     close() {
       this.isOpen = false;
-      this._stopLoop();
+      if (this.rafId !== null) { cancelAnimationFrame(this.rafId); this.rafId = null; }
       this.el.classList.remove('rg-open');
-      if (this.ctx && this.canvas) {
-        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
-      }
+      if (this.ctx) this.ctx.clearRect(0, 0, this.w, this.h);
     }
-
-    replay() { this.open(); }
 
     destroy() {
       this.close();
@@ -409,17 +397,6 @@
   }
 
   g.RangikuPanel = {
-    attach(el, opts) {
-      if (!el) return null;
-      let it = inst.get(el);
-      if (!it) it = new RangikuEffect(el, opts);
-      return {
-        open: () => it.open(),
-        close: () => it.close(),
-        replay: () => it.replay(),
-        destroy: () => it.destroy(),
-        _inst: it
-      };
-    }
+    attach(el, opts) { return el ? (inst.get(el) || new RangikuEffect(el, opts)) : null; }
   };
 })(typeof window !== 'undefined' ? window : globalThis);

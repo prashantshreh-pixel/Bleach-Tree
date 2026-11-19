@@ -135,5 +135,5 @@ void main(){
       this.el.classList.remove('flame-panel', 'fl-open'); inst.delete(this.el);
     }
   }
-  g.FlamePanel = { attach(el, o) { return el ? (inst.get(el) || new FI(el, o)) : null; }, get(el) { return inst.get(el) || null; } };
+  g.FlamePanel = { attach(el, o) { return el ? (inst.get(el) || new FI(el, o)) : null; } };
 })(typeof window !== 'undefined' ? window : this);

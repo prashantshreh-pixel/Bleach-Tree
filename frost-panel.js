@@ -197,7 +197,6 @@
     attach(el, options) {
       if (!el) return null;
       return instances.get(el) || new FrostPanelInstance(el, options);
-    },
-    get(el) { return instances.get(el) || null; }
+    }
   };
 })(typeof window !== 'undefined' ? window : this);

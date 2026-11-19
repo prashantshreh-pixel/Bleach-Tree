@@ -110,12 +110,11 @@
       this.el.classList.remove('gs-open'); cancelAnimationFrame(this.raf); this.raf = null;
       setTimeout(() => { if (!this.isOpen) this.ctx.clearRect(0, 0, this.w, this.h); }, 600);
     }
-    strike(fx, fy) { this.o.impact = [fx, fy]; this._geom(); this.isOpen = false; this.open(); }
     destroy() {
       this.close(); if (this.ro) this.ro.disconnect();
       [this.glass, this.svg, this.sweep, this.flash, this.ring, this.canvas].forEach(n => n.remove());
       this.el.classList.remove('glass-panel', 'gs-open'); inst.delete(this.el);
     }
   }
-  g.GlassPanel = { attach(el, o) { return el ? (inst.get(el) || new GP(el, o)) : null; }, get(el) { return inst.get(el) || null; } };
+  g.GlassPanel = { attach(el, o) { return el ? (inst.get(el) || new GP(el, o)) : null; } };
 })(typeof window !== 'undefined' ? window : this);

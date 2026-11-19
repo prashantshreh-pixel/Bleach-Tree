@@ -1,7 +1,7 @@
 /* ==========================================================================
-   mayuri-panel.css - Mayuri Kurotsuchi (Konjiki Ashisogi Jizō)
-   Rotating golden biomechanical Jizō halo with surgical blade spokes,
-   billowing toxic violet-chartreuse miasma, and bioluminescent spores.
+   mayuri-panel.css - Mayuri Kurotsuchi (Konjiki Ashisogi Jizō — Baby Form)
+   Iconic giant golden caterpillar-baby Bankai silhouette with rotating gold
+   halo, chest-protruding blades, eerie staring eyes & volumetric poison mist.
    ========================================================================== */
 @property --my-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
 @property --my-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
@@ -9,22 +9,22 @@
 :where(.mayuri-panel) { position: relative; overflow: hidden; }
 .my-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
 
-/* Toxic violet-magenta & acid-chartreuse miasma wash (behind content) */
+/* Toxic violet-purple & acid-chartreuse poison mist wash (behind content) */
 .my-wash {
   z-index: 1;
   background:
-    radial-gradient(ellipse at var(--my-ix, 50%) var(--my-iy, 38%), rgba(163, 230, 53, 0.18), rgba(192, 38, 211, 0.20) 40%, rgba(26, 11, 46, 0.66) 82%, transparent 100%),
-    linear-gradient(to top, rgba(163, 230, 53, 0.14) 0%, rgba(192, 38, 211, 0.12) 48%, rgba(16, 6, 30, 0.62) 100%);
-  -webkit-mask-image: radial-gradient(ellipse at var(--my-ix, 50%) var(--my-iy, 38%), #000 var(--my-r), transparent calc(var(--my-r) + 34%));
-          mask-image: radial-gradient(ellipse at var(--my-ix, 50%) var(--my-iy, 38%), #000 var(--my-r), transparent calc(var(--my-r) + 34%));
+    radial-gradient(ellipse at var(--my-ix, 50%) var(--my-iy, 50%), rgba(192, 38, 211, 0.24), rgba(163, 230, 53, 0.16) 40%, rgba(24, 8, 42, 0.74) 82%, transparent 100%),
+    linear-gradient(to top, rgba(163, 230, 53, 0.22) 0%, rgba(147, 51, 234, 0.22) 48%, rgba(16, 6, 30, 0.72) 100%);
+  -webkit-mask-image: radial-gradient(ellipse at var(--my-ix, 50%) var(--my-iy, 50%), #000 var(--my-r), transparent calc(var(--my-r) + 34%));
+          mask-image: radial-gradient(ellipse at var(--my-ix, 50%) var(--my-iy, 50%), #000 var(--my-r), transparent calc(var(--my-r) + 34%));
 }
 .mayuri-panel.my-open .my-wash {
   opacity: 1;
-  animation: my-miasma-bloom 1.5s cubic-bezier(.16, 1, .3, 1) both;
+  animation: my-miasma-bloom 1.55s cubic-bezier(.16, 1, .3, 1) both;
 }
 @keyframes my-miasma-bloom { from { --my-r: 0%; } to { --my-r: 100%; } }
 
-/* Canvas: Golden Ashisogi Jizō spoked halo, billowing poison plumes, mutagen spores */
+/* Canvas: Konjiki Ashisogi Jizō golden baby Bankai + billowing poison mist */
 .my-canvas {
   z-index: 1;
   width: 100%;
@@ -33,28 +33,28 @@
 }
 .mayuri-panel.my-open .my-canvas { opacity: 1; }
 
-/* Brief bio-acid flash when Konjiki halo unfolds (thin, low-opacity, pointer-events: none) */
+/* Toxic chartreuse-violet flash when Bankai baby exhales poison mist */
 .my-flash {
   z-index: 6;
-  background: radial-gradient(circle at var(--my-ix, 50%) var(--my-iy, 38%), rgba(236, 252, 203, 0.48), rgba(163, 230, 53, 0.22) 18%, rgba(192, 38, 211, 0.14) 36%, transparent 56%);
-  transform-origin: var(--my-ix, 50%) var(--my-iy, 38%);
+  background: radial-gradient(circle at var(--my-ix, 50%) var(--my-iy, 50%), rgba(236, 252, 203, 0.50), rgba(163, 230, 53, 0.24) 20%, rgba(192, 38, 211, 0.16) 40%, transparent 60%);
+  transform-origin: var(--my-ix, 50%) var(--my-iy, 50%);
 }
 .mayuri-panel.my-open .my-flash {
-  animation: my-halo-flash 1.15s ease-out 0.25s both;
+  animation: my-poison-flash 1.2s ease-out 0.35s both;
 }
-@keyframes my-halo-flash {
-  0%   { opacity: 0; transform: scale(0.55); }
+@keyframes my-poison-flash {
+  0%   { opacity: 0; transform: scale(0.5); }
   24%  { opacity: 0.78; transform: scale(1.06); }
-  100% { opacity: 0; transform: scale(1.36); }
+  100% { opacity: 0; transform: scale(1.42); }
 }
 
-/* Rotating acid-chartreuse, Konjiki gold & toxic-magenta border glint (6s) */
+/* Rotating acid-chartreuse, Konjiki gold & toxic-purple border glint (6s) */
 .my-ring {
   z-index: 7;
   padding: 1.5px;
   background: conic-gradient(from var(--my-angle),
     rgba(192, 38, 211, 0.14) 0 44%,
-    #c026d3 64%, #eab308 75%, #a3e635 86%,
+    #9333ea 60%, #eab308 72%, #a3e635 84%, #c026d3 92%,
     rgba(192, 38, 211, 0.14) 100%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
@@ -69,22 +69,22 @@
 
 /* Existing sidebar hooks */
 .mayuri-panel.my-open {
-  border-color: rgba(163, 230, 53, 0.85) !important;
+  border-color: rgba(163, 230, 53, 0.88) !important;
   animation: my-pulse 3s infinite ease-in-out;
 }
 @keyframes my-pulse {
-  0%, 100% { box-shadow: 0 0 30px rgba(192, 38, 211, 0.38), inset 0 0 22px rgba(163, 230, 53, 0.10); }
-  50%      { box-shadow: 0 0 48px rgba(163, 230, 53, 0.56), inset 0 0 32px rgba(192, 38, 211, 0.24); }
+  0%, 100% { box-shadow: 0 0 30px rgba(192, 38, 211, 0.40), inset 0 0 22px rgba(163, 230, 53, 0.12); }
+  50%      { box-shadow: 0 0 48px rgba(163, 230, 53, 0.58), inset 0 0 34px rgba(192, 38, 211, 0.26); }
 }
 .mayuri-panel.my-open #s-avatar {
   border-color: #bef264 !important;
-  box-shadow: 0 0 22px rgba(163, 230, 53, 0.88), 0 0 14px rgba(192, 38, 211, 0.72), 0 0 0 3px rgba(20, 8, 36, 0.88) !important;
+  box-shadow: 0 0 24px rgba(163, 230, 53, 0.90), 0 0 14px rgba(192, 38, 211, 0.74), 0 0 0 3px rgba(20, 8, 36, 0.88) !important;
 }
 .mayuri-panel.my-open .char-name {
-  text-shadow: 0 0 12px rgba(163, 230, 53, 0.75), 0 0 22px rgba(192, 38, 211, 0.55);
+  text-shadow: 0 0 12px rgba(163, 230, 53, 0.78), 0 0 22px rgba(192, 38, 211, 0.58);
 }
 .mayuri-panel.my-open .scroll-fade {
-  background: linear-gradient(to top, rgba(58, 12, 74, 0.48), transparent);
+  background: linear-gradient(to top, rgba(58, 12, 74, 0.56), transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,10 +1,10 @@
 /**
- * gin-panel.js - Gin Ichimaru (Shinsō / Kamishini no Yari)
+ * gin-panel.js - Gin Ichimaru (White Viper / Kamishini no Yari Snake Vibe)
  * Entrance (0-3s):
- *   0.0-0.35s: Razor-thin fox-eye silver glint narrows at the impact point
- *   0.35-1.15s: Three Mach-500 hypersonic blade thrusts lance across with vapor shock-cone chevrons
- *   1.15-3.0s: Blade dissolves into shimmering turquoise-silver Korose cellular poison dust
- * Idle loop: Drifting lethal silver-cyan Korose dust shards + periodic supersonic hairline glints
+ *   0.0-0.5s:  Twin hypnotic icy-cyan vertical-slit snake eyes open ominously in the twilight indigo dark
+ *   0.5-1.45s: Spectral white-silver serpent lunges in a Mach-500 fang-strike lance with vapor chevrons
+ *   1.45-3.0s: Viper coils into a sleek living sinusoidal patrol across the backdrop, shedding venomous cyan Korose dust
+ * Idle loop: Articulated scale-faceted spectral white snake gliding with glowing slit eyes, flicking tongue & venom mist
  *
  * API: const gn = GinPanel.attach(sidebar, options);
  *      gn.open(); gn.close(); gn.replay(); gn.destroy();
@@ -14,10 +14,10 @@
 
   // --- TUNING DEFAULTS (edit lines 16-20 to customize) ---
   const DEFAULTS = {
-    particles: 56,           // Line 17: Korose cellular dust shards count
+    particles: 54,           // Line 17: Korose venomous silver-cyan dust & mist motes
     intensity: 1.0,          // Line 18: brightness & alpha multiplier (0.4 - 1.6)
     seed: 303,               // Line 19: deterministic PRNG seed
-    impact: [0.5, 0.36],     // Line 20: normalized [x, y] thrust intersection point
+    impact: [0.5, 0.38],     // Line 20: normalized [x, y] serpent gaze & strike point
     anchor: '#sidebar-content'
   };
 
@@ -41,9 +41,11 @@
       this.o = Object.assign({}, DEFAULTS, opts);
       this.isOpen = false;
       this.w = 0; this.h = 0; this.dpr = 1;
-      this.rafId = null; this.timers = [];
+      this.rafId = null;
       this.simTime = 0; this.lastTime = 0; this.rm = false;
-      this.dust = []; this.thrusts = [];
+      this.snake = []; this.dust = [];
+      this.numSegs = 40;
+      this.segLen = 9.5;
       this._tick = this._tick.bind(this);
       this._build();
       inst.set(el, this);
@@ -100,82 +102,192 @@
     _resetSim() {
       const r = mulberry32(this.o.seed);
       const w = this.w || 360, h = this.h || 540;
-      const count = Math.max(12, Math.round(this.o.particles));
+      const count = Math.max(14, Math.round(this.o.particles));
       this.simTime = 0;
 
-      // Three Mach-500 entrance thrusts (Butō Renjin rapid succession)
-      this.thrusts = [
-        { start: 0.30, dur: 0.56, angle: -0.44, ox: -0.05, oy: 0.58 },
-        { start: 0.52, dur: 0.54, angle: 0.24,  ox: -0.05, oy: 0.28 },
-        { start: 0.74, dur: 0.62, angle: -0.18, ox: 1.05,  oy: 0.72, reverse: true }
-      ];
+      // Initialize articulated white-silver spectral viper starting coiled in lower-left
+      this.snake = [];
+      const sx = w * 0.14, sy = h * 0.86;
+      for (let i = 0; i < this.numSegs; i++) {
+        this.snake.push({
+          x: sx - i * this.segLen * 0.7,
+          y: sy + i * this.segLen * 0.4,
+          angle: -0.6
+        });
+      }
 
-      // Korose dissolving cellular sliver dust
+      // Korose venomous silver-cyan cellular dust
       this.dust = [];
       for (let i = 0; i < count; i++) {
         this.dust.push({
           x: r() * w,
           y: r() * h,
           vx: (r() - 0.5) * 14,
-          vy: -(8 + r() * 18),
-          size: 1.1 + r() * 2.5,
+          vy: -(9 + r() * 19),
+          size: 1.0 + r() * 2.4,
           rot: r() * TAU,
-          rotS: (r() - 0.5) * 2.4,
-          cyan: r() > 0.42,
+          rotS: (r() - 0.5) * 2.2,
+          cyan: r() > 0.40,
           phase: r() * TAU,
-          alpha: 0.25 + r() * 0.60
+          alpha: 0.24 + r() * 0.58
         });
       }
     }
 
-    _drawThrust(ctx, w, h, th, lt, k) {
-      const extend = easeOutCubic(clamp(lt * 2.8, 0, 1));
-      const fade = 1 - clamp((lt - 0.32) / 0.68, 0, 1);
-      if (fade <= 0.01) return;
+    _stepSnake(t, dt, w, h) {
+      const head = this.snake[0];
+      // Smooth figure-8 / S-coil patrol weaving gracefully behind the sidebar content
+      const u = t * 0.62;
+      const targetX = w * 0.50 + Math.sin(u * 1.15) * w * 0.36;
+      const targetY = h * 0.54 + Math.sin(u * 0.72) * h * 0.30 + Math.cos(u * 1.65) * 24;
 
-      const x0 = w * th.ox;
-      const y0 = h * th.oy;
-      const dir = th.reverse ? -1 : 1;
-      const maxLen = Math.hypot(w, h) * 1.15;
-      const curLen = maxLen * extend;
-      const dx = Math.cos(th.angle) * dir;
-      const dy = Math.sin(th.angle) * dir;
-      const x1 = x0 + dx * curLen;
-      const y1 = y0 + dy * curLen;
+      const dx = targetX - head.x;
+      const dy = targetY - head.y;
+      const desired = Math.atan2(dy, dx);
+      let diff = desired - head.angle;
+      while (diff < -Math.PI) diff += TAU;
+      while (diff > Math.PI) diff -= TAU;
+
+      // Subtle lateral serpentine head-slither oscillation
+      const slither = Math.sin(t * 5.2) * 0.24;
+      const turnRate = dt > 0 ? clamp(dt * 4.2, 0.04, 0.25) : 0.18;
+      head.angle += diff * turnRate + slither * (dt > 0 ? dt * 3.0 : 0);
+
+      const spd = (t < 1.15 ? 240 : 125) * (dt > 0 ? dt : 0.016);
+      head.x += Math.cos(head.angle) * spd;
+      head.y += Math.sin(head.angle) * spd;
+
+      // Follow-the-leader inverse kinematics down the viper's spine
+      for (let i = 1; i < this.numSegs; i++) {
+        const prev = this.snake[i - 1];
+        const curr = this.snake[i];
+        const sdx = prev.x - curr.x;
+        const sdy = prev.y - curr.y;
+        curr.angle = Math.atan2(sdy, sdx);
+        curr.x = prev.x - Math.cos(curr.angle) * this.segLen;
+        curr.y = prev.y - Math.sin(curr.angle) * this.segLen;
+      }
+    }
+
+    _drawViper(ctx, t, alpha, k) {
+      const segs = this.snake;
+      const n = segs.length;
+      if (n < 4) return;
+      const a = alpha * k;
+
+      // Build left & right tapered body silhouette polygons
+      const leftPts = [], rightPts = [];
+      for (let i = 0; i < n; i++) {
+        const frac = i / (n - 1);
+        // Sleek muscular viper taper: narrow neck -> thick mid-body -> needle-sharp tail
+        const radius = (i === 0 ? 5.0 : (i === 1 ? 6.5 : 10.5 * Math.sin(Math.pow(1 - frac, 0.72) * Math.PI * 0.88) + 1.1));
+        const perp = segs[i].angle + Math.PI / 2;
+        leftPts.push({ x: segs[i].x + Math.cos(perp) * radius, y: segs[i].y + Math.sin(perp) * radius });
+        rightPts.push({ x: segs[i].x - Math.cos(perp) * radius, y: segs[i].y - Math.sin(perp) * radius });
+      }
 
       ctx.save();
-      // Cyan vapor outer corridor
-      ctx.strokeStyle = `rgba(103, 232, 249, ${(fade * 0.42 * k).toFixed(3)})`;
-      ctx.lineWidth = 6.5 * fade;
+      // 1. Soft cold cyan-silver venom aura around the slithering serpent
       ctx.beginPath();
-      ctx.moveTo(x0, y0);
-      ctx.lineTo(x1, y1);
+      ctx.moveTo(segs[0].x, segs[0].y);
+      for (let i = 1; i < n; i++) ctx.lineTo(segs[i].x, segs[i].y);
+      ctx.strokeStyle = `rgba(103, 232, 249, ${(0.22 * a).toFixed(3)})`;
+      ctx.lineWidth = 22;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
       ctx.stroke();
 
-      // Blinding white-silver needle core
-      ctx.strokeStyle = `rgba(240, 249, 255, ${(fade * 0.95 * k).toFixed(3)})`;
-      ctx.lineWidth = 1.6;
+      // 2. Sculpted white-silver viper body polygon
+      const bodyGrad = ctx.createLinearGradient(segs[0].x, segs[0].y, segs[n - 1].x, segs[n - 1].y);
+      bodyGrad.addColorStop(0, `rgba(241, 245, 249, ${(0.86 * a).toFixed(3)})`);
+      bodyGrad.addColorStop(0.42, `rgba(148, 163, 184, ${(0.76 * a).toFixed(3)})`);
+      bodyGrad.addColorStop(0.82, `rgba(51, 65, 85, ${(0.64 * a).toFixed(3)})`);
+      bodyGrad.addColorStop(1, `rgba(30, 27, 75, ${(0.25 * a).toFixed(3)})`);
+
+      ctx.fillStyle = bodyGrad;
+      ctx.strokeStyle = `rgba(207, 250, 254, ${(0.58 * a).toFixed(3)})`;
+      ctx.lineWidth = 1.1;
       ctx.beginPath();
-      ctx.moveTo(x0, y0);
-      ctx.lineTo(x1, y1);
+      ctx.moveTo(leftPts[0].x, leftPts[0].y);
+      for (let i = 1; i < n; i++) ctx.lineTo(leftPts[i].x, leftPts[i].y);
+      for (let i = n - 1; i >= 0; i--) ctx.lineTo(rightPts[i].x, rightPts[i].y);
+      ctx.closePath();
+      ctx.fill();
       ctx.stroke();
 
-      // Mach shock-cone chevrons along the path
-      const perpX = -dy, perpY = dx;
-      for (let c = 1; c <= 4; c++) {
-        const frac = c * 0.20;
-        if (extend < frac) break;
-        const cx = x0 + dx * (maxLen * frac);
-        const cy = y0 + dy * (maxLen * frac);
-        const spread = 18 + (1 - fade) * 22;
-        ctx.strokeStyle = `rgba(165, 243, 252, ${(fade * 0.46 * k).toFixed(3)})`;
-        ctx.lineWidth = 1.0;
+      // 3. Iridescent diamond viper scale chevrons running down the spine
+      ctx.strokeStyle = `rgba(22, 24, 54, ${(0.46 * a).toFixed(3)})`;
+      ctx.lineWidth = 1.0;
+      for (let i = 2; i < n - 4; i += 2) {
+        const s = segs[i];
+        const frac = i / (n - 1);
+        const wScale = 7.5 * (1 - frac * 0.72);
+        const ca = Math.cos(s.angle), sa = Math.sin(s.angle);
+        const px = -sa, py = ca;
         ctx.beginPath();
-        ctx.moveTo(cx - dx * 22 + perpX * spread, cy - dy * 22 + perpY * spread);
-        ctx.lineTo(cx, cy);
-        ctx.lineTo(cx - dx * 22 - perpX * spread, cy - dy * 22 - perpY * spread);
+        ctx.moveTo(s.x - ca * 4 + px * wScale, s.y - sa * 4 + py * wScale);
+        ctx.lineTo(s.x + ca * 4.5, s.y + sa * 4.5);
+        ctx.lineTo(s.x - ca * 4 - px * wScale, s.y - sa * 4 - py * wScale);
         ctx.stroke();
       }
+
+      // Razor silver dorsal highlight spine
+      ctx.strokeStyle = `rgba(255, 255, 255, ${(0.56 * a).toFixed(3)})`;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(segs[0].x, segs[0].y);
+      for (let i = 1; i < n - 3; i++) ctx.lineTo(segs[i].x, segs[i].y);
+      ctx.stroke();
+
+      // 4. Triangular Viper Head, glowing icy-cyan slit eyes & flicking forked tongue
+      const head = segs[0];
+      ctx.save();
+      ctx.translate(head.x, head.y);
+      ctx.rotate(head.angle);
+
+      // Flicking forked viper tongue (flicks periodically every ~3.2s)
+      const flick = (t % 3.2);
+      if (flick < 0.42) {
+        const fExt = Math.sin((flick / 0.42) * Math.PI);
+        const tLen = 14 + fExt * 16;
+        const wiggle = Math.sin(t * 42) * 2.5;
+        ctx.strokeStyle = `rgba(103, 232, 249, ${(0.82 * a).toFixed(3)})`;
+        ctx.lineWidth = 1.1;
+        ctx.beginPath();
+        ctx.moveTo(15, 0);
+        ctx.quadraticCurveTo(15 + tLen * 0.5, wiggle, 15 + tLen, wiggle * 0.5);
+        ctx.moveTo(15 + tLen, wiggle * 0.5);
+        ctx.lineTo(15 + tLen + 5.5, wiggle * 0.5 - 3.6);
+        ctx.moveTo(15 + tLen, wiggle * 0.5);
+        ctx.lineTo(15 + tLen + 5.5, wiggle * 0.5 + 3.6);
+        ctx.stroke();
+      }
+
+      // Sharp diamond-triangular viper skull
+      ctx.fillStyle = `rgba(241, 245, 249, ${(0.94 * a).toFixed(3)})`;
+      ctx.strokeStyle = `rgba(103, 232, 249, ${(0.82 * a).toFixed(3)})`;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(19, 0);
+      ctx.lineTo(5, -9.5);
+      ctx.lineTo(-9, -8.5);
+      ctx.lineTo(-5, 0);
+      ctx.lineTo(-9, 8.5);
+      ctx.lineTo(5, 9.5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Piercing ice-cyan glowing viper eyes with dark vertical slits
+      for (let side = -1; side <= 1; side += 2) {
+        ctx.fillStyle = `rgba(103, 232, 249, ${(0.96 * a).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.ellipse(5.5, side * 4.8, 3.2, 1.8, side * 0.25, 0, TAU);
+        ctx.fill();
+        ctx.fillStyle = `rgba(15, 23, 42, ${(0.95 * a).toFixed(3)})`;
+        ctx.fillRect(5.0, side * 4.8 - 1.5, 1.0, 3.0);
+      }
+      ctx.restore();
       ctx.restore();
     }
 
@@ -189,54 +301,79 @@
 
       ctx.clearRect(0, 0, w, h);
 
-      // 1. Narrowing fox-eye silver glint at impact point (0.0 - 0.55s)
-      if (t < 0.60) {
-        const gt = t / 0.60;
-        const a = Math.sin(gt * Math.PI) * 0.72 * k;
-        const rx = 6 + easeOutCubic(gt) * 58;
-        ctx.save();
-        ctx.strokeStyle = `rgba(240, 249, 255, ${a.toFixed(3)})`;
-        ctx.lineWidth = 1.4;
-        ctx.beginPath();
-        ctx.moveTo(ix - rx, iy);
-        ctx.quadraticCurveTo(ix, iy - 6 * (1 - gt * 0.5), ix + rx, iy);
-        ctx.quadraticCurveTo(ix, iy + 6 * (1 - gt * 0.5), ix - rx, iy);
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      // 2. Mach-500 entrance thrusts (0.30 - 1.40s)
-      for (let i = 0; i < this.thrusts.length; i++) {
-        const th = this.thrusts[i];
-        const lt = (t - th.start) / th.dur;
-        if (lt > 0 && lt < 1) this._drawThrust(ctx, w, h, th, lt, k);
-      }
-
-      // 3. Idle periodic pinpoint hypersonic glint across periphery (every 4.8s)
-      if (t > 2.2) {
-        const cyc = ((t - 2.2) % 4.8) / 0.45;
-        if (cyc < 1) {
-          const idx = Math.floor((t - 2.2) / 4.8);
-          const yBand = h * (0.24 + ((idx * 37) % 58) / 100);
-          const fade = Math.sin(cyc * Math.PI) * 0.45 * k;
-          const xEnd = w * easeOutCubic(cyc);
+      // 1. Ominous giant spectral slit snake eyes opening in the dark during entrance (0.0 - 1.15s)
+      if (t < 1.25) {
+        const open = easeOutCubic(clamp(t / 0.42, 0, 1));
+        const fade = 1 - clamp((t - 0.65) / 0.58, 0, 1);
+        const ea = open * fade * 0.85 * k;
+        if (ea > 0.01) {
           ctx.save();
-          const lg = ctx.createLinearGradient(0, yBand, xEnd, yBand - 36);
-          lg.addColorStop(0, 'rgba(103, 232, 249, 0)');
-          lg.addColorStop(0.85, `rgba(224, 242, 254, ${fade.toFixed(3)})`);
-          lg.addColorStop(1, 'rgba(255, 255, 255, 0)');
-          ctx.strokeStyle = lg;
-          ctx.lineWidth = 1.2;
-          ctx.beginPath();
-          ctx.moveTo(0, yBand);
-          ctx.lineTo(xEnd, yBand - 36);
-          ctx.stroke();
+          for (let s = -1; s <= 1; s += 2) {
+            const ex = ix + s * 42;
+            const ey = iy;
+            const eg = ctx.createRadialGradient(ex, ey, 2, ex, ey, 34);
+            eg.addColorStop(0, `rgba(103, 232, 249, ${(ea * 0.55).toFixed(3)})`);
+            eg.addColorStop(1, 'rgba(103, 232, 249, 0)');
+            ctx.fillStyle = eg;
+            ctx.beginPath();
+            ctx.arc(ex, ey, 34, 0, TAU);
+            ctx.fill();
+
+            ctx.fillStyle = `rgba(165, 243, 252, ${ea.toFixed(3)})`;
+            ctx.beginPath();
+            ctx.moveTo(ex - s * 24, ey + 4);
+            ctx.quadraticCurveTo(ex, ey - 10 * open, ex + s * 22, ey - 5);
+            ctx.quadraticCurveTo(ex, ey + 9 * open, ex - s * 24, ey + 4);
+            ctx.closePath();
+            ctx.fill();
+
+            // Vertical serpent slit pupil
+            ctx.fillStyle = `rgba(10, 12, 28, ${(ea * 0.95).toFixed(3)})`;
+            ctx.beginPath();
+            ctx.ellipse(ex, ey - 0.5, 2.2, 7.5 * open, 0, 0, TAU);
+            ctx.fill();
+          }
           ctx.restore();
         }
       }
 
-      // 4. Dissolving Korose silver-cyan cellular sliver dust
-      const dustVis = clamp((t - 0.65) / 1.15, 0, 1);
+      // 2. Mach-500 Kamishini no Yari fang-strike lance at 0.46 - 1.25s
+      if (t > 0.45 && t < 1.30) {
+        const lt = (t - 0.46) / 0.78;
+        const ext = easeOutCubic(clamp(lt * 2.5, 0, 1));
+        const fade = 1 - clamp((lt - 0.30) / 0.70, 0, 1);
+        const x0 = -16, y0 = h * 0.68;
+        const x1 = x0 + (w + 48) * ext;
+        const y1 = y0 - h * 0.46 * ext;
+        ctx.save();
+        ctx.strokeStyle = `rgba(103, 232, 249, ${(fade * 0.45 * k).toFixed(3)})`;
+        ctx.lineWidth = 7.5 * fade;
+        ctx.beginPath();
+        ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
+        ctx.stroke();
+
+        ctx.strokeStyle = `rgba(240, 249, 255, ${(fade * 0.95 * k).toFixed(3)})`;
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 3. Living slithering spectral white-silver viper
+      const snakeVis = easeOutCubic(clamp((t - 0.32) / 0.85, 0, 1));
+      if (dt > 0) {
+        this._stepSnake(t, dt, w, h);
+      } else if (t > 0 && this.snake.length) {
+        // Static settled pose for prefers-reduced-motion
+        for (let kStep = 0; kStep < 40; kStep++) this._stepSnake(kStep * 0.06, 0.04, w, h);
+      }
+      if (snakeVis > 0.01) {
+        this._drawViper(ctx, t, snakeVis * 0.78, k);
+      }
+
+      // 4. Drifting venomous silver-cyan Korose cellular sliver dust
+      const dustVis = clamp((t - 0.35) / 1.0, 0, 1);
       if (dustVis > 0.01) {
         ctx.save();
         for (let i = 0; i < this.dust.length; i++) {
@@ -248,20 +385,18 @@
           if (d.x < -12) d.x = w + 12;
           if (d.x > w + 12) d.x = -12;
 
-          const shimmer = 0.5 + 0.5 * Math.sin(t * 3.8 + d.phase);
+          const shimmer = 0.5 + 0.5 * Math.sin(t * 3.6 + d.phase);
           const a = d.alpha * (0.45 + 0.55 * shimmer) * dustVis * k;
-
           ctx.save();
           ctx.translate(d.x, d.y);
           ctx.rotate(d.rot);
           ctx.fillStyle = d.cyan
             ? `rgba(103, 232, 249, ${a.toFixed(3)})`
             : `rgba(226, 232, 240, ${a.toFixed(3)})`;
-          // Razor-sliver diamond crystal
           ctx.beginPath();
-          ctx.moveTo(0, -d.size * 1.7);
+          ctx.moveTo(0, -d.size * 1.6);
           ctx.lineTo(d.size * 0.65, 0);
-          ctx.lineTo(0, d.size * 1.7);
+          ctx.lineTo(0, d.size * 1.6);
           ctx.lineTo(-d.size * 0.65, 0);
           ctx.closePath();
           ctx.fill();
@@ -280,14 +415,8 @@
       this.rafId = requestAnimationFrame(this._tick);
     }
 
-    _stopLoop() {
-      if (this.rafId !== null) { cancelAnimationFrame(this.rafId); this.rafId = null; }
-      this.timers.forEach(id => clearTimeout(id));
-      this.timers = [];
-    }
-
     open() {
-      this._stopLoop();
+      if (this.rafId !== null) { cancelAnimationFrame(this.rafId); this.rafId = null; }
       this.rm = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
       this.isOpen = true;
       this.el.classList.remove('gn-open');
@@ -305,16 +434,10 @@
 
     close() {
       this.isOpen = false;
-      this._stopLoop();
+      if (this.rafId !== null) { cancelAnimationFrame(this.rafId); this.rafId = null; }
       this.el.classList.remove('gn-open');
-      if (this.ctx && this.canvas) {
-        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
-      }
+      if (this.ctx) this.ctx.clearRect(0, 0, this.w, this.h);
     }
-
-    replay() { this.open(); }
 
     destroy() {
       this.close();
@@ -326,17 +449,6 @@
   }
 
   g.GinPanel = {
-    attach(el, opts) {
-      if (!el) return null;
-      let it = inst.get(el);
-      if (!it) it = new GinEffect(el, opts);
-      return {
-        open: () => it.open(),
-        close: () => it.close(),
-        replay: () => it.replay(),
-        destroy: () => it.destroy(),
-        _inst: it
-      };
-    }
+    attach(el, opts) { return el ? (inst.get(el) || new GinEffect(el, opts)) : null; }
   };
 })(typeof window !== 'undefined' ? window : globalThis);

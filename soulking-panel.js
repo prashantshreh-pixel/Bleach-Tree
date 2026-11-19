@@ -147,5 +147,5 @@ void main(){
       this.el.classList.remove('soulking-panel', 'sk-open'); inst.delete(this.el);
     }
   }
-  g.SoulKingPanel = { attach(el, o) { return el ? (inst.get(el) || new SK(el, o)) : null; }, get(el) { return inst.get(el) || null; } };
+  g.SoulKingPanel = { attach(el, o) { return el ? (inst.get(el) || new SK(el, o)) : null; } };
 })(typeof window !== 'undefined' ? window : this);

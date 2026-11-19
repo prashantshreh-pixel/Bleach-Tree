@@ -1,10 +1,11 @@
 /**
- * soifon-panel.js - Soi Fon (Suzumebachi / Hōmonka & Shunkō Wind)
+ * soifon-panel.js - Soi Fon (Jakuhō Raikōben — Bankai Hornet Markings & Detonation)
  * Entrance (0-3s):
- *   0.0-0.6s:  First supersonic sting etches the geometric Hōmonka (hornet-butterfly crest) at impact
- *   0.6-1.45s: Second lethal sting strikes the exact mark (Nigeki Kessatsu), erupting concentric golden rings
- *   1.45-3.0s: Settles into pulsing Hōmonka crest, razor Shunpo speed-lines, and emerald-gold Shunkō sparks
- * Idle loop: Breathing geometric hornet-flower crest, darting diagonal Shunpo wind streaks, Shunkō eddies
+ *   0.0-0.65s: Precision Jakuhō Raikōben segmented targeting rings & bold obsidian-gold Bankai hornet stripes lock on,
+ *              stamping Soi Fon's iconic black-and-gold double-winged Bankai hornet marking across the backdrop
+ *   0.65-1.7s: Blazing golden missile lance strikes the locked marking, detonating colossal concentric Bankai blast rings
+ *   1.7-3.0s:  Settles into the prominent pulsing Bankai hornet crest, banded chevron markings, rotating reticle & wind sparks
+ * Idle loop: Prominent obsidian-gold Bankai hornet marking + banded warhead stripes + rotating lock-on arcs + Shunpo streaks
  *
  * API: const sf = SoifonPanel.attach(sidebar, options);
  *      sf.open(); sf.close(); sf.replay(); sf.destroy();
@@ -14,10 +15,10 @@
 
   // --- TUNING DEFAULTS (edit lines 16-20 to customize) ---
   const DEFAULTS = {
-    particles: 44,           // Line 17: Shunpo speed-lines & Shunkō wind-sparks
+    particles: 46,           // Line 17: golden blast embers & Shunpo wind streaks
     intensity: 1.0,          // Line 18: brightness & alpha multiplier (0.4 - 1.6)
     seed: 202,               // Line 19: deterministic PRNG seed
-    impact: [0.62, 0.34],    // Line 20: normalized [x, y] Hōmonka double-strike mark
+    impact: [0.5, 0.46],     // Line 20: normalized [x, y] Bankai marking & lock-on center
     anchor: '#sidebar-content'
   };
 
@@ -41,7 +42,7 @@
       this.o = Object.assign({}, DEFAULTS, opts);
       this.isOpen = false;
       this.w = 0; this.h = 0; this.dpr = 1;
-      this.rafId = null; this.timers = [];
+      this.rafId = null;
       this.simTime = 0; this.lastTime = 0; this.rm = false;
       this.streaks = []; this.sparks = [];
       this._tick = this._tick.bind(this);
@@ -103,101 +104,186 @@
     _resetSim() {
       const r = mulberry32(this.o.seed);
       const w = this.w || 360, h = this.h || 540;
-      const count = Math.max(12, Math.round(this.o.particles));
-      const streakCount = Math.max(6, Math.round(count * 0.42));
-      const sparkCount = Math.max(6, count - streakCount);
+      const count = Math.max(14, Math.round(this.o.particles));
+      const streakCount = Math.max(6, Math.round(count * 0.35));
+      const sparkCount = Math.max(8, count - streakCount);
       this.simTime = 0;
 
-      // High-velocity Shunpo afterimage wind streaks
       this.streaks = [];
       for (let i = 0; i < streakCount; i++) {
         this.streaks.push({
           x: r() * w,
           y: r() * h,
-          len: 36 + r() * 78,
-          speed: 240 + r() * 340,
+          len: 34 + r() * 72,
+          speed: 220 + r() * 300,
           angle: -0.58 + (r() - 0.5) * 0.14,
-          emerald: r() > 0.58,
-          alpha: 0.20 + r() * 0.36
+          emerald: r() > 0.72,
+          alpha: 0.18 + r() * 0.34
         });
       }
 
-      // Shunkō orbiting wind-sparks
       this.sparks = [];
       for (let i = 0; i < sparkCount; i++) {
         this.sparks.push({
-          angle: r() * TAU,
-          rad: 26 + r() * 145,
-          speed: (r() > 0.5 ? 1 : -1) * (1.2 + r() * 2.1),
-          size: 1.2 + r() * 2.0,
-          emerald: r() > 0.45,
-          phase: r() * TAU
+          x: r() * w,
+          y: r() * h,
+          vy: -(18 + r() * 38),
+          vx: (r() - 0.5) * 20,
+          size: 1.2 + r() * 2.4,
+          amber: r() > 0.45,
+          phase: r() * TAU,
+          alpha: 0.34 + r() * 0.56
         });
       }
     }
 
-    _drawHomonka(ctx, cx, cy, scale, rot, alpha, glowGold) {
+    // Draws Soi Fon's iconic bold Bankai Hornet Markings (Jakuhō Raikōben stripe bands + grand Hōmonka crest + lock-on arcs)
+    _drawBankaiMarkings(ctx, cx, cy, w, h, t, lockProg, blastFlare, k) {
+      const sc = (Math.min(w, h) / 360) * (1 + Math.sin(t * 2.1) * 0.025 + blastFlare * 0.14);
+      const a = clamp((0.55 + blastFlare * 0.45) * lockProg * k, 0, 0.94);
+
+      // 1. Diagonal Jakuhō Raikōben black-and-gold hornet warhead stripe bands flanking top-right & bottom-left
+      ctx.save();
+      const drawStripeCorner = (ox, oy, ang) => {
+        ctx.save();
+        ctx.translate(ox, oy);
+        ctx.rotate(ang);
+        for (let i = 0; i < 4; i++) {
+          const sx = -85 + i * 28;
+          ctx.fillStyle = i % 2 === 0
+            ? `rgba(250, 204, 21, ${(0.22 * lockProg * k).toFixed(3)})`
+            : `rgba(12, 12, 16, ${(0.56 * lockProg * k).toFixed(3)})`;
+          ctx.strokeStyle = `rgba(250, 204, 21, ${(0.34 * lockProg * k).toFixed(3)})`;
+          ctx.lineWidth = 0.9;
+          ctx.beginPath();
+          ctx.moveTo(sx, -16);
+          ctx.lineTo(sx + 16, -16);
+          ctx.lineTo(sx + 6, 16);
+          ctx.lineTo(sx - 10, 16);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        }
+        ctx.restore();
+      };
+      drawStripeCorner(w * 0.80, h * 0.15, -0.45);
+      drawStripeCorner(w * 0.22, h * 0.88, -0.45);
+      ctx.restore();
+
+      // 2. Central Bankai Hornet Marking Crest & Segmented Targeting Reticle
       ctx.save();
       ctx.translate(cx, cy);
-      ctx.rotate(rot);
-      ctx.scale(scale, scale);
+      ctx.scale(sc, sc);
 
-      // Stylized butterfly-hornet Hōmonka crest (two symmetrical pointed wings + diamond abdomen)
-      ctx.fillStyle = `rgba(18, 18, 22, ${(alpha * 0.72).toFixed(3)})`;
-      ctx.strokeStyle = glowGold
-        ? `rgba(254, 240, 138, ${(alpha * 0.95).toFixed(3)})`
-        : `rgba(250, 204, 21, ${(alpha * 0.85).toFixed(3)})`;
-      ctx.lineWidth = 1.4;
-
-      for (let s = -1; s <= 1; s += 2) {
-        // Upper wing
+      // Outer segmented Bankai lock-on targeting ring (counter-rotating)
+      ctx.save();
+      ctx.rotate(t * 0.24);
+      const outerR = 114 * (1.28 - 0.28 * lockProg);
+      ctx.strokeStyle = `rgba(250, 204, 21, ${(0.44 * a).toFixed(3)})`;
+      ctx.lineWidth = 2.0;
+      for (let i = 0; i < 6; i++) {
+        const a0 = (i / 6) * TAU + 0.12;
         ctx.beginPath();
-        ctx.moveTo(0, -4);
-        ctx.bezierCurveTo(s * 14, -28, s * 38, -22, s * 32, -3);
-        ctx.bezierCurveTo(s * 22, 4, s * 10, 2, 0, 1);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-
-        // Lower sting wing
-        ctx.beginPath();
-        ctx.moveTo(0, 2);
-        ctx.bezierCurveTo(s * 18, 6, s * 28, 20, s * 15, 28);
-        ctx.bezierCurveTo(s * 8, 22, s * 4, 12, 0, 8);
-        ctx.closePath();
-        ctx.fill();
+        ctx.arc(0, 0, outerR, a0, a0 + 0.72);
         ctx.stroke();
       }
+      // 6 sharp inward targeting chevron ticks
+      ctx.fillStyle = `rgba(254, 240, 138, ${(0.62 * a).toFixed(3)})`;
+      for (let i = 0; i < 6; i++) {
+        const ang = (i / 6) * TAU;
+        ctx.save();
+        ctx.rotate(ang);
+        ctx.beginPath();
+        ctx.moveTo(outerR - 2, 0);
+        ctx.lineTo(outerR - 12, -3.5);
+        ctx.lineTo(outerR - 12, 3.5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.restore();
 
-      // Hornet core diamond + twin antennae
-      ctx.fillStyle = `rgba(250, 204, 21, ${(alpha * 0.92).toFixed(3)})`;
-      ctx.beginPath();
-      ctx.moveTo(0, -14);
-      ctx.lineTo(4.2, 0);
-      ctx.lineTo(0, 18);
-      ctx.lineTo(-4.2, 0);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.strokeStyle = `rgba(250, 204, 21, ${(alpha * 0.8).toFixed(3)})`;
-      ctx.lineWidth = 1.1;
-      ctx.beginPath();
-      ctx.moveTo(-2, -13); ctx.quadraticCurveTo(-8, -22, -13, -24);
-      ctx.moveTo(2, -13);  ctx.quadraticCurveTo(8, -22, 13, -24);
-      ctx.stroke();
-
-      // Surrounding hexagonal reticle frame
-      ctx.strokeStyle = `rgba(250, 204, 21, ${(alpha * 0.42).toFixed(3)})`;
-      ctx.lineWidth = 1.0;
+      // Inner hexagonal hornet-cell frame
+      ctx.save();
+      ctx.rotate(-t * 0.16);
+      ctx.strokeStyle = `rgba(245, 158, 11, ${(0.52 * a).toFixed(3)})`;
+      ctx.lineWidth = 1.4;
       ctx.beginPath();
       for (let i = 0; i < 6; i++) {
-        const a = (i / 6) * TAU - Math.PI / 6;
-        const px = Math.cos(a) * 44;
-        const py = Math.sin(a) * 44;
+        const ang = (i / 6) * TAU - Math.PI / 6;
+        const px = Math.cos(ang) * 86;
+        const py = Math.sin(ang) * 86;
         if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
       }
       ctx.closePath();
       ctx.stroke();
+      ctx.restore();
+
+      // Iconic Grand Bankai Hornet-Butterfly Marking (bold obsidian-black + luminous gold filigree)
+      ctx.fillStyle = `rgba(12, 11, 14, ${(0.84 * a).toFixed(3)})`;
+      ctx.strokeStyle = blastFlare > 0.08
+        ? `rgba(255, 253, 230, ${(0.95 * a).toFixed(3)})`
+        : `rgba(250, 204, 21, ${(0.88 * a).toFixed(3)})`;
+      ctx.lineWidth = 2.0;
+      ctx.lineJoin = 'round';
+
+      for (let s = -1; s <= 1; s += 2) {
+        // Grand sweeping upper hornet-butterfly wing
+        ctx.beginPath();
+        ctx.moveTo(0, -10);
+        ctx.bezierCurveTo(s * 26, -64, s * 84, -52, s * 72, -6);
+        ctx.bezierCurveTo(s * 50, 10, s * 22, 6, 0, 2);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Inner golden Bankai marking stripe inside upper wing
+        ctx.strokeStyle = `rgba(250, 204, 21, ${(0.72 * a).toFixed(3)})`;
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.moveTo(s * 16, -12);
+        ctx.quadraticCurveTo(s * 44, -36, s * 58, -12);
+        ctx.stroke();
+
+        // Lower jagged stinger-wing
+        ctx.strokeStyle = `rgba(250, 204, 21, ${(0.88 * a).toFixed(3)})`;
+        ctx.lineWidth = 2.0;
+        ctx.beginPath();
+        ctx.moveTo(0, 4);
+        ctx.bezierCurveTo(s * 42, 12, s * 62, 46, s * 32, 64);
+        ctx.bezierCurveTo(s * 16, 48, s * 9, 28, 0, 18);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      // Segmented black-and-gold striped hornet abdomen / stinger center
+      ctx.fillStyle = `rgba(250, 204, 21, ${(0.92 * a).toFixed(3)})`;
+      ctx.beginPath();
+      ctx.moveTo(0, -34);
+      ctx.lineTo(10, -4);
+      ctx.lineTo(7, 26);
+      ctx.lineTo(0, 56);
+      ctx.lineTo(-7, 26);
+      ctx.lineTo(-10, -4);
+      ctx.closePath();
+      ctx.fill();
+
+      // Three unmistakable obsidian hornet stripes across the golden body
+      ctx.fillStyle = `rgba(12, 11, 14, ${(0.92 * a).toFixed(3)})`;
+      ctx.fillRect(-8.5, -2, 17, 5);
+      ctx.fillRect(-7.5, 11, 15, 5);
+      ctx.fillRect(-5.5, 24, 11, 5);
+
+      // Swept hornet antennae
+      ctx.strokeStyle = `rgba(254, 240, 138, ${(0.86 * a).toFixed(3)})`;
+      ctx.lineWidth = 1.8;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(-4, -32); ctx.quadraticCurveTo(-18, -52, -30, -56);
+      ctx.moveTo(4, -32);  ctx.quadraticCurveTo(18, -52, 30, -56);
+      ctx.stroke();
+
       ctx.restore();
     }
 
@@ -211,49 +297,49 @@
 
       ctx.clearRect(0, 0, w, h);
 
-      // 1. First sting needle lance (0.05 - 0.45s) & Second lethal sting (0.62 - 1.05s)
-      const stings = [
-        { start: 0.05, dur: 0.38, ang: -0.68, gold: false },
-        { start: 0.62, dur: 0.42, ang: 2.46,  gold: true  }
-      ];
-      ctx.save();
-      for (let i = 0; i < stings.length; i++) {
-        const s = stings[i];
-        const lt = (t - s.start) / s.dur;
-        if (lt <= 0 || lt >= 1) continue;
-        const prog = easeOutCubic(clamp(lt * 1.6, 0, 1));
-        const fade = 1 - lt;
-        const dist = 170 * (1 - prog);
-        const tail = 220;
-        const dx = Math.cos(s.ang), dy = Math.sin(s.ang);
-        const x0 = ix - dx * (dist + tail), y0 = iy - dy * (dist + tail);
-        const x1 = ix - dx * dist,          y1 = iy - dy * dist;
+      // 1. Incoming Jakuhō Raikōben golden missile streak slamming into the target mark (0.28 - 0.72s)
+      if (t > 0.24 && t < 0.76) {
+        const lt = (t - 0.24) / 0.48;
+        const prog = easeOutCubic(clamp(lt * 1.65, 0, 1));
+        const fade = 1 - clamp((lt - 0.55) / 0.45, 0, 1);
+        const sx = w * 1.15, sy = -30;
+        const cx = sx + (ix - sx) * prog;
+        const cy = sy + (iy - sy) * prog;
 
-        const lg = ctx.createLinearGradient(x0, y0, x1, y1);
-        lg.addColorStop(0, 'rgba(250, 204, 21, 0)');
-        lg.addColorStop(0.75, `rgba(250, 204, 21, ${(fade * 0.72 * k).toFixed(3)})`);
-        lg.addColorStop(1, `rgba(255, 255, 255, ${(fade * 0.95 * k).toFixed(3)})`);
-        ctx.strokeStyle = lg;
-        ctx.lineWidth = s.gold ? 2.6 : 1.8;
-        ctx.beginPath();
-        ctx.moveTo(x0, y0);
-        ctx.lineTo(x1, y1);
-        ctx.stroke();
-      }
-      ctx.restore();
-
-      // 2. Concentric golden hornet shockwaves on 2nd strike (0.68 - 1.95s)
-      if (t > 0.68 && t < 2.15) {
         ctx.save();
-        for (let rIdx = 0; rIdx < 3; rIdx++) {
-          const rt = clamp((t - 0.68 - rIdx * 0.12) / 1.05, 0, 1);
+        const lg = ctx.createLinearGradient(sx, sy, cx, cy);
+        lg.addColorStop(0, 'rgba(250, 204, 21, 0)');
+        lg.addColorStop(0.7, `rgba(249, 115, 22, ${(fade * 0.72 * k).toFixed(3)})`);
+        lg.addColorStop(1, `rgba(255, 253, 230, ${(fade * 0.96 * k).toFixed(3)})`);
+        ctx.strokeStyle = lg;
+        ctx.lineWidth = 6.5;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(sx, sy);
+        ctx.lineTo(cx, cy);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 2. Bankai Hornet Marking Crest & Banded Targeting Reticle
+      const lockProg = easeOutCubic(clamp(t / 0.58, 0, 1));
+      const blastFlare = t > 0.52 ? Math.exp(-(t - 0.52) * 2.6) : 0;
+      if (lockProg > 0.01) {
+        this._drawBankaiMarkings(ctx, ix, iy, w, h, t, lockProg, blastFlare, k);
+      }
+
+      // 3. Massive Jakuhō Raikōben golden concentric Bankai shock-rings (0.52 - 2.0s)
+      if (t > 0.50 && t < 2.15) {
+        ctx.save();
+        for (let i = 0; i < 4; i++) {
+          const rt = clamp((t - 0.52 - i * 0.11) / 1.15, 0, 1);
           if (rt <= 0 || rt >= 1) continue;
-          const rad = 12 + easeOutCubic(rt) * Math.max(w, h) * (0.48 + rIdx * 0.14);
-          const a = (1 - rt) * (rIdx === 0 ? 0.56 : 0.34) * k;
-          ctx.strokeStyle = rIdx === 2
-            ? `rgba(52, 211, 153, ${a.toFixed(3)})`
+          const rad = 16 + easeOutCubic(rt) * Math.max(w, h) * (0.54 + i * 0.15);
+          const a = (1 - rt) * (0.60 - i * 0.11) * k;
+          ctx.strokeStyle = i === 1
+            ? `rgba(249, 115, 22, ${a.toFixed(3)})`
             : `rgba(250, 204, 21, ${a.toFixed(3)})`;
-          ctx.lineWidth = (2.4 - rIdx * 0.5) * (1 - rt * 0.6);
+          ctx.lineWidth = (3.2 - i * 0.55) * (1 - rt * 0.5);
           ctx.beginPath();
           ctx.arc(ix, iy, rad, 0, TAU);
           ctx.stroke();
@@ -261,18 +347,9 @@
         ctx.restore();
       }
 
-      // 3. Hōmonka crest stamped at impact point (appears after 1st sting, flares on 2nd, breathes in idle)
-      if (t > 0.16) {
-        const appear = easeOutCubic(clamp((t - 0.16) / 0.28, 0, 1));
-        const secondFlare = t > 0.68 ? Math.exp(-(t - 0.68) * 3.2) * 0.38 : 0;
-        const breathe = 1 + Math.sin(t * 2.2) * 0.04 + secondFlare;
-        const alpha = clamp((0.36 + secondFlare * 0.9) * appear * k, 0, 0.85);
-        this._drawHomonka(ctx, ix, iy, (0.85 + 0.15 * appear) * breathe, Math.sin(t * 0.6) * 0.06, alpha, secondFlare > 0.06);
-      }
-
-      // 4. Shunpo diagonal wind speed-lines (idle velocity)
-      const windVis = clamp((t - 0.85) / 0.9, 0, 1);
-      if (windVis > 0.01) {
+      // 4. Shunpo high-velocity diagonal wind streaks & amber-gold blast sparks
+      const idleVis = clamp((t - 0.55) / 0.9, 0, 1);
+      if (idleVis > 0.01) {
         ctx.save();
         for (let i = 0; i < this.streaks.length; i++) {
           const s = this.streaks[i];
@@ -283,7 +360,7 @@
             s.x = -60 + ((i * 73) % (w + 60));
             s.y = h + 40 + ((i * 41) % 90);
           }
-          const a = s.alpha * windVis * k;
+          const a = s.alpha * idleVis * k;
           const lg = ctx.createLinearGradient(s.x, s.y, s.x - dx * s.len, s.y - dy * s.len);
           lg.addColorStop(0, s.emerald ? `rgba(52, 211, 153, ${a.toFixed(3)})` : `rgba(250, 204, 21, ${a.toFixed(3)})`);
           lg.addColorStop(1, 'rgba(250, 204, 21, 0)');
@@ -294,25 +371,22 @@
           ctx.lineTo(s.x - dx * s.len, s.y - dy * s.len);
           ctx.stroke();
         }
-        ctx.restore();
-      }
 
-      // 5. Shunkō orbital gale sparks
-      if (windVis > 0.01) {
-        ctx.save();
         for (let i = 0; i < this.sparks.length; i++) {
           const sp = this.sparks[i];
-          sp.angle += sp.speed * dt;
-          const wobble = Math.sin(t * 2.4 + sp.phase) * 8;
-          const px = ix + Math.cos(sp.angle) * (sp.rad + wobble);
-          const py = iy + Math.sin(sp.angle) * (sp.rad * 0.72 + wobble);
-          const pulse = 0.45 + 0.55 * Math.sin(t * 4.5 + sp.phase);
-          const a = pulse * 0.65 * windVis * k;
-          ctx.fillStyle = sp.emerald
-            ? `rgba(110, 231, 183, ${a.toFixed(3)})`
+          sp.x += (sp.vx + Math.sin(t * 2.1 + sp.phase) * 10) * dt;
+          sp.y += sp.vy * dt;
+          if (sp.y < -10) { sp.y = h + 10; sp.x = (sp.x + w * 0.43) % w; }
+          if (sp.x < -10) sp.x = w + 10;
+          if (sp.x > w + 10) sp.x = -10;
+
+          const tw = 0.5 + 0.5 * Math.sin(t * 4.5 + sp.phase);
+          const a = sp.alpha * tw * idleVis * k;
+          ctx.fillStyle = sp.amber
+            ? `rgba(249, 115, 22, ${a.toFixed(3)})`
             : `rgba(254, 240, 138, ${a.toFixed(3)})`;
           ctx.beginPath();
-          ctx.arc(px, py, sp.size, 0, TAU);
+          ctx.arc(sp.x, sp.y, sp.size, 0, TAU);
           ctx.fill();
         }
         ctx.restore();
@@ -328,14 +402,8 @@
       this.rafId = requestAnimationFrame(this._tick);
     }
 
-    _stopLoop() {
-      if (this.rafId !== null) { cancelAnimationFrame(this.rafId); this.rafId = null; }
-      this.timers.forEach(id => clearTimeout(id));
-      this.timers = [];
-    }
-
     open() {
-      this._stopLoop();
+      if (this.rafId !== null) { cancelAnimationFrame(this.rafId); this.rafId = null; }
       this.rm = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
       this.isOpen = true;
       this.el.classList.remove('sf-open');
@@ -353,16 +421,10 @@
 
     close() {
       this.isOpen = false;
-      this._stopLoop();
+      if (this.rafId !== null) { cancelAnimationFrame(this.rafId); this.rafId = null; }
       this.el.classList.remove('sf-open');
-      if (this.ctx && this.canvas) {
-        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
-      }
+      if (this.ctx) this.ctx.clearRect(0, 0, this.w, this.h);
     }
-
-    replay() { this.open(); }
 
     destroy() {
       this.close();
@@ -374,17 +436,6 @@
   }
 
   g.SoifonPanel = {
-    attach(el, opts) {
-      if (!el) return null;
-      let it = inst.get(el);
-      if (!it) it = new SoifonEffect(el, opts);
-      return {
-        open: () => it.open(),
-        close: () => it.close(),
-        replay: () => it.replay(),
-        destroy: () => it.destroy(),
-        _inst: it
-      };
-    }
+    attach(el, opts) { return el ? (inst.get(el) || new SoifonEffect(el, opts)) : null; }
   };
 })(typeof window !== 'undefined' ? window : globalThis);

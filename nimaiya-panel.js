@@ -204,12 +204,11 @@
       this.timers.forEach(clearTimeout); this.timers = [];
       this.el.classList.remove('nm-open');
     }
-    replay() { this.close(); this.open(); }
     destroy() {
       this.close(); if (this.ro) this.ro.disconnect();
       [this.wash, this.svg, this.seal, this.ring].forEach(n => n.remove());
       this.el.classList.remove('nimaiya-panel', 'nm-open'); inst.delete(this.el);
     }
   }
-  g.NimaiyaPanel = { attach(el, o) { return el ? (inst.get(el) || new NM(el, o)) : null; }, get(el) { return inst.get(el) || null; } };
+  g.NimaiyaPanel = { attach(el, o) { return el ? (inst.get(el) || new NM(el, o)) : null; } };
 })(typeof window !== 'undefined' ? window : this);

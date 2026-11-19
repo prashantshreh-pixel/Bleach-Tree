@@ -16,7 +16,7 @@
     constructor(el, o = {}) {
       this.el = el;
       this.o = Object.assign({ impact: [0.5, 0.85], seal: [0.84, 0.9], seed: 44, anchor: '#sidebar-content' }, o);
-      this.isOpen = false; this.w = 0; this.h = 0; this.timers = [];
+      this.isOpen = false; this.w = 0; this.h = 0;
       this.rm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
       this._build(); inst.set(el, this);
     }
@@ -243,21 +243,13 @@
     open() {
       if (this.isOpen) return;
       this.isOpen = true;
-      this.timers.forEach(t => clearTimeout(t)); this.timers = [];
       this.el.classList.add('iz-open');
       this._measure();
     }
 
     close() {
       this.isOpen = false;
-      this.timers.forEach(t => clearTimeout(t)); this.timers = [];
       this.el.classList.remove('iz-open');
-    }
-
-    replay() {
-      this.close();
-      const t = setTimeout(() => { if (this.el.classList.contains('open')) this.open(); }, 60);
-      this.timers.push(t);
     }
 
     destroy() {
@@ -271,16 +263,7 @@
 
   g.KiraPanel = {
     attach(el, o) {
-      if (!el) return null;
-      let it = inst.get(el);
-      if (!it) it = new IZ(el, o);
-      return {
-        open: () => it.open(),
-        close: () => it.close(),
-        replay: () => it.replay(),
-        destroy: () => it.destroy(),
-        _inst: it
-      };
+      return el ? (inst.get(el) || new IZ(el, o)) : null;
     }
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -223,12 +223,11 @@
       this.timers.forEach(clearTimeout); this.timers = [];
       this.el.classList.remove('tj-open');
     }
-    replay() { this.close(); this.open(); }
     destroy() {
       this.close(); if (this.ro) this.ro.disconnect();
       [this.wash, this.svg, this.seal, this.ring].forEach(n => n.remove());
       this.el.classList.remove('tenjiro-panel', 'tj-open'); inst.delete(this.el);
     }
   }
-  g.TenjiroPanel = { attach(el, o) { return el ? (inst.get(el) || new TJ(el, o)) : null; }, get(el) { return inst.get(el) || null; } };
+  g.TenjiroPanel = { attach(el, o) { return el ? (inst.get(el) || new TJ(el, o)) : null; } };
 })(typeof window !== 'undefined' ? window : this);

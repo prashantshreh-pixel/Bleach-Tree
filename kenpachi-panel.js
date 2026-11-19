@@ -216,118 +216,6 @@ void main(){
       }
     }
 
-    // Initialize the Solid Asteroid
-    _initMeteor() {
-      const w = this.w, h = this.h;
-      const cx = w * 0.52;
-      const cy = h * 0.38;
-      const baseR = Math.min(w, h) * 0.22; // ~78px
-      const th = 33 * Math.PI / 180;        // 33° diagonal clean cleave
-      const ux = Math.cos(th), uy = Math.sin(th);
-      const nx = -uy, ny = ux;
-
-      // Seed irregular polygon outline (rocky basalt)
-      const verts = [];
-      const N = 32;
-      for (let i = 0; i < N; i++) {
-        const a = (i / N) * TAU;
-        const r = baseR * (0.88 + 0.14 * Math.sin(a * 3) + 0.10 * Math.cos(a * 6) + 0.06 * Math.sin(a * 10));
-        verts.push({ x: Math.cos(a) * r, y: Math.sin(a) * r });
-      }
-
-      // Natural stone craters
-      const craters = [
-        { x: -baseR * 0.35, y: -baseR * 0.25, r: baseR * 0.22 },
-        { x: baseR * 0.15,  y: -baseR * 0.40, r: baseR * 0.16 },
-        { x: -baseR * 0.15, y: baseR * 0.25,  r: baseR * 0.26 },
-        { x: baseR * 0.35,  y: baseR * 0.15,  r: baseR * 0.18 }
-      ];
-
-      // Geological stress fractures
-      const fractures = [
-        [{ x: -baseR * 0.6, y: -baseR * 0.1 }, { x: -baseR * 0.2, y: -baseR * 0.15 }, { x: 0, y: -baseR * 0.35 }],
-        [{ x: -baseR * 0.1, y: baseR * 0.1 },  { x: baseR * 0.2, y: baseR * 0.2 },   { x: baseR * 0.5, y: baseR * 0.05 }],
-        [{ x: -baseR * 0.3, y: baseR * 0.4 },  { x: baseR * 0.0, y: baseR * 0.45 },  { x: baseR * 0.35, y: baseR * 0.38 }]
-      ];
-
-      this.meteor = {
-        cx, cy, baseR, th, ux, uy, nx, ny, verts, craters, fractures,
-        tCut: 0.36,       // Cut moment at 0.36 seconds
-        cutExecuted: false,
-        duration: 3.2
-      };
-
-      this.mainSlash = null;
-      this.shockwave = null;
-      this.debris = [];
-      this.dustPuffs = [];
-    }
-
-    // Execute the Nozarashi cleave strike
-    _executeCleave(nowSec) {
-      const m = this.meteor;
-      m.cutExecuted = true;
-      this.el.classList.add('kz-cut-done');
-
-      // 1. Tremor & Flash
-      this._flashOnce();
-      this._shake(16, 520);
-
-      // 2. Colossal Nozarashi Blade Cleave
-      const span = Math.hypot(this.w, this.h) * 1.25;
-      this.mainSlash = {
-        x0: m.cx - m.ux * span * 0.5,
-        y0: m.cy - m.uy * span * 0.5,
-        x1: m.cx + m.ux * span * 0.5,
-        y1: m.cy + m.uy * span * 0.5,
-        t: nowSec,
-        dur: 0.44
-      };
-
-      // 3. Kinetic Shockwave Ring (compressive air blast)
-      this.shockwave = {
-        cx: m.cx,
-        cy: m.cy,
-        t: nowSec,
-        dur: 0.58,
-        maxR: Math.min(this.w, this.h) * 0.72
-      };
-
-      // 4. Shattered Stone Shrapnel (Clean rock shards, NO fire embers)
-      for (let i = 0; i < 44; i++) {
-        const side = Math.random() < 0.5 ? -1 : 1;
-        const speed = 110 + Math.random() * 320;
-        const tangSpread = (Math.random() - 0.5) * 150;
-        const vx = side * m.nx * speed + m.ux * tangSpread;
-        const vy = side * m.ny * speed + m.uy * tangSpread - 30;
-        const sz = 3 + Math.random() * 7;
-        this.debris.push({
-          x: m.cx + (Math.random() - 0.5) * m.baseR * 0.8,
-          y: m.cy + (Math.random() - 0.5) * m.baseR * 0.8,
-          vx, vy,
-          rot: Math.random() * TAU,
-          vrot: (Math.random() - 0.5) * 10,
-          sz,
-          life: 0,
-          maxLife: 1.1 + Math.random() * 1.3,
-          shade: 0.15 + Math.random() * 0.25 // grey stone tone
-        });
-      }
-
-      // 5. Impact Dust Puffs
-      for (let i = 0; i < 6; i++) {
-        this.dustPuffs.push({
-          x: m.cx + (Math.random() - 0.5) * m.baseR * 0.6,
-          y: m.cy + (Math.random() - 0.5) * m.baseR * 0.6,
-          vx: (Math.random() - 0.5) * 40,
-          vy: (Math.random() - 0.5) * 40 - 20,
-          r: 16 + Math.random() * 24,
-          life: 0,
-          maxLife: 0.8 + Math.random() * 0.5
-        });
-      }
-    }
-
     // Draw one cleaved stone half
     _drawMeteorHalf(c, m, side, prog) {
       const ease = 1 - Math.pow(1 - Math.min(1, prog), 2.2);
@@ -505,7 +393,41 @@ void main(){
 
       // Phase 2: Cleave Trigger
       if (!m.cutExecuted) {
-        this._executeCleave(nowSec);
+        m.cutExecuted = true;
+        this.el.classList.add('kz-cut-done');
+        this._flashOnce();
+        this._shake(16, 520);
+
+        const span = Math.hypot(this.w, this.h) * 1.25;
+        this.mainSlash = {
+          x0: m.cx - m.ux * span * 0.5, y0: m.cy - m.uy * span * 0.5,
+          x1: m.cx + m.ux * span * 0.5, y1: m.cy + m.uy * span * 0.5,
+          t: nowSec, dur: 0.44
+        };
+        this.shockwave = { cx: m.cx, cy: m.cy, t: nowSec, dur: 0.58, maxR: Math.min(this.w, this.h) * 0.72 };
+
+        for (let i = 0; i < 44; i++) {
+          const side = Math.random() < 0.5 ? -1 : 1;
+          const speed = 110 + Math.random() * 320;
+          const tangSpread = (Math.random() - 0.5) * 150;
+          this.debris.push({
+            x: m.cx + (Math.random() - 0.5) * m.baseR * 0.8,
+            y: m.cy + (Math.random() - 0.5) * m.baseR * 0.8,
+            vx: side * m.nx * speed + m.ux * tangSpread,
+            vy: side * m.ny * speed + m.uy * tangSpread - 30,
+            rot: Math.random() * TAU, vrot: (Math.random() - 0.5) * 10,
+            sz: 3 + Math.random() * 7, life: 0, maxLife: 1.1 + Math.random() * 1.3,
+            shade: 0.15 + Math.random() * 0.25
+          });
+        }
+        for (let i = 0; i < 6; i++) {
+          this.dustPuffs.push({
+            x: m.cx + (Math.random() - 0.5) * m.baseR * 0.6,
+            y: m.cy + (Math.random() - 0.5) * m.baseR * 0.6,
+            vx: (Math.random() - 0.5) * 40, vy: (Math.random() - 0.5) * 40 - 20,
+            r: 16 + Math.random() * 24, life: 0, maxLife: 0.8 + Math.random() * 0.5
+          });
+        }
       }
 
       // Phase 3: The Two Cleaved Halves Splitting
@@ -652,23 +574,6 @@ void main(){
       }
     }
 
-    // Occasional sharp blade cleaves
-    _slash(now) {
-      const w = this.w, h = this.h;
-      const dir = Math.random() < 0.5 ? 1 : -1;
-      const y0 = h * (0.06 + Math.random() * 0.42);
-      const drop = h * (0.24 + Math.random() * 0.44);
-      this.cuts.push({
-        x0: dir > 0 ? -24 : w + 24,
-        y0,
-        x1: dir > 0 ? w + 24 : -24,
-        y1: y0 + drop,
-        t: now,
-        dur: 240 + Math.random() * 70,
-        fired: false
-      });
-    }
-
     _scheduleCut(now) {
       const [a, b] = this.o.slashEvery;
       this.nextCut = now + (a + Math.random() * (b - a)) * 1000;
@@ -775,19 +680,20 @@ void main(){
       // (c) Secondary Slashes
       if (this.o.slashes) {
         if (now > this.nextCut && nowSec > 1.8) {
-          this._slash(now);
+          const dir = Math.random() < 0.5 ? 1 : -1;
+          const y0 = h * (0.06 + Math.random() * 0.42);
+          const drop = h * (0.24 + Math.random() * 0.44);
+          this.cuts.push({
+            x0: dir > 0 ? -24 : w + 24, y0,
+            x1: dir > 0 ? w + 24 : -24, y1: y0 + drop,
+            t: now, dur: 240 + Math.random() * 70, fired: false
+          });
           this._scheduleCut(now);
         }
         this._drawCuts(c, now);
       }
 
       this.raf = requestAnimationFrame(n => this._tick(n));
-    }
-
-    cutMeteor() {
-      if (!this.isOpen) return;
-      this._initMeteor();
-      this.t0 = performance.now();
     }
 
     open() {
@@ -797,7 +703,34 @@ void main(){
       this.el.classList.add('kz-open');
       if (!this.rm) {
         this._resize();
-        this._initMeteor();
+        const w = this.w, h = this.h;
+        const cx = w * 0.52, cy = h * 0.38, baseR = Math.min(w, h) * 0.22;
+        const th = 33 * Math.PI / 180, ux = Math.cos(th), uy = Math.sin(th), nx = -uy, ny = ux;
+        const verts = [];
+        for (let i = 0; i < 32; i++) {
+          const a = (i / 32) * TAU;
+          const r = baseR * (0.88 + 0.14 * Math.sin(a * 3) + 0.10 * Math.cos(a * 6) + 0.06 * Math.sin(a * 10));
+          verts.push({ x: Math.cos(a) * r, y: Math.sin(a) * r });
+        }
+        this.meteor = {
+          cx, cy, baseR, th, ux, uy, nx, ny, verts,
+          craters: [
+            { x: -baseR * 0.35, y: -baseR * 0.25, r: baseR * 0.22 },
+            { x: baseR * 0.15,  y: -baseR * 0.40, r: baseR * 0.16 },
+            { x: -baseR * 0.15, y: baseR * 0.25,  r: baseR * 0.26 },
+            { x: baseR * 0.35,  y: baseR * 0.15,  r: baseR * 0.18 }
+          ],
+          fractures: [
+            [{ x: -baseR * 0.6, y: -baseR * 0.1 }, { x: -baseR * 0.2, y: -baseR * 0.15 }, { x: 0, y: -baseR * 0.35 }],
+            [{ x: -baseR * 0.1, y: baseR * 0.1 },  { x: baseR * 0.2, y: baseR * 0.2 },   { x: baseR * 0.5, y: baseR * 0.05 }],
+            [{ x: -baseR * 0.3, y: baseR * 0.4 },  { x: baseR * 0.0, y: baseR * 0.45 },  { x: baseR * 0.35, y: baseR * 0.38 }]
+          ],
+          tCut: 0.36, cutExecuted: false, duration: 3.2
+        };
+        this.mainSlash = null;
+        this.shockwave = null;
+        this.debris = [];
+        this.dustPuffs = [];
         this.t0 = performance.now();
         this.cuts = [];
         this._scheduleCut(this.t0 + 1400);
@@ -822,11 +755,6 @@ void main(){
       }, 700);
     }
 
-    replay() {
-      this.close();
-      this.open();
-    }
-
     destroy() {
       this.close();
       if (this.ro) this.ro.disconnect();
@@ -837,7 +765,6 @@ void main(){
   }
 
   g.KenpachiPanel = {
-    attach(el, o) { return el ? (inst.get(el) || new KP(el, o)) : null; },
-    get(el) { return inst.get(el) || null; }
+    attach(el, o) { return el ? (inst.get(el) || new KP(el, o)) : null; }
   };
 })(typeof window !== 'undefined' ? window : this);

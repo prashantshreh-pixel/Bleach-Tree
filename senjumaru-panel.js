@@ -155,5 +155,5 @@ void main(){
       this.el.classList.remove('senjumaru-panel', 'sj-open'); inst.delete(this.el);
     }
   }
-  g.SenjumaruPanel = { attach(el, o) { return el ? (inst.get(el) || new SJ(el, o)) : null; }, get(el) { return inst.get(el) || null; } };
+  g.SenjumaruPanel = { attach(el, o) { return el ? (inst.get(el) || new SJ(el, o)) : null; } };
 })(typeof window !== 'undefined' ? window : this);
