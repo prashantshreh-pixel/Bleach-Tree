@@ -173,6 +173,42 @@ def generate_obsidian_graph():
     <script src="kira-panel.js"></script>
     <link rel="stylesheet" href="hitsugaya-panel.css">
     <script src="hitsugaya-panel.js"></script>
+    <link rel="stylesheet" href="soifon-panel.css">
+    <script src="soifon-panel.js"></script>
+    <link rel="stylesheet" href="omaeda-panel.css">
+    <script src="omaeda-panel.js"></script>
+    <link rel="stylesheet" href="gin-panel.css">
+    <script src="gin-panel.js"></script>
+    <link rel="stylesheet" href="unohana-panel.css">
+    <script src="unohana-panel.js"></script>
+    <link rel="stylesheet" href="isane-panel.css">
+    <script src="isane-panel.js"></script>
+    <link rel="stylesheet" href="momo-panel.css">
+    <script src="momo-panel.js"></script>
+    <link rel="stylesheet" href="byakuya-panel.css">
+    <script src="byakuya-panel.js"></script>
+    <link rel="stylesheet" href="renji-panel.css">
+    <script src="renji-panel.js"></script>
+    <link rel="stylesheet" href="komamura-panel.css">
+    <script src="komamura-panel.js"></script>
+    <link rel="stylesheet" href="shunsui-panel.css">
+    <script src="shunsui-panel.js"></script>
+    <link rel="stylesheet" href="nanao-panel.css">
+    <script src="nanao-panel.js"></script>
+    <link rel="stylesheet" href="tosen-panel.css">
+    <script src="tosen-panel.js"></script>
+    <link rel="stylesheet" href="hisagi-panel.css">
+    <script src="hisagi-panel.js"></script>
+    <link rel="stylesheet" href="rangiku-panel.css">
+    <script src="rangiku-panel.js"></script>
+    <link rel="stylesheet" href="yachiru-panel.css">
+    <script src="yachiru-panel.js"></script>
+    <link rel="stylesheet" href="mayuri-panel.css">
+    <script src="mayuri-panel.js"></script>
+    <link rel="stylesheet" href="nemu-panel.css">
+    <script src="nemu-panel.js"></script>
+    <link rel="stylesheet" href="ukitake-panel.css">
+    <script src="ukitake-panel.js"></script>
     <style>
         /* Base Reset & Pointer Cursor Defaults */
         * {{ box-sizing: border-box; }}
@@ -622,27 +658,6 @@ def generate_obsidian_graph():
         @keyframes ichigo-mask-hover {{
             0% {{ transform: translateY(0); filter: drop-shadow(0 0 8px rgba(255, 30, 20, 0.75)); }}
             100% {{ transform: translateY(-2px); filter: drop-shadow(0 0 14px rgba(255, 60, 40, 0.95)); }}
-        }}
-        .byakuya-overview-card {{
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid rgba(244, 114, 182, 0.45);
-            box-shadow: 0 0 22px rgba(244, 114, 182, 0.3), 0 6px 20px rgba(0, 0, 0, 0.75);
-            background: radial-gradient(ellipse at 50% 60%, rgba(244, 114, 182, 0.16) 0%, rgba(20, 10, 24, 0.85) 75%);
-            margin-top: 14px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 10px 0;
-        }}
-        .byakuya-overview-card img {{
-            max-width: 92%;
-            height: auto;
-            display: block;
-            border-radius: 7px;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-            filter: drop-shadow(0 0 12px rgba(244, 114, 182, 0.45));
         }}
         .char-meta {{ font-size: 11px; color: #D4AF37; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }}
         .char-desc {{ font-size: 12.5px; color: #bbb; line-height: 1.6; margin-bottom: 16px; font-style: italic; }}
@@ -1099,6 +1114,24 @@ def generate_obsidian_graph():
         const skb = (typeof SasakibePanel !== 'undefined' && SasakibePanel.attach) ? SasakibePanel.attach(sidebar) : null;
         const iz = (typeof KiraPanel !== 'undefined' && KiraPanel.attach) ? KiraPanel.attach(sidebar) : null;
         const hg = (typeof HitsugayaPanel !== 'undefined' && HitsugayaPanel.attach) ? HitsugayaPanel.attach(sidebar) : null;
+        const sf = (typeof SoifonPanel !== 'undefined' && SoifonPanel.attach) ? SoifonPanel.attach(sidebar) : null;
+        const om = (typeof OmaedaPanel !== 'undefined' && OmaedaPanel.attach) ? OmaedaPanel.attach(sidebar) : null;
+        const gn = (typeof GinPanel !== 'undefined' && GinPanel.attach) ? GinPanel.attach(sidebar) : null;
+        const un = (typeof UnohanaPanel !== 'undefined' && UnohanaPanel.attach) ? UnohanaPanel.attach(sidebar) : null;
+        const is = (typeof IsanePanel !== 'undefined' && IsanePanel.attach) ? IsanePanel.attach(sidebar) : null;
+        const mm = (typeof MomoPanel !== 'undefined' && MomoPanel.attach) ? MomoPanel.attach(sidebar) : null;
+        const bk = (typeof ByakuyaPanel !== 'undefined' && ByakuyaPanel.attach) ? ByakuyaPanel.attach(sidebar) : null;
+        const rj = (typeof RenjiPanel !== 'undefined' && RenjiPanel.attach) ? RenjiPanel.attach(sidebar) : null;
+        const km = (typeof KomamuraPanel !== 'undefined' && KomamuraPanel.attach) ? KomamuraPanel.attach(sidebar) : null;
+        const sh = (typeof ShunsuiPanel !== 'undefined' && ShunsuiPanel.attach) ? ShunsuiPanel.attach(sidebar) : null;
+        const nn = (typeof NanaoPanel !== 'undefined' && NanaoPanel.attach) ? NanaoPanel.attach(sidebar) : null;
+        const ts = (typeof TosenPanel !== 'undefined' && TosenPanel.attach) ? TosenPanel.attach(sidebar) : null;
+        const hs = (typeof HisagiPanel !== 'undefined' && HisagiPanel.attach) ? HisagiPanel.attach(sidebar) : null;
+        const rg = (typeof RangikuPanel !== 'undefined' && RangikuPanel.attach) ? RangikuPanel.attach(sidebar) : null;
+        const yc = (typeof YachiruPanel !== 'undefined' && YachiruPanel.attach) ? YachiruPanel.attach(sidebar) : null;
+        const my = (typeof MayuriPanel !== 'undefined' && MayuriPanel.attach) ? MayuriPanel.attach(sidebar) : null;
+        const nu = (typeof NemuPanel !== 'undefined' && NemuPanel.attach) ? NemuPanel.attach(sidebar) : null;
+        const uk = (typeof UkitakePanel !== 'undefined' && UkitakePanel.attach) ? UkitakePanel.attach(sidebar) : null;
         const sidebarClose = document.getElementById('sidebar-close');
         const sName = document.getElementById('s-name');
         const sMeta = document.getElementById('s-meta');
@@ -1144,6 +1177,24 @@ def generate_obsidian_graph():
             if (skb) skb.close();
             if (iz) iz.close();
             if (hg) hg.close();
+            if (sf) sf.close();
+            if (om) om.close();
+            if (gn) gn.close();
+            if (un) un.close();
+            if (is) is.close();
+            if (mm) mm.close();
+            if (bk) bk.close();
+            if (rj) rj.close();
+            if (km) km.close();
+            if (sh) sh.close();
+            if (nn) nn.close();
+            if (ts) ts.close();
+            if (hs) hs.close();
+            if (rg) rg.close();
+            if (yc) yc.close();
+            if (my) my.close();
+            if (nu) nu.close();
+            if (uk) uk.close();
             sidebar.classList.remove('frost-theme', 'flame-theme', 'glass-theme', 'ichigo-theme', 'yhwach-theme', 'ichibei-theme', 'kisuke-theme', 'kenpachi-theme', 'soulking-theme', 'nimaiya-theme', 'senjumaru-theme', 'tenjiro-theme', 'kirio-theme', 'sasakibe-theme', 'kira-theme', 'hitsugaya-theme');
         }}
 
@@ -1419,13 +1470,8 @@ def generate_obsidian_graph():
 
             const ovBottom = document.getElementById('s-overview-bottom');
             if (ovBottom) {{
-                if (node.id === 'byakuya') {{
-                    ovBottom.innerHTML = '<div class="byakuya-overview-card"><img src="Asset/GIF/Byakuya.gif" alt="Byakuya Kuchiki" /></div>';
-                    ovBottom.style.display = 'block';
-                }} else {{
-                    ovBottom.innerHTML = '';
-                    ovBottom.style.display = 'none';
-                }}
+                ovBottom.innerHTML = '';
+                ovBottom.style.display = 'none';
             }}
 
             const tlItems = document.querySelectorAll('.tl-item');
@@ -1451,6 +1497,24 @@ def generate_obsidian_graph():
             sidebar.classList.add('open');
             document.body.classList.add('sidebar-open');
             miniLegend.classList.add('hidden');
+            if (sf) {{ if (node.id === 'soi_fon') sf.open(); else sf.close(); }}
+            if (om) {{ if (node.id === 'omaeda') om.open(); else om.close(); }}
+            if (gn) {{ if (node.id === 'gin') gn.open(); else gn.close(); }}
+            if (un) {{ if (node.id === 'unohana') un.open(); else un.close(); }}
+            if (is) {{ if (node.id === 'isane') is.open(); else is.close(); }}
+            if (mm) {{ if (node.id === 'momo') mm.open(); else mm.close(); }}
+            if (bk) {{ if (node.id === 'byakuya') bk.open(); else bk.close(); }}
+            if (rj) {{ if (node.id === 'renji') rj.open(); else rj.close(); }}
+            if (km) {{ if (node.id === 'komamura') km.open(); else km.close(); }}
+            if (sh) {{ if (node.id === 'shunsui') sh.open(); else sh.close(); }}
+            if (nn) {{ if (node.id === 'nanao') nn.open(); else nn.close(); }}
+            if (ts) {{ if (node.id === 'tosen') ts.open(); else ts.close(); }}
+            if (hs) {{ if (node.id === 'hisagi') hs.open(); else hs.close(); }}
+            if (rg) {{ if (node.id === 'rangiku') rg.open(); else rg.close(); }}
+            if (yc) {{ if (node.id === 'yachiru') yc.open(); else yc.close(); }}
+            if (my) {{ if (node.id === 'mayuri') my.open(); else my.close(); }}
+            if (nu) {{ if (node.id === 'nemu') nu.open(); else nu.close(); }}
+            if (uk) {{ if (node.id === 'ukitake') uk.open(); else uk.close(); }}
         }}
 
         // Dynamic Camera Framing

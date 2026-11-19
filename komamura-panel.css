@@ -1,0 +1,96 @@
+/* ==========================================================================
+   komamura-panel.css - Sajin Komamura (Kokujō Tengen Myō'ō: Dangai Jōe)
+   Colossal armored samurai shockwave, glowing bronze-gold seismic earth
+   fissures, floating rubble fragments, and stoic crimson-gold spirit embers.
+   ========================================================================== */
+@property --km-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --km-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+:where(.komamura-panel) { position: relative; overflow: hidden; }
+.km-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+
+/* Bronze armor & earthen ochre atmospheric wash (behind content) */
+.km-wash {
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at var(--km-ix, 50%) var(--km-iy, 72%), rgba(217, 119, 6, 0.26), rgba(180, 83, 9, 0.16) 40%, rgba(28, 16, 8, 0.62) 82%, transparent 100%),
+    linear-gradient(to top, rgba(180, 83, 9, 0.34) 0%, rgba(220, 38, 38, 0.08) 44%, rgba(16, 10, 6, 0.56) 100%);
+  -webkit-mask-image: radial-gradient(ellipse at var(--km-ix, 50%) var(--km-iy, 72%), #000 var(--km-r), transparent calc(var(--km-r) + 34%));
+          mask-image: radial-gradient(ellipse at var(--km-ix, 50%) var(--km-iy, 72%), #000 var(--km-r), transparent calc(var(--km-r) + 34%));
+}
+.komamura-panel.km-open .km-wash {
+  opacity: 1;
+  animation: km-wash-in 1.35s cubic-bezier(.16, 1, .3, 1) both;
+}
+@keyframes km-wash-in { from { --km-r: 0%; } to { --km-r: 100%; } }
+
+/* Canvas: seismic fissures, armor silhouette aura, hovering debris & bronze embers */
+.km-canvas {
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.45s ease;
+}
+.komamura-panel.km-open .km-canvas { opacity: 1; }
+
+/* Downward Tengen impact flash (brief, low-opacity, pointer-events: none) */
+.km-flash {
+  z-index: 6;
+  background: radial-gradient(circle at var(--km-ix, 50%) var(--km-iy, 72%), rgba(254, 243, 199, 0.52), rgba(245, 158, 11, 0.22) 22%, transparent 52%);
+  transform-origin: var(--km-ix, 50%) var(--km-iy, 72%);
+}
+.komamura-panel.km-open .km-flash {
+  animation: km-slam-flash 1.1s ease-out 0.28s both;
+}
+@keyframes km-slam-flash {
+  0%   { opacity: 0; transform: scale(0.55); }
+  20%  { opacity: 0.78; transform: scale(1.06); }
+  100% { opacity: 0; transform: scale(1.38); }
+}
+
+/* Rotating samurai-bronze & Dangai crimson-gold border glint (6s) */
+.km-ring {
+  z-index: 7;
+  padding: 1.5px;
+  background: conic-gradient(from var(--km-angle),
+    rgba(217, 119, 6, 0.14) 0 46%,
+    #b45309 64%, #fbbf24 76%, #fef3c7 82%, #dc2626 90%,
+    rgba(217, 119, 6, 0.14) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity 0.55s ease;
+}
+.komamura-panel.km-open .km-ring {
+  opacity: 1;
+  animation: km-spin 6s linear infinite;
+}
+@keyframes km-spin { to { --km-angle: 360deg; } }
+
+/* Existing sidebar hooks */
+.komamura-panel.km-open {
+  border-color: rgba(245, 158, 11, 0.88) !important;
+  animation: km-pulse 3s infinite ease-in-out;
+}
+@keyframes km-pulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(217, 119, 6, 0.38), inset 0 0 22px rgba(251, 191, 36, 0.10); }
+  50%      { box-shadow: 0 0 48px rgba(217, 119, 6, 0.65), inset 0 0 32px rgba(220, 38, 38, 0.20); }
+}
+.komamura-panel.km-open #s-avatar {
+  border-color: #fbbf24 !important;
+  box-shadow: 0 0 24px rgba(217, 119, 6, 0.9), 0 0 12px rgba(220, 38, 38, 0.55), 0 0 0 3px rgba(24, 14, 6, 0.88) !important;
+}
+.komamura-panel.km-open .char-name {
+  text-shadow: 0 0 12px rgba(251, 191, 36, 0.72), 0 0 22px rgba(180, 83, 9, 0.55);
+}
+.komamura-panel.km-open .scroll-fade {
+  background: linear-gradient(to top, rgba(92, 42, 8, 0.48), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .km-flash { display: none; }
+  .komamura-panel.km-open,
+  .komamura-panel.km-open .km-wash,
+  .komamura-panel.km-open .km-ring { animation: none !important; }
+  .komamura-panel.km-open .km-wash { --km-r: 100%; opacity: 0.92; }
+}

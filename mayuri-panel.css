@@ -1,0 +1,96 @@
+/* ==========================================================================
+   mayuri-panel.css - Mayuri Kurotsuchi (Konjiki Ashisogi Jizō)
+   Rotating golden biomechanical Jizō halo with surgical blade spokes,
+   billowing toxic violet-chartreuse miasma, and bioluminescent spores.
+   ========================================================================== */
+@property --my-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --my-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+:where(.mayuri-panel) { position: relative; overflow: hidden; }
+.my-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+
+/* Toxic violet-magenta & acid-chartreuse miasma wash (behind content) */
+.my-wash {
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at var(--my-ix, 50%) var(--my-iy, 38%), rgba(163, 230, 53, 0.18), rgba(192, 38, 211, 0.20) 40%, rgba(26, 11, 46, 0.66) 82%, transparent 100%),
+    linear-gradient(to top, rgba(163, 230, 53, 0.14) 0%, rgba(192, 38, 211, 0.12) 48%, rgba(16, 6, 30, 0.62) 100%);
+  -webkit-mask-image: radial-gradient(ellipse at var(--my-ix, 50%) var(--my-iy, 38%), #000 var(--my-r), transparent calc(var(--my-r) + 34%));
+          mask-image: radial-gradient(ellipse at var(--my-ix, 50%) var(--my-iy, 38%), #000 var(--my-r), transparent calc(var(--my-r) + 34%));
+}
+.mayuri-panel.my-open .my-wash {
+  opacity: 1;
+  animation: my-miasma-bloom 1.5s cubic-bezier(.16, 1, .3, 1) both;
+}
+@keyframes my-miasma-bloom { from { --my-r: 0%; } to { --my-r: 100%; } }
+
+/* Canvas: Golden Ashisogi Jizō spoked halo, billowing poison plumes, mutagen spores */
+.my-canvas {
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.45s ease;
+}
+.mayuri-panel.my-open .my-canvas { opacity: 1; }
+
+/* Brief bio-acid flash when Konjiki halo unfolds (thin, low-opacity, pointer-events: none) */
+.my-flash {
+  z-index: 6;
+  background: radial-gradient(circle at var(--my-ix, 50%) var(--my-iy, 38%), rgba(236, 252, 203, 0.48), rgba(163, 230, 53, 0.22) 18%, rgba(192, 38, 211, 0.14) 36%, transparent 56%);
+  transform-origin: var(--my-ix, 50%) var(--my-iy, 38%);
+}
+.mayuri-panel.my-open .my-flash {
+  animation: my-halo-flash 1.15s ease-out 0.25s both;
+}
+@keyframes my-halo-flash {
+  0%   { opacity: 0; transform: scale(0.55); }
+  24%  { opacity: 0.78; transform: scale(1.06); }
+  100% { opacity: 0; transform: scale(1.36); }
+}
+
+/* Rotating acid-chartreuse, Konjiki gold & toxic-magenta border glint (6s) */
+.my-ring {
+  z-index: 7;
+  padding: 1.5px;
+  background: conic-gradient(from var(--my-angle),
+    rgba(192, 38, 211, 0.14) 0 44%,
+    #c026d3 64%, #eab308 75%, #a3e635 86%,
+    rgba(192, 38, 211, 0.14) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity 0.55s ease;
+}
+.mayuri-panel.my-open .my-ring {
+  opacity: 1;
+  animation: my-spin 6s linear infinite;
+}
+@keyframes my-spin { to { --my-angle: 360deg; } }
+
+/* Existing sidebar hooks */
+.mayuri-panel.my-open {
+  border-color: rgba(163, 230, 53, 0.85) !important;
+  animation: my-pulse 3s infinite ease-in-out;
+}
+@keyframes my-pulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(192, 38, 211, 0.38), inset 0 0 22px rgba(163, 230, 53, 0.10); }
+  50%      { box-shadow: 0 0 48px rgba(163, 230, 53, 0.56), inset 0 0 32px rgba(192, 38, 211, 0.24); }
+}
+.mayuri-panel.my-open #s-avatar {
+  border-color: #bef264 !important;
+  box-shadow: 0 0 22px rgba(163, 230, 53, 0.88), 0 0 14px rgba(192, 38, 211, 0.72), 0 0 0 3px rgba(20, 8, 36, 0.88) !important;
+}
+.mayuri-panel.my-open .char-name {
+  text-shadow: 0 0 12px rgba(163, 230, 53, 0.75), 0 0 22px rgba(192, 38, 211, 0.55);
+}
+.mayuri-panel.my-open .scroll-fade {
+  background: linear-gradient(to top, rgba(58, 12, 74, 0.48), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .my-flash { display: none; }
+  .mayuri-panel.my-open,
+  .mayuri-panel.my-open .my-wash,
+  .mayuri-panel.my-open .my-ring { animation: none !important; }
+  .mayuri-panel.my-open .my-wash { --my-r: 100%; opacity: 0.92; }
+}

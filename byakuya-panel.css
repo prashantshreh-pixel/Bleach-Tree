@@ -1,0 +1,100 @@
+/* ==========================================================================
+   byakuya-panel.css - Byakuya Kuchiki (Senbonzakura Kageyoshi / 千本桜景厳)
+   Effects only: does NOT alter sidebar size, position, fonts, or layout.
+   Layers sit between #sidebar-overlay and #sidebar-content (z-index: 1);
+   flash (z-index: 6) and 1.5px border glint (z-index: 7) are thin,
+   low-opacity, and pointer-events: none.
+   ========================================================================== */
+@property --bk-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --bk-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+:where(.byakuya-panel) { position: relative; overflow: hidden; }
+.bk-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+
+/* Twilight blossom ambient wash (behind content) */
+.bk-wash {
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at var(--bk-ix, 50%) var(--bk-iy, 38%), rgba(249, 168, 212, 0.22), rgba(244, 114, 182, 0.12) 38%, rgba(131, 24, 67, 0.34) 76%, transparent 100%),
+    linear-gradient(to bottom, rgba(244, 114, 182, 0.08) 0%, rgba(45, 10, 32, 0.16) 52%, rgba(18, 6, 18, 0.56) 100%);
+  -webkit-mask-image: radial-gradient(ellipse at var(--bk-ix, 50%) var(--bk-iy, 38%), #000 var(--bk-r), transparent calc(var(--bk-r) + 34%));
+          mask-image: radial-gradient(ellipse at var(--bk-ix, 50%) var(--bk-iy, 38%), #000 var(--bk-r), transparent calc(var(--bk-r) + 34%));
+}
+.byakuya-panel.bk-open .bk-wash {
+  opacity: 1;
+  animation: bk-wash-in 1.5s cubic-bezier(.16, 1, .3, 1) both;
+}
+@keyframes bk-wash-in { from { --bk-r: 0%; } to { --bk-r: 100%; } }
+
+/* Senbonzakura blade-petal canvas (behind text) */
+.bk-canvas {
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.45s ease;
+}
+.byakuya-panel.bk-open .bk-canvas { opacity: 1; }
+
+/* Brief razor-pink scatter glint over content (thin, low-opacity, non-interactive) */
+.bk-flash {
+  z-index: 6;
+  background:
+    radial-gradient(circle at var(--bk-ix, 50%) var(--bk-iy, 38%), rgba(252, 231, 243, 0.42), rgba(244, 114, 182, 0.20) 20%, transparent 52%),
+    linear-gradient(125deg, transparent 38%, rgba(252, 231, 243, 0.16) 50%, transparent 62%);
+  transform-origin: var(--bk-ix, 50%) var(--bk-iy, 38%);
+}
+.byakuya-panel.bk-open .bk-flash {
+  animation: bk-scatter-flash 1.35s cubic-bezier(.2, .8, .2, 1) 0.45s both;
+}
+@keyframes bk-scatter-flash {
+  0%   { opacity: 0; transform: scale(0.72); }
+  22%  { opacity: 0.72; transform: scale(1.04); }
+  100% { opacity: 0; transform: scale(1.22); }
+}
+
+/* Rotating sakura-silver border glint (6s) */
+.bk-ring {
+  z-index: 7;
+  padding: 1.5px;
+  background: conic-gradient(from var(--bk-angle),
+    rgba(244, 114, 182, 0.14) 0 48%,
+    #f472b6 70%, #fce7f3 80%, #f9a8d4 88%,
+    rgba(244, 114, 182, 0.14) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity 0.55s ease;
+}
+.byakuya-panel.bk-open .bk-ring {
+  opacity: 1;
+  animation: bk-spin 6s linear infinite;
+}
+@keyframes bk-spin { to { --bk-angle: 360deg; } }
+
+/* Existing sidebar hooks recolored to Byakuya's noble sakura palette */
+.byakuya-panel.bk-open {
+  border-color: rgba(249, 168, 212, 0.85) !important;
+  animation: bk-pulse 3s infinite ease-in-out;
+}
+@keyframes bk-pulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(244, 114, 182, 0.36), inset 0 0 20px rgba(252, 231, 243, 0.08); }
+  50%      { box-shadow: 0 0 46px rgba(244, 114, 182, 0.62), inset 0 0 30px rgba(249, 168, 212, 0.22); }
+}
+.byakuya-panel.bk-open #s-avatar {
+  border-color: #f9a8d4 !important;
+  box-shadow: 0 0 24px rgba(244, 114, 182, 0.85), 0 0 10px rgba(252, 231, 243, 0.55), 0 0 0 3px rgba(18, 6, 18, 0.8) !important;
+}
+.byakuya-panel.bk-open .char-name {
+  text-shadow: 0 0 12px rgba(249, 168, 212, 0.72), 0 0 24px rgba(244, 114, 182, 0.38);
+}
+.byakuya-panel.bk-open .scroll-fade {
+  background: linear-gradient(to top, rgba(131, 24, 67, 0.34), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bk-flash { display: none; }
+  .byakuya-panel.bk-open,
+  .byakuya-panel.bk-open .bk-wash,
+  .byakuya-panel.bk-open .bk-ring { animation: none !important; }
+  .byakuya-panel.bk-open .bk-wash { --bk-r: 100%; opacity: 0.9; }
+}

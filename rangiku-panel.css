@@ -1,0 +1,96 @@
+/* ==========================================================================
+   rangiku-panel.css - Rangiku Matsumoto (Haineko / 灰猫 — Volumetric Ash-Fog)
+   Blade vaporizing into lush, billowing, multi-depth rolling silver ash-fog
+   banks punctuated by sudden razor-sharp metallic slash glints inside the mist.
+   ========================================================================== */
+@property --rg-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --rg-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+:where(.rangiku-panel) { position: relative; overflow: hidden; }
+.rg-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+
+/* Enveloping pewter ash-fog & soft smoky slate ambient wash (behind content) */
+.rg-wash {
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at var(--rg-ix, 50%) var(--rg-iy, 46%), rgba(226, 232, 240, 0.22), rgba(148, 163, 184, 0.18) 42%, rgba(30, 32, 42, 0.72) 84%, transparent 100%),
+    linear-gradient(to top, rgba(148, 163, 184, 0.28) 0%, rgba(71, 85, 105, 0.16) 48%, rgba(16, 17, 24, 0.72) 100%);
+  -webkit-mask-image: radial-gradient(ellipse at var(--rg-ix, 50%) var(--rg-iy, 46%), #000 var(--rg-r), transparent calc(var(--rg-r) + 38%));
+          mask-image: radial-gradient(ellipse at var(--rg-ix, 50%) var(--rg-iy, 46%), #000 var(--rg-r), transparent calc(var(--rg-r) + 38%));
+}
+.rangiku-panel.rg-open .rg-wash {
+  opacity: 1;
+  animation: rg-fog-bloom 1.7s cubic-bezier(.16, 1, .3, 1) both;
+}
+@keyframes rg-fog-bloom { from { --rg-r: 0%; } to { --rg-r: 100%; } }
+
+/* Canvas: dissolving Haineko blade, volumetric rolling ash-fog banks, blade glints */
+.rg-canvas {
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.5s ease;
+}
+.rangiku-panel.rg-open .rg-canvas { opacity: 1; }
+
+/* Silky ash-mist veil sweep as Haineko unravels into fog (thin, low-opacity) */
+.rg-flash {
+  z-index: 6;
+  background: linear-gradient(115deg, transparent 32%, rgba(226, 232, 240, 0.26) 47%, rgba(253, 186, 116, 0.12) 53%, transparent 68%);
+  transform: translateX(-115%);
+}
+.rangiku-panel.rg-open .rg-flash {
+  animation: rg-mist-sweep 1.45s ease-out 0.28s both;
+}
+@keyframes rg-mist-sweep {
+  0%   { opacity: 0; transform: translateX(-115%); }
+  30%  { opacity: 0.76; }
+  100% { opacity: 0; transform: translateX(115%); }
+}
+
+/* Rotating smoky silver-ash & warm champagne border glint (6s) */
+.rg-ring {
+  z-index: 7;
+  padding: 1.5px;
+  background: conic-gradient(from var(--rg-angle),
+    rgba(203, 213, 225, 0.14) 0 46%,
+    #94a3b8 62%, #f1f5f9 74%, #fdba74 84%, #cbd5e1 92%,
+    rgba(203, 213, 225, 0.14) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity 0.55s ease;
+}
+.rangiku-panel.rg-open .rg-ring {
+  opacity: 1;
+  animation: rg-spin 6s linear infinite;
+}
+@keyframes rg-spin { to { --rg-angle: 360deg; } }
+
+/* Existing sidebar hooks */
+.rangiku-panel.rg-open {
+  border-color: rgba(203, 213, 225, 0.85) !important;
+  animation: rg-pulse 3s infinite ease-in-out;
+}
+@keyframes rg-pulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(148, 163, 184, 0.36), inset 0 0 24px rgba(226, 232, 240, 0.10); }
+  50%      { box-shadow: 0 0 46px rgba(226, 232, 240, 0.54), inset 0 0 34px rgba(253, 186, 116, 0.16); }
+}
+.rangiku-panel.rg-open #s-avatar {
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 0 22px rgba(226, 232, 240, 0.88), 0 0 12px rgba(253, 186, 116, 0.45), 0 0 0 3px rgba(20, 22, 30, 0.88) !important;
+}
+.rangiku-panel.rg-open .char-name {
+  text-shadow: 0 0 12px rgba(226, 232, 240, 0.78), 0 0 22px rgba(148, 163, 184, 0.52);
+}
+.rangiku-panel.rg-open .scroll-fade {
+  background: linear-gradient(to top, rgba(38, 42, 54, 0.58), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rg-flash { display: none; }
+  .rangiku-panel.rg-open,
+  .rangiku-panel.rg-open .rg-wash,
+  .rangiku-panel.rg-open .rg-ring { animation: none !important; }
+  .rangiku-panel.rg-open .rg-wash { --rg-r: 100%; opacity: 0.92; }
+}

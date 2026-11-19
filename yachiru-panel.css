@@ -1,0 +1,97 @@
+/* ==========================================================================
+   yachiru-panel.css - Yachiru Kusajishi (Awakened Bankai Spirit / Nozarashi)
+   Manifested translucent crimson-magenta Bankai Oni-Spirit rising behind the
+   panel with curved glowing horns, blazing feral golden eyes, flowing spirit
+   flames, and Sanpo Kenjū phantom mimic slash echoes.
+   ========================================================================== */
+@property --yc-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --yc-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+:where(.yachiru-panel) { position: relative; overflow: hidden; }
+.yc-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+
+/* Awakened Bankai spirit crimson-magenta & abyssal plum wash (behind content) */
+.yc-wash {
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at var(--yc-ix, 50%) var(--yc-iy, 48%), rgba(244, 63, 94, 0.28), rgba(236, 72, 153, 0.18) 38%, rgba(28, 6, 18, 0.72) 82%, transparent 100%),
+    linear-gradient(to top, rgba(225, 29, 72, 0.34) 0%, rgba(236, 72, 153, 0.10) 46%, rgba(16, 4, 14, 0.72) 100%);
+  -webkit-mask-image: radial-gradient(ellipse at var(--yc-ix, 50%) var(--yc-iy, 48%), #000 var(--yc-r), transparent calc(var(--yc-r) + 34%));
+          mask-image: radial-gradient(ellipse at var(--yc-ix, 50%) var(--yc-iy, 48%), #000 var(--yc-r), transparent calc(var(--yc-r) + 34%));
+}
+.yachiru-panel.yc-open .yc-wash {
+  opacity: 1;
+  animation: yc-wash-in 1.35s cubic-bezier(.16, 1, .3, 1) both;
+}
+@keyframes yc-wash-in { from { --yc-r: 0%; } to { --yc-r: 100%; } }
+
+/* Canvas: Awakened Bankai Oni-Spirit, curved glowing horns, blazing eyes, spirit flames */
+.yc-canvas {
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.45s ease;
+}
+.yachiru-panel.yc-open .yc-canvas { opacity: 1; }
+
+/* Awakened Bankai spiritual-pressure surge flash when the spirit's eyes open */
+.yc-flash {
+  z-index: 6;
+  background: radial-gradient(circle at var(--yc-ix, 50%) var(--yc-iy, 48%), rgba(254, 240, 138, 0.50), rgba(244, 63, 94, 0.28) 22%, rgba(236, 72, 153, 0.14) 40%, transparent 58%);
+  transform-origin: var(--yc-ix, 50%) var(--yc-iy, 48%);
+}
+.yachiru-panel.yc-open .yc-flash {
+  animation: yc-awaken-flash 1.25s ease-out 0.42s both;
+}
+@keyframes yc-awaken-flash {
+  0%   { opacity: 0; transform: scale(0.5); }
+  22%  { opacity: 0.84; transform: scale(1.08); }
+  100% { opacity: 0; transform: scale(1.48); }
+}
+
+/* Rotating Bankai rose-crimson, sakura-magenta & spirit-gold border glint (6s) */
+.yc-ring {
+  z-index: 7;
+  padding: 1.5px;
+  background: conic-gradient(from var(--yc-angle),
+    rgba(244, 63, 94, 0.16) 0 44%,
+    #f43f5e 60%, #ec4899 71%, #fde047 80%, #fbcfe8 89%,
+    rgba(244, 63, 94, 0.16) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity 0.55s ease;
+}
+.yachiru-panel.yc-open .yc-ring {
+  opacity: 1;
+  animation: yc-spin 6s linear infinite;
+}
+@keyframes yc-spin { to { --yc-angle: 360deg; } }
+
+/* Existing sidebar hooks */
+.yachiru-panel.yc-open {
+  border-color: rgba(244, 63, 94, 0.90) !important;
+  animation: yc-pulse 3s infinite ease-in-out;
+}
+@keyframes yc-pulse {
+  0%, 100% { box-shadow: 0 0 32px rgba(244, 63, 94, 0.42), inset 0 0 24px rgba(236, 72, 153, 0.14); }
+  50%      { box-shadow: 0 0 50px rgba(236, 72, 153, 0.68), inset 0 0 34px rgba(253, 224, 71, 0.20); }
+}
+.yachiru-panel.yc-open #s-avatar {
+  border-color: #f43f5e !important;
+  box-shadow: 0 0 24px rgba(244, 63, 94, 0.95), 0 0 12px rgba(253, 224, 71, 0.65), 0 0 0 3px rgba(22, 5, 16, 0.88) !important;
+}
+.yachiru-panel.yc-open .char-name {
+  text-shadow: 0 0 12px rgba(244, 63, 94, 0.85), 0 0 24px rgba(236, 72, 153, 0.55);
+}
+.yachiru-panel.yc-open .scroll-fade {
+  background: linear-gradient(to top, rgba(78, 12, 36, 0.54), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yc-flash { display: none; }
+  .yachiru-panel.yc-open,
+  .yachiru-panel.yc-open .yc-wash,
+  .yachiru-panel.yc-open .yc-ring { animation: none !important; }
+  .yachiru-panel.yc-open .yc-wash { --yc-r: 100%; opacity: 0.92; }
+}

@@ -1,0 +1,96 @@
+/* ==========================================================================
+   shunsui-panel.css - Shunsui Kyōraku (Katen Kyōkotsu: Karamatsu Shinjū)
+   Shadow-ink pools (Kageoni), melancholic theater gloom, drifting rose kimono
+   petals, and luminous Act IV crimson fate-threads.
+   ========================================================================== */
+@property --sh-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --sh-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+:where(.shunsui-panel) { position: relative; overflow: hidden; }
+.sh-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+
+/* Melancholy theater shadow-ink wash (behind content) */
+.sh-wash {
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at var(--sh-ix, 50%) var(--sh-iy, 42%), rgba(225, 29, 72, 0.20), rgba(136, 19, 55, 0.16) 40%, rgba(16, 8, 26, 0.62) 82%, transparent 100%),
+    linear-gradient(to bottom, rgba(28, 16, 38, 0.36) 0%, rgba(244, 114, 182, 0.06) 46%, rgba(10, 6, 18, 0.72) 100%);
+  -webkit-mask-image: radial-gradient(ellipse at var(--sh-ix, 50%) var(--sh-iy, 42%), #000 var(--sh-r), transparent calc(var(--sh-r) + 36%));
+          mask-image: radial-gradient(ellipse at var(--sh-ix, 50%) var(--sh-iy, 42%), #000 var(--sh-r), transparent calc(var(--sh-r) + 36%));
+}
+.shunsui-panel.sh-open .sh-wash {
+  opacity: 1;
+  animation: sh-ink-bloom 1.6s cubic-bezier(.16, 1, .3, 1) both;
+}
+@keyframes sh-ink-bloom { from { --sh-r: 0%; } to { --sh-r: 100%; } }
+
+/* Canvas: Kageoni ink ripples, Act IV crimson threads, drifting kimono petals */
+.sh-canvas {
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.45s ease;
+}
+.shunsui-panel.sh-open .sh-canvas { opacity: 1; }
+
+/* Thin crimson-gold thread flash over content during Act IV pluck */
+.sh-flash {
+  z-index: 6;
+  background:
+    linear-gradient(168deg, transparent 47%, rgba(251, 113, 133, 0.38) 49.6%, rgba(254, 243, 199, 0.45) 50%, rgba(225, 29, 72, 0.32) 50.4%, transparent 53%);
+}
+.shunsui-panel.sh-open .sh-flash {
+  animation: sh-thread-flash 1.4s ease-out 0.65s both;
+}
+@keyframes sh-thread-flash {
+  0%   { opacity: 0; transform: scaleX(0.2); }
+  25%  { opacity: 0.75; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(1.06); }
+}
+
+/* Rotating crimson-and-gold theater border glint (6s) */
+.sh-ring {
+  z-index: 7;
+  padding: 1.5px;
+  background: conic-gradient(from var(--sh-angle),
+    rgba(225, 29, 72, 0.14) 0 46%,
+    #e11d48 68%, #fbbf24 78%, #f472b6 88%,
+    rgba(225, 29, 72, 0.14) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity 0.55s ease;
+}
+.shunsui-panel.sh-open .sh-ring {
+  opacity: 1;
+  animation: sh-spin 6s linear infinite;
+}
+@keyframes sh-spin { to { --sh-angle: 360deg; } }
+
+/* Existing sidebar hooks */
+.shunsui-panel.sh-open {
+  border-color: rgba(244, 63, 94, 0.85) !important;
+  animation: sh-pulse 3s infinite ease-in-out;
+}
+@keyframes sh-pulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(225, 29, 72, 0.36), inset 0 0 22px rgba(251, 191, 36, 0.08); }
+  50%      { box-shadow: 0 0 46px rgba(225, 29, 72, 0.62), inset 0 0 32px rgba(244, 114, 182, 0.20); }
+}
+.shunsui-panel.sh-open #s-avatar {
+  border-color: #fb7185 !important;
+  box-shadow: 0 0 24px rgba(225, 29, 72, 0.85), 0 0 12px rgba(251, 191, 36, 0.45), 0 0 0 3px rgba(16, 8, 26, 0.85) !important;
+}
+.shunsui-panel.sh-open .char-name {
+  text-shadow: 0 0 12px rgba(244, 63, 94, 0.72), 0 0 22px rgba(251, 191, 36, 0.35);
+}
+.shunsui-panel.sh-open .scroll-fade {
+  background: linear-gradient(to top, rgba(88, 14, 42, 0.42), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-flash { display: none; }
+  .shunsui-panel.sh-open,
+  .shunsui-panel.sh-open .sh-wash,
+  .shunsui-panel.sh-open .sh-ring { animation: none !important; }
+  .shunsui-panel.sh-open .sh-wash { --sh-r: 100%; opacity: 0.92; }
+}

@@ -1,0 +1,96 @@
+/* ==========================================================================
+   nanao-panel.css - Nanao Ise (Shinken Hakkyōken / 神剣・八鏡剣 & Bakudō)
+   Octagonal sacred mirror prism refracting divine light into eight prismatic
+   white-gold, azure, and lavender shafts inside a geometric Bakudō lattice.
+   ========================================================================== */
+@property --nn-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --nn-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+:where(.nanao-panel) { position: relative; overflow: hidden; }
+.nn-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+
+/* Sacred white-gold & prismatic sapphire-violet wash (behind content) */
+.nn-wash {
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at var(--nn-ix, 50%) var(--nn-iy, 38%), rgba(254, 249, 195, 0.22), rgba(251, 191, 36, 0.14) 34%, rgba(147, 197, 253, 0.12) 60%, rgba(16, 14, 30, 0.64) 92%),
+    linear-gradient(to bottom, rgba(251, 191, 36, 0.08) 0%, rgba(196, 181, 253, 0.06) 50%, rgba(12, 10, 24, 0.66) 100%);
+  -webkit-mask-image: radial-gradient(ellipse at var(--nn-ix, 50%) var(--nn-iy, 38%), #000 var(--nn-r), transparent calc(var(--nn-r) + 34%));
+          mask-image: radial-gradient(ellipse at var(--nn-ix, 50%) var(--nn-iy, 38%), #000 var(--nn-r), transparent calc(var(--nn-r) + 34%));
+}
+.nanao-panel.nn-open .nn-wash {
+  opacity: 1;
+  animation: nn-wash-in 1.4s cubic-bezier(.16, 1, .3, 1) both;
+}
+@keyframes nn-wash-in { from { --nn-r: 0%; } to { --nn-r: 100%; } }
+
+/* Canvas: octagonal Shinken Hakkyōken prism, 8 refraction rays, Bakudō lattice */
+.nn-canvas {
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.45s ease;
+}
+.nanao-panel.nn-open .nn-canvas { opacity: 1; }
+
+/* Pure divine mirror reflection burst (thin, low-opacity, pointer-events: none) */
+.nn-flash {
+  z-index: 6;
+  background: radial-gradient(circle at var(--nn-ix, 50%) var(--nn-iy, 38%), rgba(255, 255, 255, 0.62), rgba(254, 249, 195, 0.24) 20%, rgba(147, 197, 253, 0.12) 38%, transparent 56%);
+  transform-origin: var(--nn-ix, 50%) var(--nn-iy, 38%);
+}
+.nanao-panel.nn-open .nn-flash {
+  animation: nn-mirror-flash 1.15s ease-out 0.48s both;
+}
+@keyframes nn-mirror-flash {
+  0%   { opacity: 0; transform: scale(0.45); }
+  22%  { opacity: 0.82; transform: scale(1.06); }
+  100% { opacity: 0; transform: scale(1.42); }
+}
+
+/* Rotating sacred-gold & prismatic crystal border glint (6s) */
+.nn-ring {
+  z-index: 7;
+  padding: 1.5px;
+  background: conic-gradient(from var(--nn-angle),
+    rgba(251, 191, 36, 0.14) 0 44%,
+    #fbbf24 62%, #fef9c3 73%, #93c5fd 82%, #c4b5fd 90%,
+    rgba(251, 191, 36, 0.14) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity 0.55s ease;
+}
+.nanao-panel.nn-open .nn-ring {
+  opacity: 1;
+  animation: nn-spin 6s linear infinite;
+}
+@keyframes nn-spin { to { --nn-angle: 360deg; } }
+
+/* Existing sidebar hooks */
+.nanao-panel.nn-open {
+  border-color: rgba(254, 240, 138, 0.88) !important;
+  animation: nn-pulse 3s infinite ease-in-out;
+}
+@keyframes nn-pulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(251, 191, 36, 0.34), inset 0 0 20px rgba(147, 197, 253, 0.10); }
+  50%      { box-shadow: 0 0 46px rgba(251, 191, 36, 0.58), inset 0 0 32px rgba(254, 249, 195, 0.22); }
+}
+.nanao-panel.nn-open #s-avatar {
+  border-color: #fef08a !important;
+  box-shadow: 0 0 24px rgba(251, 191, 36, 0.88), 0 0 12px rgba(147, 197, 253, 0.55), 0 0 0 3px rgba(16, 14, 30, 0.88) !important;
+}
+.nanao-panel.nn-open .char-name {
+  text-shadow: 0 0 12px rgba(254, 249, 195, 0.78), 0 0 22px rgba(251, 191, 36, 0.45);
+}
+.nanao-panel.nn-open .scroll-fade {
+  background: linear-gradient(to top, rgba(46, 38, 16, 0.46), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nn-flash { display: none; }
+  .nanao-panel.nn-open,
+  .nanao-panel.nn-open .nn-wash,
+  .nanao-panel.nn-open .nn-ring { animation: none !important; }
+  .nanao-panel.nn-open .nn-wash { --nn-r: 100%; opacity: 0.92; }
+}

@@ -1,0 +1,97 @@
+/* ==========================================================================
+   momo-panel.css - Momo Hinamori (Tobiume / 飛梅 — Burning Forked Sword)
+   Superheated three-pronged forked Tobiume katana glowing white-hot along its
+   edges, launching blazing plum-crimson fireballs and rising ember heat-haze.
+   ========================================================================== */
+@property --mm-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --mm-r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+
+:where(.momo-panel) { position: relative; overflow: hidden; }
+.mm-layer { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+
+/* Smoldering furnace-crimson, burnt-tangerine & plum-ember wash (behind content) */
+.mm-wash {
+  z-index: 1;
+  background:
+    radial-gradient(ellipse at var(--mm-ix, 62%) var(--mm-iy, 56%), rgba(255, 107, 53, 0.28), rgba(220, 38, 38, 0.18) 38%, rgba(44, 12, 14, 0.66) 80%, transparent 100%),
+    linear-gradient(to top, rgba(234, 88, 12, 0.30) 0%, rgba(251, 113, 133, 0.10) 44%, rgba(20, 7, 8, 0.64) 100%);
+  -webkit-mask-image: radial-gradient(ellipse at var(--mm-ix, 62%) var(--mm-iy, 56%), #000 var(--mm-r), transparent calc(var(--mm-r) + 34%));
+          mask-image: radial-gradient(ellipse at var(--mm-ix, 62%) var(--mm-iy, 56%), #000 var(--mm-r), transparent calc(var(--mm-r) + 34%));
+}
+.momo-panel.mm-open .mm-wash {
+  opacity: 1;
+  animation: mm-wash-in 1.35s cubic-bezier(.16, 1, .3, 1) both;
+}
+@keyframes mm-wash-in { from { --mm-r: 0%; } to { --mm-r: 100%; } }
+
+/* Canvas: burning forked Tobiume sword, prong fireballs, scorched embers */
+.mm-canvas {
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.45s ease;
+}
+.momo-panel.mm-open .mm-canvas { opacity: 1; }
+
+/* Brief incandescent sword-ignition flash ("Hajike, Tobiume!") */
+.mm-flash {
+  z-index: 6;
+  background:
+    radial-gradient(circle at var(--mm-ix, 62%) var(--mm-iy, 56%), rgba(254, 249, 195, 0.56), rgba(255, 107, 53, 0.26) 22%, rgba(220, 38, 38, 0.12) 42%, transparent 58%);
+  transform-origin: var(--mm-ix, 62%) var(--mm-iy, 56%);
+}
+.momo-panel.mm-open .mm-flash {
+  animation: mm-ignite-flash 1.15s ease-out 0.28s both;
+}
+@keyframes mm-ignite-flash {
+  0%   { opacity: 0; transform: scale(0.5); }
+  24%  { opacity: 0.82; transform: scale(1.06); }
+  100% { opacity: 0; transform: scale(1.42); }
+}
+
+/* Rotating molten-orange, white-hot gold & plum-crimson border glint (6s) */
+.mm-ring {
+  z-index: 7;
+  padding: 1.5px;
+  background: conic-gradient(from var(--mm-angle),
+    rgba(255, 107, 53, 0.14) 0 44%,
+    #dc2626 60%, #ff6b35 70%, #fef08a 79%, #fb7185 89%,
+    rgba(255, 107, 53, 0.14) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity 0.55s ease;
+}
+.momo-panel.mm-open .mm-ring {
+  opacity: 1;
+  animation: mm-spin 6s linear infinite;
+}
+@keyframes mm-spin { to { --mm-angle: 360deg; } }
+
+/* Existing sidebar hooks */
+.momo-panel.mm-open {
+  border-color: rgba(255, 107, 53, 0.88) !important;
+  animation: mm-pulse 3s infinite ease-in-out;
+}
+@keyframes mm-pulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(255, 107, 53, 0.38), inset 0 0 22px rgba(220, 38, 38, 0.12); }
+  50%      { box-shadow: 0 0 48px rgba(255, 107, 53, 0.65), inset 0 0 32px rgba(254, 240, 138, 0.22); }
+}
+.momo-panel.mm-open #s-avatar {
+  border-color: #fb923c !important;
+  box-shadow: 0 0 24px rgba(255, 107, 53, 0.92), 0 0 12px rgba(251, 113, 133, 0.65), 0 0 0 3px rgba(28, 8, 9, 0.88) !important;
+}
+.momo-panel.mm-open .char-name {
+  text-shadow: 0 0 12px rgba(255, 107, 53, 0.82), 0 0 22px rgba(251, 113, 133, 0.48);
+}
+.momo-panel.mm-open .scroll-fade {
+  background: linear-gradient(to top, rgba(84, 22, 16, 0.52), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mm-flash { display: none; }
+  .momo-panel.mm-open,
+  .momo-panel.mm-open .mm-wash,
+  .momo-panel.mm-open .mm-ring { animation: none !important; }
+  .momo-panel.mm-open .mm-wash { --mm-r: 100%; opacity: 0.92; }
+}
