@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BLEACH — Gotei 13 Sidebar Theme Preview (18 New Themes)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+
+  <!-- All 18 newly crafted Gotei 13 + reworked Hitsugaya stylesheets -->
+  <link rel="stylesheet" href="../panels/css/hitsugaya-panel.css" />
+  <link rel="stylesheet" href="../panels/css/soifon-panel.css" />
+  <link rel="stylesheet" href="../panels/css/omaeda-panel.css" />
+  <link rel="stylesheet" href="../panels/css/gin-panel.css" />
+  <link rel="stylesheet" href="../panels/css/unohana-panel.css" />
+  <link rel="stylesheet" href="../panels/css/isane-panel.css" />
+  <link rel="stylesheet" href="../panels/css/momo-panel.css" />
+  <link rel="stylesheet" href="../panels/css/byakuya-panel.css" />
+  <link rel="stylesheet" href="../panels/css/renji-panel.css" />
+  <link rel="stylesheet" href="../panels/css/komamura-panel.css" />
+  <link rel="stylesheet" href="../panels/css/shunsui-panel.css" />
+  <link rel="stylesheet" href="../panels/css/nanao-panel.css" />
+  <link rel="stylesheet" href="../panels/css/tosen-panel.css" />
+  <link rel="stylesheet" href="../panels/css/hisagi-panel.css" />
+  <link rel="stylesheet" href="../panels/css/rangiku-panel.css" />
+  <link rel="stylesheet" href="../panels/css/yachiru-panel.css" />
+  <link rel="stylesheet" href="../panels/css/mayuri-panel.css" />
+  <link rel="stylesheet" href="../panels/css/nemu-panel.css" />
+  <link rel="stylesheet" href="../panels/css/ukitake-panel.css" />
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at 22% 18%, #151726 0%, #0a0a0f 65%);
+      color: #e5e7eb;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      padding: 24px 410px 24px 28px;
+    }
+
+    /* Demo launcher panel (left) */
+    .demo-shell {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .demo-header {
+      border-bottom: 1px solid rgba(212, 175, 55, 0.28);
+      padding-bottom: 14px;
+    }
+    .demo-kicker {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 3.5px;
+      color: #D4AF37;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .demo-title {
+      font-family: 'Cinzel', serif;
+      font-size: 24px;
+      margin: 0 0 6px 0;
+      color: #fff;
+    }
+    .demo-sub {
+      font-size: 13px;
+      color: #9ca3af;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 2.2px;
+      color: #D4AF37;
+      text-transform: uppercase;
+      margin: 4px 0 8px 0;
+    }
+
+    .roster-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+      gap: 9px;
+    }
+    .char-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 8px;
+      padding: 10px 12px;
+      text-align: left;
+      color: #e5e7eb;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .char-btn:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(212, 175, 55, 0.45);
+      transform: translateY(-1px);
+    }
+    .char-btn.active {
+      background: rgba(212, 175, 55, 0.14);
+      border-color: #D4AF37;
+      box-shadow: 0 0 18px rgba(212, 175, 55, 0.22);
+    }
+    .char-btn-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+    .char-btn-name {
+      font-family: 'Cinzel', serif;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .char-btn-squad {
+      font-size: 9.5px;
+      letter-spacing: 0.8px;
+      color: #9ca3af;
+      text-transform: uppercase;
+    }
+    .char-btn-power {
+      font-size: 11px;
+      color: #94a3b8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .swatch-row {
+      display: flex;
+      gap: 4px;
+      margin-top: 4px;
+    }
+    .swatch {
+      width: 12px;
+      height: 5px;
+      border-radius: 2px;
+    }
+
+    /* Live controls + brief card */
+    .control-card {
+      background: rgba(15, 16, 26, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .ctrl-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .ctrl-btn:hover { background: rgba(212, 175, 55, 0.25); border-color: #D4AF37; }
+    .ctrl-btn.primary { background: rgba(212, 175, 55, 0.22); border-color: #D4AF37; color: #fef3c7; }
+
+    .tuning-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px 14px;
+    }
+    .tune-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .tune-field label {
+      display: flex;
+      justify-content: space-between;
+    }
+    .tune-field strong { color: #e5e7eb; }
+    .tune-field input[type="range"] { width: 100%; accent-color: #D4AF37; }
+    .brief-box {
+      font-size: 12px;
+      color: #cbd5e1;
+      line-height: 1.55;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 10px;
+    }
+    .brief-box strong { color: #fef3c7; }
+
+    /* =====================================================================
+       EXACT #sidebar layout & typography copied faithfully from index.html
+       ===================================================================== */
+    #sidebar {
+      position: fixed;
+      top: 20px;
+      bottom: 20px;
+      right: -420px;
+      width: 360px;
+      background: rgba(10, 10, 16, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9);
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: right 0.38s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+      overflow: hidden;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    #sidebar.open { right: 20px; }
+    #sidebar-bg {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background-size: cover; background-position: center 25%;
+      background-repeat: no-repeat; z-index: 0;
+      transition: background-image 0.4s ease, opacity 0.4s ease;
+      opacity: 0.35; filter: blur(12px) saturate(1.3) brightness(0.8);
+      transform: scale(1.1); pointer-events: none;
+    }
+    #sidebar-overlay {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(to bottom, rgba(10, 10, 18, 0.4) 0%, rgba(10, 10, 18, 0.85) 40%, rgba(10, 10, 18, 0.98) 100%);
+      z-index: 0; pointer-events: none;
+    }
+    #sidebar-content {
+      padding: 20px 22px 35px 22px;
+      height: 100%;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 2;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(212, 175, 55, 0.5) rgba(15, 15, 25, 0.4);
+    }
+    .scroll-fade {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 40px;
+      background: linear-gradient(to top, rgba(10, 10, 18, 0.95), transparent);
+      pointer-events: none; z-index: 5;
+      border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;
+    }
+    #sidebar-close {
+      position: absolute; top: 15px; right: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff; font-size: 17px; width: 28px; height: 28px;
+      border-radius: 6px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease; z-index: 50;
+    }
+    #sidebar-close:hover { background: rgba(220, 38, 38, 0.45); border-color: #DC2626; }
+    .sidebar-header-line {
+      font-family: 'Cinzel', serif; color: #D4AF37; font-size: 10px; letter-spacing: 4px;
+      margin-bottom: 14px; border-bottom: 1px solid rgba(212, 175, 55, 0.3); padding-bottom: 9px;
+      padding-right: 40px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .char-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    #s-avatar {
+      width: 64px; height: 64px; border-radius: 50%;
+      background-color: #0F1318; background-size: cover; background-position: center 20%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cinzel', serif; font-size: 22px; font-weight: 700; color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.2); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      flex-shrink: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .char-title-block { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+    .char-name { font-family: 'Cinzel', serif; font-size: 18px; color: #fff; margin: 0 0 3px 0; }
+    .char-meta { font-size: 11px; color: #D4AF37; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+    .dossier-tabs { display: flex; border-bottom: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 15px; gap: 4px; }
+    .tab-btn {
+      background: transparent; border: none; border-bottom: 2px solid transparent;
+      color: #888; font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.5px;
+      padding: 8px 12px; cursor: pointer;
+    }
+    .tab-btn.active { color: #D4AF37; border-bottom-color: #D4AF37; font-weight: 700; }
+    .char-desc { font-size: 12.5px; color: #bbb; line-height: 1.6; margin-bottom: 16px; font-style: italic; }
+    .action-bar { display: flex; gap: 8px; margin-top: 15px; margin-bottom: 12px; }
+    .action-btn {
+      background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ccc; font-size: 11px; padding: 8px 14px; border-radius: 4px;
+      cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .action-btn:hover { background: rgba(212, 175, 55, 0.25); border-color: #D4AF37; color: #fff; }
+
+    @media (max-width: 820px) {
+      body { padding: 16px 16px 600px 16px; }
+      #sidebar { left: 16px; right: 16px; width: auto; top: auto; bottom: 16px; height: 540px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="demo-shell">
+    <header class="demo-header">
+      <div class="demo-kicker">Gotei 13 // Standalone Preview Harness</div>
+      <h1 class="demo-title">18 Bespoke Gotei 13 Character Themes</h1>
+      <p class="demo-sub">
+        Every remaining unthemed member of the Gotei 13 roster (9 Captains + 9 Lieutenants).
+        Existing themes (Yamamoto, Sasakibe, Kira, Aizen, Hitsugaya, Kenpachi, Rukia) were left untouched.
+        Click any character to open the exact <code>#sidebar</code> panel and test its 0–3s entrance, idle loop, and tuning options.
+      </p>
+    </header>
+
+    <section>
+      <div class="section-label">Captains (9 New + Reworked Hitsugaya)</div>
+      <div class="roster-grid" id="grid-captains"></div>
+    </section>
+
+    <section>
+      <div class="section-label">Lieutenants (9 New Themes)</div>
+      <div class="roster-grid" id="grid-lieutenants"></div>
+    </section>
+
+    <section class="control-card">
+      <div class="btn-row">
+        <button class="ctrl-btn primary" id="btn-replay">Replay 0–3s Entrance</button>
+        <button class="ctrl-btn" id="btn-close">Close Panel (Cancel rAF &amp; Clear)</button>
+        <button class="ctrl-btn" id="btn-apply">Apply Tuning &amp; Re-open</button>
+        <button class="ctrl-btn" id="btn-reset">Reset Tuning</button>
+      </div>
+      <div class="tuning-grid">
+        <div class="tune-field">
+          <label><span>Particles</span><strong id="val-particles">48</strong></label>
+          <input type="range" id="opt-particles" min="12" max="140" step="2" value="48" />
+        </div>
+        <div class="tune-field">
+          <label><span>Intensity</span><strong id="val-intensity">1.00</strong></label>
+          <input type="range" id="opt-intensity" min="0.4" max="1.6" step="0.05" value="1.0" />
+        </div>
+        <div class="tune-field">
+          <label><span>Seed</span><strong id="val-seed">606</strong></label>
+          <input type="range" id="opt-seed" min="1" max="2000" step="1" value="606" />
+        </div>
+        <div class="tune-field">
+          <label><span>Impact X</span><strong id="val-ix">0.50</strong></label>
+          <input type="range" id="opt-ix" min="0.1" max="0.9" step="0.02" value="0.50" />
+        </div>
+        <div class="tune-field">
+          <label><span>Impact Y</span><strong id="val-iy">0.42</strong></label>
+          <input type="range" id="opt-iy" min="0.1" max="0.9" step="0.02" value="0.42" />
+        </div>
+      </div>
+      <div class="brief-box" id="brief-box">Select a character above to inspect its visual brief.</div>
+    </section>
+  </main>
+
+  <!-- Exact #sidebar DOM matching index.html -->
+  <div id="sidebar">
+    <div id="sidebar-bg"></div>
+    <div id="sidebar-overlay"></div>
+    <div class="scroll-fade"></div>
+    <div id="sidebar-content">
+      <button id="sidebar-close" title="Close dossier">&times;</button>
+      <div class="sidebar-header-line">
+        <span>CLASSIFIED // INTEL</span>
+        <span id="s-id-code">G13-06</span>
+      </div>
+      <div class="char-header">
+        <div class="char-avatar" id="s-avatar">BK</div>
+        <div class="char-title-block">
+          <div class="char-name" id="s-name">Select Character</div>
+          <div class="char-meta" id="s-meta">STATUS: ACTIVE</div>
+        </div>
+      </div>
+      <div class="dossier-tabs">
+        <button class="tab-btn active">OVERVIEW</button>
+        <button class="tab-btn">RELATIONS</button>
+        <button class="tab-btn">TIMELINE</button>
+      </div>
+      <div style="font-size: 12px; margin-bottom: 18px; color: rgba(255,255,255,0.72); line-height: 1.75;">
+        <div><strong style="color:#888; display:inline-block; width:95px;">NODE ID</strong> <span id="s-node-id" style="color:#fff;">—</span></div>
+        <div><strong style="color:#888; display:inline-block; width:95px;">SQUAD</strong> <span id="s-squad" style="color:#fff;">—</span></div>
+        <div><strong style="color:#888; display:inline-block; width:95px;">ZANPAKUTŌ</strong> <span id="s-zanpakuto" style="color:#fff;">—</span></div>
+        <div><strong style="color:#888; display:inline-block; width:95px;">REIATSU CLASS</strong> <span id="s-tier" style="color:#D4AF37; font-family:'Cinzel', serif;">CAPTAIN CLASS</span></div>
+      </div>
+      <div class="char-desc" id="s-desc">Select any Gotei 13 member from the left to preview their animated sidebar effect.</div>
+      <div class="action-bar">
+        <button class="action-btn" id="btn-sidebar-replay">REPLAY ENTRANCE SEQUENCE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- All 18 newly crafted Gotei 13 + reworked Hitsugaya scripts -->
+  <script src="../panels/js/hitsugaya-panel.js"></script>
+  <script src="../panels/js/soifon-panel.js"></script>
+  <script src="../panels/js/omaeda-panel.js"></script>
+  <script src="../panels/js/gin-panel.js"></script>
+  <script src="../panels/js/unohana-panel.js"></script>
+  <script src="../panels/js/isane-panel.js"></script>
+  <script src="../panels/js/momo-panel.js"></script>
+  <script src="../panels/js/byakuya-panel.js"></script>
+  <script src="../panels/js/renji-panel.js"></script>
+  <script src="../panels/js/komamura-panel.js"></script>
+  <script src="../panels/js/shunsui-panel.js"></script>
+  <script src="../panels/js/nanao-panel.js"></script>
+  <script src="../panels/js/tosen-panel.js"></script>
+  <script src="../panels/js/hisagi-panel.js"></script>
+  <script src="../panels/js/rangiku-panel.js"></script>
+  <script src="../panels/js/yachiru-panel.js"></script>
+  <script src="../panels/js/mayuri-panel.js"></script>
+  <script src="../panels/js/nemu-panel.js"></script>
+  <script src="../panels/js/ukitake-panel.js"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const CHARACTERS = [
+        // Captains (10 — 9 new + reworked Hitsugaya)
+        { id: 'soi_fon',   role: 'captain', squad: 'Squad 2 Capt.', name: 'Soi Fon', initials: 'SF', api: 'SoifonPanel', img: '../assets/portraits/Soi Fon.jpg', zanpakuto: 'Jakuhō Raikōben (Bankai Markings)', palette: ['#facc15', '#eab308', '#f97316', '#18181b'], defaults: { particles: 46, intensity: 1.0, seed: 202, impact: [0.50, 0.46] }, desc: 'Captain of Squad 2 and Commander-in-Chief of the Onmitsukidō. Master of Hakuda and Shunpo.', brief: 'Bold black-and-gold Bankai hornet stripe bands, grand Hōmonka hornet marking & segmented lock-on reticle detonate under an incoming Jakuhō Raikōben missile strike.' },
+        { id: 'gin',       role: 'captain', squad: 'Squad 3 Capt.', name: 'Gin Ichimaru', initials: 'GI', api: 'GinPanel', img: '../assets/portraits/Gin Ichimaru.jpg', zanpakuto: 'Kamishini no Yari (White Viper)', palette: ['#e0f2fe', '#67e8f9', '#94a3b8', '#1e1b4b'], defaults: { particles: 54, intensity: 1.0, seed: 303, impact: [0.50, 0.38] }, desc: 'Former Captain of Squad 3 wielding the supersonic extending blade Kamishini no Yari.', brief: 'Hypnotic cyan slit snake eyes open in the dark, unleashing a Mach-500 fang-strike as an articulated white-silver spectral viper coils across the backdrop shedding venomous Korose dust.' },
+        { id: 'unohana',   role: 'captain', squad: 'Squad 4 Capt.', name: 'Retsu Unohana', initials: 'RU', api: 'UnohanaPanel', img: '../assets/portraits/Unohana.jpg', zanpakuto: 'Minazuki (Bankai)', palette: ['#991b1b', '#dc2626', '#fca5a5', '#134e4a'], defaults: { particles: 46, intensity: 1.0, seed: 404, impact: [0.50, 0.45] }, desc: 'Captain of Squad 4, supreme healer of Soul Society, and secretly Yachiru Unohana, the First Kenpachi.', brief: 'Serene Squad 4 jade-teal healing aura splits open under a diagonal crimson katana arc as viscous dark-red Minazuki blood-acid tides surge upward.' },
+        { id: 'byakuya',   role: 'captain', squad: 'Squad 6 Capt.', name: 'Byakuya Kuchiki', initials: 'BK', api: 'ByakuyaPanel', img: '../assets/portraits/Byakuya Kuchiki.jpg', zanpakuto: 'Senbonzakura Kageyoshi', palette: ['#f9a8d4', '#f472b6', '#fce7f3', '#831843'], defaults: { particles: 96, intensity: 1.0, seed: 606, impact: [0.50, 0.38] }, desc: '28th Head of the Kuchiki Clan and Captain of Squad 6.', brief: 'Twin rows of katana silhouettes sink into mirror ripples and scatter explosively into swirling, 3D-tumbling sakura petal-blades catching silver edge glints.' },
+        { id: 'komamura',  role: 'captain', squad: 'Squad 7 Capt.', name: 'Sajin Komamura', initials: 'SK', api: 'KomamuraPanel', img: '../assets/portraits/Sajin Komamura.jpg', zanpakuto: "Kokujō Tengen Myō'ō (Colossal Sword)", palette: ['#d97706', '#fbbf24', '#b45309', '#dc2626'], defaults: { particles: 50, intensity: 1.0, seed: 707, impact: [0.54, 0.82] }, desc: 'Former Captain of Squad 7 who wields a colossal armored samurai Bankai and Dangai Jōe.', brief: 'Kokujō Tengen Myō\'ō\'s towering greatsword crashes straight down into the floor, shattering molten gold fissures outward while levitating stone rubble & Dangai Jōe embers rise.' },
+        { id: 'shunsui',   role: 'captain', squad: 'Squad 8 Capt.', name: 'Shunsui Kyōraku', initials: 'SK', api: 'ShunsuiPanel', img: '../assets/portraits/Shunsui Kyōraku.jpg', zanpakuto: 'Karamatsu Shinjū (Black & Yellow)', palette: ['#09090b', '#facc15', '#eab308', '#fef08a'], defaults: { particles: 48, intensity: 1.0, seed: 808, impact: [0.50, 0.42] }, desc: 'Captain of Squad 8 and later Captain-Commander of the Gotei 13.', brief: 'Stark black-and-yellow Bankai stage: pitch-black Kageoni shadow tendrils & abyssal water ripples pierced by luminous imperial-yellow Act IV fate-threads and drifting gold autumn petals.' },
+        { id: 'tosen',     role: 'captain', squad: 'Squad 9 Capt.', name: 'Kaname Tōsen', initials: 'KT', api: 'TosenPanel', img: '../assets/portraits/Kaname Tōsen.jpg', zanpakuto: 'Suzumushi: Enma Kōrogi', palette: ['#a855f7', '#c084fc', '#4ade80', '#090514'], defaults: { particles: 44, intensity: 1.0, seed: 909, impact: [0.50, 0.42] }, desc: 'Former Captain of Squad 9 wielding acoustic blade Suzumushi and the pitch-void dome Enma Kōrogi.', brief: 'Pitch-black sensory dome expands with a sharp violet ping, giving way to rhythmic cricket-stridulation sonar waves and orbiting spectral Benihikō needle-blades.' },
+        { id: 'hitsugaya', role: 'captain', squad: 'Squad 10 Capt.', name: 'Tōshirō Hitsugaya', initials: 'TH', api: 'HitsugayaPanel', img: '../assets/panels/Hitsugaya Dragon.jpg', zanpakuto: 'Daiguren Hyōrinmaru (Realistic Dragon)', palette: ['#041529', '#0e4d7a', '#38bdf8', '#e0f2fe'], defaults: { particles: 48, intensity: 1.0, seed: 10, impact: [0.42, 0.34] }, desc: 'Prodigious Captain of Squad 10 wielding Hyōrinmaru, the strongest ice-element Zanpakutō.', brief: 'Sculpted glacial-sapphire Ice Dragon modeled on Hitsugaya Dragon.jpg: faceted crystalline wings with frost-veined membranes, spiked ice-crown head with blazing white eyes, coiled tail & frost breath.' },
+        { id: 'mayuri',    role: 'captain', squad: 'Squad 12 Capt.', name: 'Mayuri Kurotsuchi', initials: 'MK', api: 'MayuriPanel', img: '../assets/portraits/Mayuri Kurotsuchi.jpg', zanpakuto: 'Konjiki Ashisogi Jizō (Baby Form)', palette: ['#eab308', '#a3e635', '#c026d3', '#1a0b2e'], defaults: { particles: 56, intensity: 1.0, seed: 1212, impact: [0.50, 0.50] }, desc: 'Macabre scientist and Captain of Squad 12, 2nd President of the S.R.D.I.', brief: 'Giant golden caterpillar-baby Bankai rises out of volumetric violet-chartreuse poison mist with a turning golden halo, eerie glowing staring eyes, chest blades & exhaling toxic clouds.' },
+        { id: 'ukitake',   role: 'captain', squad: 'Squad 13 Capt.', name: 'Jūshirō Ukitake', initials: 'JU', api: 'UkitakePanel', img: '../assets/portraits/Jūshirō Ukitake.jpg', zanpakuto: 'Sōgyo no Kotowari (Twin Swords)', palette: ['#38bdf8', '#e0f2fe', '#ef4444', '#f59e0b'], defaults: { particles: 44, intensity: 1.0, seed: 1313, impact: [0.50, 0.50] }, desc: 'Beloved Captain of Squad 13 wielding twin-blade Sōgyo no Kotowari and host to Mimihagi.', brief: 'Twin reverse-hooked Sōgyo no Kotowari blades unsheathe diagonally from behind the center, linked by a swaying crimson cord with 5 glowing ofuda charms channeling cerulean spirit energy.' },
+
+        // Lieutenants (9)
+        { id: 'omaeda',   role: 'lt', squad: 'Squad 2 Lt.', name: 'Marechiyo Ōmaeda', initials: 'MŌ', api: 'OmaedaPanel', img: '../assets/portraits/Marechiyo Ōmaeda.jpg', zanpakuto: 'Gegetsuburi', palette: ['#f59e0b', '#b45309', '#94a3b8', '#1c140a'], defaults: { particles: 40, intensity: 1.0, seed: 212, impact: [0.62, 0.68] }, desc: 'Affluent Lieutenant of Squad 2 and Patrol Unit Commander.', brief: 'Spiked iron Gegetsuburi flail swings down on a forged chain, detonating concentric brass-gold shock-rings before settling into a heavy pendulum sway.' },
+        { id: 'isane',    role: 'lt', squad: 'Squad 4 Lt.', name: 'Isane Kotetsu', initials: 'IK', api: 'IsanePanel', img: '../assets/portraits/Isane Kotetsu.jpg', zanpakuto: 'Itegumo / Kaidō', palette: ['#34d399', '#6ee7b7', '#bae6fd', '#062823'], defaults: { particles: 44, intensity: 1.0, seed: 414, impact: [0.50, 0.46] }, desc: 'Devoted Lieutenant (later Captain) of Squad 4 and master of restorative Kaidō.', brief: 'Triple silver Itegumo blade-glints fan apart as soft jade-mint Kaidō healing waves and medical cross-runes float upward through pastel snow-cloud wisps.' },
+        { id: 'momo',     role: 'lt', squad: 'Squad 5 Lt.', name: 'Momo Hinamori', initials: 'MH', api: 'MomoPanel', img: '../assets/portraits/Momo Hinamori.jpg', zanpakuto: 'Tobiume (Burning Sword)', palette: ['#ff6b35', '#ef4444', '#fef08a', '#fb7185'], defaults: { particles: 56, intensity: 1.0, seed: 505, impact: [0.62, 0.56] }, desc: 'Lieutenant of Squad 5 wielding the scorching three-pronged fire-blade Tobiume.', brief: 'Tobiume\'s forked three-pronged blade ignites white-hot hilt-to-tip with licking flame veils, launching fireballs directly off its burning prongs into scorched 5-ray bursts.' },
+        { id: 'renji',    role: 'lt', squad: 'Squad 6 Lt.', name: 'Renji Abarai', initials: 'RA', api: 'RenjiPanel', img: '../assets/portraits/Renji Abarai.jpg', zanpakuto: 'Sōō Zabimaru', palette: ['#ef4444', '#f97316', '#fef3c7', '#1f0808'], defaults: { particles: 46, intensity: 1.0, seed: 616, impact: [0.50, 0.44] }, desc: 'Fierce Lieutenant of Squad 6 wielding articulated bone-whip Zabimaru.', brief: 'Segmented ivory-crimson Zabimaru whip cracks across impact with beast-claw streaks, coiling into a breathing skeletal spine amid vermilion-orange sparks.' },
+        { id: 'nanao',    role: 'lt', squad: 'Squad 8 Lt.', name: 'Nanao Ise', initials: 'NI', api: 'NanaoPanel', img: '../assets/portraits/Nanao Ise.jpg', zanpakuto: 'Shinken Hakkyōken', palette: ['#fef9c3', '#fbbf24', '#93c5fd', '#c4b5fd'], defaults: { particles: 40, intensity: 1.0, seed: 818, impact: [0.50, 0.38] }, desc: 'Methodical Lieutenant of Squad 8 (later Squad 1) and sole wielder of the sacred mirror sword.', brief: 'Eight golden octagonal mirror facets lock into a Bakudō lattice and refract pure white divine light outward into eight shimmering prismatic shafts.' },
+        { id: 'hisagi',   role: 'lt', squad: 'Squad 9 Lt.', name: 'Shuhei Hisagi', initials: 'SH', api: 'HisagiPanel', img: '../assets/portraits/Shuhei Hisagi.jpg', zanpakuto: 'Kazeshini', palette: ['#2dd4bf', '#cbd5e1', '#475569', '#090d12'], defaults: { particles: 40, intensity: 1.0, seed: 969, impact: [0.50, 0.46] }, desc: 'Lieutenant of Squad 9 wielding twin chained reaper-scythes Kazeshini.', brief: 'Twin double-bladed Kazeshini pinwheel scythes clash sparks at center, then orbit on opposite arcs linked by a swaying black-iron chain amidst teal wind trails.' },
+        { id: 'rangiku',  role: 'lt', squad: 'Squad 10 Lt.', name: 'Rangiku Matsumoto', initials: 'RM', api: 'RangikuPanel', img: '../assets/portraits/Rangiku Matsumoto.jpg', zanpakuto: 'Haineko (Ash-Fog)', palette: ['#e2e8f0', '#94a3b8', '#475569', '#fdba74'], defaults: { particles: 56, intensity: 1.0, seed: 1010, impact: [0.50, 0.46] }, desc: 'Free-spirited Lieutenant of Squad 10 whose blade dissolves into billowing razor-ash fog.', brief: 'Silver blade vaporizes tip-to-hilt into 3 parallax tiers of volumetric rolling ash-fog banks, punctuated by suspended silver ash specks and silent blade glints slicing through the mist.' },
+        { id: 'yachiru',  role: 'lt', squad: 'Squad 11 Lt.', name: 'Yachiru Kusajishi', initials: 'YK', api: 'YachiruPanel', img: '../assets/portraits/Yachiru Kusajishi.jpg', zanpakuto: 'Bankai Spirit / Nozarashi', palette: ['#f43f5e', '#ec4899', '#fde047', '#fbcfe8'], defaults: { particles: 54, intensity: 1.0, seed: 1111, impact: [0.50, 0.48] }, desc: 'Lieutenant of Squad 11 and the true manifested Bankai Spirit of Nozarashi.', brief: 'Yachiru\'s towering crimson-magenta Bankai Oni-Spirit ascends from the abyss with curved glowing horns, blazing golden feral eyes, undulating spirit flame-mane, and staggered spectral mimic slashes.' },
+        { id: 'nemu',     role: 'lt', squad: 'Squad 12 Lt.', name: 'Nemu Kurotsuchi', initials: 'NK', api: 'NemuPanel', img: '../assets/portraits/Nemu Kurotsuchi.jpg', zanpakuto: 'Gikon / Soul-Shaving', palette: ['#22d3ee', '#f0f9ff', '#818cf8', '#081426'], defaults: { particles: 44, intensity: 1.0, seed: 1207, impact: [0.50, 0.40] }, desc: 'Artificial Soul (Nemuri VII) and Lieutenant of Squad 12 capable of explosive soul-shaving overdrive.', brief: 'Artificial-soul telemetry ring locks and fires cyan Mach rings along branching 45° bio-neural circuit filaments pulsing with white synaptic packets.' }
+      ];
+
+      const sidebar = document.getElementById('sidebar');
+      const sidebarBg = document.getElementById('sidebar-bg');
+      const sAvatar = document.getElementById('s-avatar');
+      const sName = document.getElementById('s-name');
+      const sIdCode = document.getElementById('s-id-code');
+      const sNodeId = document.getElementById('s-node-id');
+      const sSquad = document.getElementById('s-squad');
+      const sZanpakuto = document.getElementById('s-zanpakuto');
+      const sTier = document.getElementById('s-tier');
+      const sDesc = document.getElementById('s-desc');
+      const briefBox = document.getElementById('brief-box');
+
+      const optParticles = document.getElementById('opt-particles');
+      const optIntensity = document.getElementById('opt-intensity');
+      const optSeed = document.getElementById('opt-seed');
+      const optIx = document.getElementById('opt-ix');
+      const optIy = document.getElementById('opt-iy');
+
+      const instances = {};
+      let activeChar = null;
+
+      function attachOne(ch, customOpts) {
+        const api = window[ch.api];
+        if (!api || !api.attach) return null;
+        if (instances[ch.id]) instances[ch.id].destroy();
+        instances[ch.id] = api.attach(sidebar, customOpts || ch.defaults);
+        return instances[ch.id];
+      }
+
+      // Pre-attach all 18 panels simultaneously (verifies zero CSS/DOM collision)
+      CHARACTERS.forEach(ch => attachOne(ch));
+
+      function closeAll() {
+        CHARACTERS.forEach(ch => { if (instances[ch.id]) instances[ch.id].close(); });
+      }
+
+      function syncSliders(opts) {
+        optParticles.value = opts.particles;
+        optIntensity.value = opts.intensity;
+        optSeed.value = opts.seed;
+        optIx.value = opts.impact[0];
+        optIy.value = opts.impact[1];
+        updateSliderReadouts();
+      }
+
+      function updateSliderReadouts() {
+        document.getElementById('val-particles').textContent = optParticles.value;
+        document.getElementById('val-intensity').textContent = Number(optIntensity.value).toFixed(2);
+        document.getElementById('val-seed').textContent = optSeed.value;
+        document.getElementById('val-ix').textContent = Number(optIx.value).toFixed(2);
+        document.getElementById('val-iy').textContent = Number(optIy.value).toFixed(2);
+      }
+
+      [optParticles, optIntensity, optSeed, optIx, optIy].forEach(inp =>
+        inp.addEventListener('input', updateSliderReadouts)
+      );
+
+      function selectCharacter(ch, keepTuning) {
+        activeChar = ch;
+        closeAll();
+
+        document.querySelectorAll('.char-btn').forEach(b =>
+          b.classList.toggle('active', b.dataset.id === ch.id)
+        );
+
+        sName.textContent = ch.name;
+        sIdCode.textContent = 'G13-' + ch.id.toUpperCase().slice(0, 4);
+        sNodeId.textContent = ch.id;
+        sSquad.textContent = ch.squad;
+        sZanpakuto.textContent = ch.zanpakuto;
+        sTier.textContent = ch.role === 'captain' ? 'CAPTAIN CLASS' : 'LIEUTENANT CLASS';
+        sDesc.textContent = ch.desc;
+
+        sAvatar.textContent = '';
+        sAvatar.style.backgroundImage = "url('" + encodeURI(ch.img) + "')";
+        sidebarBg.style.backgroundImage = "url('" + encodeURI(ch.img) + "')";
+        sidebarBg.style.opacity = '0.38';
+
+        if (!keepTuning) syncSliders(ch.defaults);
+
+        briefBox.innerHTML =
+          '<strong>' + ch.name + '</strong> (<code>node.id = "' + ch.id + '"</code> · <code>' + ch.api + '</code>) — ' +
+          '<strong>' + ch.zanpakuto + '</strong>: ' + ch.brief;
+
+        sidebar.classList.add('open');
+        if (instances[ch.id]) instances[ch.id].open();
+      }
+
+      // Build selector grids
+      const capGrid = document.getElementById('grid-captains');
+      const ltGrid = document.getElementById('grid-lieutenants');
+      CHARACTERS.forEach(ch => {
+        const btn = document.createElement('button');
+        btn.className = 'char-btn';
+        btn.dataset.id = ch.id;
+        btn.innerHTML =
+          '<div class="char-btn-top"><span class="char-btn-name">' + ch.name + '</span><span class="char-btn-squad">' + ch.squad + '</span></div>' +
+          '<div class="char-btn-power">' + ch.zanpakuto + '</div>' +
+          '<div class="swatch-row">' + ch.palette.map(c => '<span class="swatch" style="background:' + c + '"></span>').join('') + '</div>';
+        btn.addEventListener('click', () => selectCharacter(ch, false));
+        (ch.role === 'captain' ? capGrid : ltGrid).appendChild(btn);
+      });
+
+      function replayActive() {
+        if (!activeChar) return;
+        sidebar.classList.add('open');
+        if (instances[activeChar.id]) instances[activeChar.id].open();
+      }
+
+      document.getElementById('btn-replay').addEventListener('click', replayActive);
+      document.getElementById('btn-sidebar-replay').addEventListener('click', replayActive);
+
+      function closeSidebar() {
+        closeAll();
+        sidebar.classList.remove('open');
+      }
+      document.getElementById('btn-close').addEventListener('click', closeSidebar);
+      document.getElementById('sidebar-close').addEventListener('click', closeSidebar);
+
+      document.getElementById('btn-apply').addEventListener('click', () => {
+        if (!activeChar) return;
+        const custom = {
+          particles: Number(optParticles.value),
+          intensity: Number(optIntensity.value),
+          seed: Number(optSeed.value),
+          impact: [Number(optIx.value), Number(optIy.value)]
+        };
+        attachOne(activeChar, custom);
+        selectCharacter(activeChar, true);
+      });
+
+      document.getElementById('btn-reset').addEventListener('click', () => {
+        if (!activeChar) return;
+        attachOne(activeChar, activeChar.defaults);
+        selectCharacter(activeChar, false);
+      });
+
+      // Open Byakuya initially on load
+      selectCharacter(CHARACTERS.find(c => c.id === 'byakuya'), false);
+    })();
+  </script>
+</body>
+</html>
